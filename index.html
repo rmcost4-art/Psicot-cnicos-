@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Psicotécnicos VMER">
 
-<title>Treino Psicotécnicos VMER — V5.1</title>
+<title>Treino Psicotécnicos VMER — V5.5</title>
 <style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#667085;--line:#d9e0ec;
@@ -334,6 +334,20 @@ tbody tr:last-child td{border-bottom:0}
 .tabs::-webkit-scrollbar{display:none}
 .tabs button{flex:0 0 auto}
 
+
+.biLaneLabel{position:absolute;top:12px;font-size:12px;font-weight:800;color:#64748b;pointer-events:none}
+.biRule{position:absolute;left:50%;transform:translateX(-50%);top:10px;padding:7px 13px;border-radius:999px;background:#0f172a;color:white;font-weight:900;font-size:13px;z-index:8;pointer-events:none}
+.biCursor{position:absolute;width:38px;height:38px;border-radius:50%;border:5px solid #2563eb;background:rgba(255,255,255,.8);transform:translate(-50%,-50%);z-index:5;pointer-events:none}
+.biDynTarget{position:absolute;width:88px;height:88px;border-radius:50%;border:5px dashed #16a34a;background:rgba(34,197,94,.08);transform:translate(-50%,-50%);pointer-events:none}
+.biStim{position:absolute;width:86px;height:86px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;transform:translate(-50%,-50%);z-index:7;box-shadow:0 6px 18px rgba(15,23,42,.15)}
+@media(max-width:800px){#biStage{height:360px!important}.biDynTarget{width:76px;height:76px}.biStim{width:76px;height:76px}}
+
+#driveResponses .btn{min-height:56px}
+#driveResponses .btn.activeStim{outline:4px solid #f59e0b}
+@media(max-width:700px){
+  #driveResponses{gap:6px}
+  #driveResponses .btn{min-height:50px;padding:6px}
+}
 </style>
 
 <link rel="manifest" href="manifest.webmanifest">
@@ -347,7 +361,7 @@ tbody tr:last-child td{border-bottom:0}
 <div class="wrap">
   <div class="hero">
     <div>
-      <h1>Treino Psicotécnicos VMER — V5.1</h1>
+      <h1>Treino Psicotécnicos VMER — V5.5</h1>
       <p>Plataforma offline de treino psicotécnico, otimizada para computador, iPad e telemóvel. Treina atenção, reação, antecipação, memória, coordenação e consistência numa interface simples e organizada.</p>
     </div>
     <div class="badge">Offline · PC · Mac · iPad · iPhone · Android</div>
@@ -468,89 +482,108 @@ tbody tr:last-child td{border-bottom:0}
 </section>
 
 
+
 <section id="bimanual" class="panel">
   <div class="card">
     <div class="row spaced">
       <div>
-        <h2>Destreza bimanual</h2>
-        <p class="muted">Treino de coordenação das duas mãos, reação dividida, controlo simultâneo e equilíbrio esquerda/direita. Idealmente usa o iPad em horizontal.</p>
+        <h2>Destreza bimanual — consola dinâmica</h2>
+        <p class="muted">Treino contínuo de coordenação das duas mãos: controlo, reação, seleção e inibição em simultâneo. Usa preferencialmente o iPad em horizontal e apoiado.</p>
       </div>
       <select id="biMode">
-        <option value="dualTap">Toque simultâneo</option>
-        <option value="sideReaction">Reação mão correspondente</option>
-        <option value="dualSequence">Sequências independentes</option>
-        <option value="holdTap">Manter + responder</option>
-        <option value="dualTracking">Seguimento duplo</option>
-        <option value="mirror">Movimentos espelho</option>
-        <option value="opposite">Movimentos opostos</option>
-        <option value="inhibition">Inibição cruzada</option>
-        <option value="rhythm">Ritmo bimanual</option>
-        <option value="balanceTap">Equilíbrio + resposta</option>
+        <option value="mixed">Misto adaptativo</option>
+        <option value="tracking">Duplo controlo contínuo</option>
+        <option value="trackingStim">Controlo + estímulos</option>
+        <option value="switch">Mudança de regra</option>
+        <option value="precision">Precisão bimanual</option>
+        <option value="inhibition">Go / No-Go bilateral</option>
       </select>
     </div>
-    <div id="biNotice" class="notice">Escolhe um exercício e carrega em <b>Iniciar</b>. Mantém uma mão de cada lado do ecrã.</div>
-    <div id="biStage" class="gameCanvas" style="height:380px;position:relative;overflow:hidden;touch-action:none">
-      <div id="biLeftZone" style="position:absolute;left:0;top:0;width:50%;height:100%;border-right:1px solid #cbd5e1"></div>
-      <div id="biRightZone" style="position:absolute;right:0;top:0;width:50%;height:100%"></div>
-      <div id="biCenterText" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;pointer-events:none">—</div>
+
+    <div class="notice" id="biNotice">
+      <b>Como funciona:</b> cada polegar controla um cursor no seu lado. Durante o exercício aparecem alvos, sinais de STOP, mudanças de regra e períodos de controlo contínuo. No modo misto, as tarefas alternam automaticamente.
     </div>
+
+    <div id="biStage" class="gameCanvas" style="height:430px;position:relative;overflow:hidden;touch-action:none;background:linear-gradient(90deg,#f8fafc 0 49.8%,#e2e8f0 49.8% 50.2%,#f8fafc 50.2% 100%)">
+      <div class="biLaneLabel" style="left:14px">MÃO ESQUERDA</div>
+      <div class="biLaneLabel" style="right:14px">MÃO DIREITA</div>
+      <div id="biRule" class="biRule">PREPARADO</div>
+      <div id="biCursorL" class="biCursor" style="left:22%;top:68%"></div>
+      <div id="biCursorR" class="biCursor" style="left:72%;top:68%"></div>
+      <div id="biTargetL" class="biDynTarget" style="display:none"></div>
+      <div id="biTargetR" class="biDynTarget" style="display:none"></div>
+      <div id="biStimL" class="biStim" style="display:none"></div>
+      <div id="biStimR" class="biStim" style="display:none"></div>
+    </div>
+
     <div class="controls">
-      <button id="biStart" class="btn primary">Iniciar</button>
-      <button id="biSession" class="btn">Sessão automática 10 min</button>
+      <button id="biStart" class="btn primary">Treino 90 s</button>
+      <button id="biSession" class="btn">Sessão mista 10 min</button>
       <button id="biStop" class="btn">Parar</button>
       <button id="biSave" class="btn good">Guardar</button>
     </div>
+
     <div class="metricGrid">
-      <div class="metric"><small>Acertos</small><b id="biHits">0</b></div>
-      <div class="metric"><small>Erros</small><b id="biErrors">0</b></div>
+      <div class="metric"><small>Precisão esquerda</small><b id="biPrecL">—</b></div>
+      <div class="metric"><small>Precisão direita</small><b id="biPrecR">—</b></div>
       <div class="metric"><small>Reação esquerda</small><b id="biLeftRt">—</b></div>
       <div class="metric"><small>Reação direita</small><b id="biRightRt">—</b></div>
-      <div class="metric"><small>Assimetria</small><b id="biAsym">—</b></div>
-      <div class="metric"><small>Índice bimanual</small><b id="biScore">—</b></div>
+      <div class="metric"><small>Erros / inibições</small><b id="biErrors">0</b></div>
+      <div class="metric"><small>Coordenação global</small><b id="biScore">—</b></div>
     </div>
-    <div id="biFeedback" class="notice" style="margin-top:10px">O objetivo é manter rapidez, precisão e equilíbrio entre as duas mãos.</div>
+    <div id="biFeedback" class="notice" style="margin-top:10px">Mantém os dois cursores nos respetivos alvos e reage aos estímulos sem perder o controlo.</div>
   </div>
 </section>
+
 <section id="motiongyro" class="panel">
   <div class="card">
     <div class="row spaced">
       <div>
-        <h2>Reflexos por movimento</h2>
-        <p class="muted">Treino complementar com giroscópio/acelerómetro em iPhone e iPad. Mede reação motora, direção e controlo do movimento.</p>
+        <h2>Condução psicomotora — giroscópio</h2>
+        <p class="muted">Mantém o carro dentro da estrada inclinando o iPad para esquerda/direita. Ao mesmo tempo, responde aos estímulos laterais sem perder o controlo da trajetória. A velocidade aumenta progressivamente.</p>
       </div>
-      <select id="gyroMode">
-        <option value="lr">Esquerda / Direita</option>
-        <option value="four">4 direções</option>
-        <option value="gonogo">Go / No-Go</option>
-        <option value="stability">Estabilização</option>
-        <option value="follow">Seguimento por inclinação</option>
-      </select>
+      <div class="metric" style="min-width:120px"><small>Nível</small><b id="gyroLevel">—</b></div>
     </div>
 
-    <div id="gyroSupport" class="notice">Primeiro ativa os sensores de movimento.</div>
+    <div id="gyroSupport" class="notice">Ativa os sensores de movimento e segura o iPad em horizontal, numa posição confortável.</div>
 
     <div class="controls">
-      <button id="gyroPermission" class="btn primary">Ativar sensores de movimento</button>
-      <button id="gyroStart" class="btn" disabled>Iniciar 12 estímulos</button>
-      <button id="gyroQuick" class="btn">Sessão rápida 5 min</button>
+      <button id="gyroPermission" class="btn primary">Ativar sensores</button>
+      <button id="gyroCalibrate" class="btn" disabled>Calibrar centro</button>
+      <button id="gyroStart" class="btn" disabled>Treino 90 s</button>
+      <button id="gyroQuick" class="btn" disabled>Sessão 5 min</button>
+      <button id="gyroStop" class="btn">Parar</button>
       <button id="gyroSave" class="btn good">Guardar</button>
     </div>
 
-    <div id="gyroStage" class="gameCanvas" style="height:330px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
-      <div id="gyroStimulus" style="font-size:76px;font-weight:900">—</div>
-      <div id="gyroBall" style="position:absolute;width:34px;height:34px;border-radius:50%;background:#111827;left:calc(50% - 17px);top:calc(50% - 17px);display:none"></div>
-      <div id="gyroTarget" style="position:absolute;width:84px;height:84px;border:3px solid #64748b;border-radius:50%;left:calc(50% - 42px);top:calc(50% - 42px);display:none"></div>
+    <div id="driveWrap" style="position:relative;margin-top:12px">
+      <canvas id="driveCanvas" class="gameCanvas" width="1000" height="520" style="width:100%;height:auto;display:block;touch-action:none;background:#1f2937"></canvas>
+
+      <div id="driveStim" style="display:none;position:absolute;top:18px;right:18px;min-width:110px;padding:12px 16px;border-radius:18px;background:white;border:3px solid #0f172a;text-align:center;font-size:38px;font-weight:900;z-index:4;box-shadow:0 8px 20px rgba(0,0,0,.18)">●</div>
+
+      <div id="driveStatus" style="position:absolute;top:16px;left:16px;z-index:4;background:rgba(15,23,42,.82);color:white;padding:8px 12px;border-radius:12px;font-weight:800">
+        0 km/h
+      </div>
+    </div>
+
+    <div id="driveResponses" class="choiceGrid" style="grid-template-columns:repeat(4,1fr);margin-top:10px">
+      <button class="btn driveResp" data-drive="circle" style="font-size:28px">●</button>
+      <button class="btn driveResp" data-drive="triangle" style="font-size:28px">▲</button>
+      <button class="btn driveResp" data-drive="square" style="font-size:28px">■</button>
+      <button class="btn driveResp" data-drive="star" style="font-size:28px">★</button>
     </div>
 
     <div class="metricGrid">
-      <div class="metric"><small>Acertos</small><b id="gyHits">0</b></div>
-      <div class="metric"><small>Erros</small><b id="gyErr">0</b></div>
+      <div class="metric"><small>Tempo na estrada</small><b id="gyRoad">—</b></div>
+      <div class="metric"><small>Saídas</small><b id="gyErr">0</b></div>
+      <div class="metric"><small>Estímulos corretos</small><b id="gyHits">0</b></div>
       <div class="metric"><small>Reação média</small><b id="gyRt">—</b></div>
-      <div class="metric"><small>Índice</small><b id="gyScore">—</b></div>
+      <div class="metric"><small>Velocidade atual</small><b id="gySpeed">—</b></div>
+      <div class="metric"><small>Índice global</small><b id="gyScore">—</b></div>
     </div>
 
     <div id="gyroFeedback" class="notice" style="margin-top:10px">
-      Segura o dispositivo de forma confortável. Para esquerda/direita, inclina alguns graus na direção pedida e volta ao centro.
+      O objetivo principal é manter o carro dentro da estrada. Quando aparecer um símbolo no canto superior direito, toca no símbolo correspondente em baixo sem deixar de conduzir.
     </div>
   </div>
 </section>
@@ -765,19 +798,49 @@ tbody tr:last-child td{border-bottom:0}
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const STORE='vmerTrainerV3';
+const ADSTORE='vmerAdaptiveV1';
+const ADKEYS=['motion','timing','reaction','search','pressure','periph','stroop','memory','coord','bimanual','gyro'];
+let adaptive={};
+try{adaptive=JSON.parse(localStorage.getItem(ADSTORE)||'{}')}catch(e){adaptive={}}
+ADKEYS.forEach(k=>{if(!adaptive[k])adaptive[k]={level:3,recent:[]}});
+function adLevel(k){return Math.max(1,Math.min(10,adaptive[k]?.level||3))}
+function adSave(){localStorage.setItem(ADSTORE,JSON.stringify(adaptive));adRender()}
+function adUpdate(k,score){
+  if(!adaptive[k])adaptive[k]={level:3,recent:[]};
+  const a=adaptive[k];a.recent.push(score);if(a.recent.length>6)a.recent.shift();
+  const avg=a.recent.reduce((x,y)=>x+y,0)/a.recent.length;
+  // sobe quando há domínio consistente; desce quando a carga está excessiva
+  if(a.recent.length>=2 && avg>=84)a.level=Math.min(10,a.level+1);
+  else if(a.recent.length>=2 && avg<55)a.level=Math.max(1,a.level-1);
+  adSave();return a.level;
+}
+function adLabel(k){return 'Nível adaptativo '+adLevel(k)+'/10'}
+function adRender(){
+  const box=$('#adaptiveLevels'),avg=$('#adaptiveAvg');
+  if(!box||!avg)return;
+  const names={motion:'Antecipação',timing:'Temporal',reaction:'Reação',search:'Atenção',pressure:'Pressão',periph:'Periferia',stroop:'Stroop',memory:'Memória',coord:'Coordenação',bimanual:'Bimanual',gyro:'Movimento'};
+  const vals=ADKEYS.map(k=>adLevel(k));
+  avg.textContent=(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1)+'/10';
+  box.textContent=ADKEYS.map(k=>names[k]+' '+adLevel(k)).join(' · ');
+}
+
 let history=[];try{history=JSON.parse(localStorage.getItem(STORE)||'[]')}catch(e){}
 function fmt(ts){return new Date(ts).toLocaleString('pt-PT',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'})}
 function saveStore(){localStorage.setItem(STORE,JSON.stringify(history));renderHistory();updateDash()}
 function addHistory(type,score,detail){history.push({ts:Date.now(),type,score,detail});if(history.length>250)history=history.slice(-250);saveStore()}
 $$('.tabs button').forEach(b=>b.addEventListener('click',()=>{$$('.tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');$$('.panel').forEach(p=>p.classList.remove('active'));$('#'+b.dataset.tab).classList.add('active');if(b.dataset.tab==='motion')drawMotionBase();if(b.dataset.tab==='history')renderHistory()}));
-function updateDash(){ $('#dashSessions').textContent=history.length;$('#dashBest').textContent=history.length?Math.max(...history.map(x=>x.score))+'/100':'—';const ex=history.filter(x=>x.type==='Simulação').slice(-1)[0];$('#dashExam').textContent=ex?ex.score+'/100':'—';let rec='Começa por fazer 1 sessão de Bolas, Reação e Atenção.';if(history.length>=4){const recent=history.slice(-8);const avg=recent.reduce((a,b)=>a+b.score,0)/recent.length;rec=avg<65?'Foca-te nos módulos em que ficas abaixo de 65/100 e usa sessões curtas e frequentes.':avg<80?'Estás num nível intermédio. Alterna módulos e começa a usar a simulação aleatória.':'Bom equilíbrio recente. Mantém consistência e evita treinar só o que já dominas.'}$('#recommendation').textContent=rec}
+function updateDash(){ $('#dashSessions').textContent=history.length;$('#dashBest').textContent=history.length?Math.max(...history.map(x=>x.score))+'/100':'—';const ex=history.filter(x=>x.type==='Simulação').slice(-1)[0];$('#dashExam').textContent=ex?ex.score+'/100':'—';let rec='Começa por fazer 1 sessão de Bolas, Reação e Atenção.';if(history.length>=4){const recent=history.slice(-8);const avg=recent.reduce((a,b)=>a+b.score,0)/recent.length;rec=avg<65?'Foca-te nos módulos em que ficas abaixo de 65/100 e usa sessões curtas e frequentes.':avg<80?'Estás num nível intermédio. Alterna módulos e começa a usar a simulação aleatória.':'Bom equilíbrio recente. Mantém consistência e evita treinar só o que já dominas.'}$('#recommendation').textContent=rec;adRender()}
 
 // MOTION
 const mc=$('#motionCanvas'),mx=mc.getContext('2d');
 let mRAF=null,mStartTimer=null,mBall=null,mExit=null,mWait=false,mLast=0,mHidden=false;
 let mStat={n:0,sum:0,pos:0,time:0},mMode='linear',mStarting=false;
 
-function MD(){return{w:900,h:420,l:342,r:657}}
+function MD(){
+  const lv=adLevel('motion');
+  const widen=(lv-3)*12;
+  return{w:900,h:420,l:Math.max(255,342-widen),r:Math.min(745,657+widen)};
+}
 
 function drawMotionBase(){
   const d=MD();
@@ -856,11 +919,12 @@ function beginMotionRun(){
 
   const d=MD();
   const y=80+Math.random()*260;
-  const vx=145+Math.random()*85;
+  const lv=adLevel('motion');
+  const vx=(145+Math.random()*85)*(0.88+lv*0.065);
 
   let vy=0;
   if(mMode==='diagonal' || mMode==='curve' || mMode==='accel' || mMode==='time'){
-    vy=(Math.random()*2-1)*65;
+    vy=(Math.random()*2-1)*(55+adLevel('motion')*7);
   }
 
   mBall={
@@ -977,6 +1041,7 @@ mc.addEventListener('pointerdown',e=>{e.preventDefault();
   mStat.sum+=score;
   mStat.pos+=pe;
   mStat.time+=te;
+  adUpdate('motion',score);
 
   $('#mN').textContent=mStat.n;
   $('#mScore').textContent=Math.round(mStat.sum/mStat.n)+'/100';
@@ -1048,7 +1113,7 @@ $('#motionSave').onclick=()=>{
 drawMotionBase();
 
 
-// TEMPORAL ANTICIPATION V5.1
+// TEMPORAL ANTICIPATION V5.5
 const tc=$('#timingCanvas'),tx=tc.getContext('2d');
 let tm={errors:[],running:false,answerAt:0,raf:null,timer:null,sessionEnd:0,sessionTimer:null,mode:'ttc',difficulty:1,current:null};
 
@@ -1120,7 +1185,9 @@ function tmMotionFeedback(clickNow, err){
 }
 
 function tmRecord(err, clickNow=performance.now()){
-  tm.errors.push(err);tm.running=false;$('#timingRespond').disabled=true;tmStats();
+  tm.errors.push(err);
+  const trialScore=Math.max(0,Math.round(100-Math.min(100,Math.abs(err)/7)));
+  adUpdate('timing',trialScore);tm.running=false;$('#timingRespond').disabled=true;tmStats();
   cancelAnimationFrame(tm.raf);
   tmMotionFeedback(clickNow,err);
   const a=Math.abs(err);
@@ -1131,7 +1198,7 @@ function tmRecord(err, clickNow=performance.now()){
 }
 function tmStart(){
   cancelAnimationFrame(tm.raf);clearTimeout(tm.timer);tmBase();
-  tm.mode=$('#timingMode').value;tm.running=true;$('#timingRespond').disabled=false;
+  tm.mode=$('#timingMode').value;tm.running=true;tm.difficulty=Math.max(tm.difficulty,1+(adLevel('timing')-1)*.65);$('#timingRespond').disabled=false;
   const now=performance.now();
   const mode=tm.mode;
   tm.current=null;
@@ -1225,281 +1292,505 @@ $('#timingSave').onclick=()=>{
 
 
 
-// BIMANUAL DEXTERITY V5.1
-let bi={mode:'dualTap',running:false,quickEnd:0,hits:0,errors:0,leftRts:[],rightRts:[],trial:0,total:14,timers:[],raf:null,trackErrL:0,trackErrR:0,trackSamples:0};
-const biStage=$('#biStage');
-function biMean(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:0}
-function biLater(fn,ms){const t=setTimeout(fn,ms);bi.timers.push(t);return t}
-function biClear(){bi.timers.forEach(clearTimeout);bi.timers=[];if(bi.raf)cancelAnimationFrame(bi.raf);bi.raf=null;biStage.querySelectorAll('.biTarget,.biHold').forEach(e=>e.remove());$('#biCenterText').textContent='—'}
-function biUpdate(){const l=biMean(bi.leftRts),r=biMean(bi.rightRts),acc=(bi.hits+bi.errors)?bi.hits/(bi.hits+bi.errors):0,as=(l&&r)?Math.abs(l-r):0,sp=(l||r)?Math.max(0,1-((l+r)/(l&&r?2:1)-300)/1200):0,bal=(l&&r)?Math.max(0,1-as/700):.5,score=Math.round((acc*.55+sp*.25+bal*.20)*100);$('#biHits').textContent=bi.hits;$('#biErrors').textContent=bi.errors;$('#biLeftRt').textContent=l?Math.round(l)+' ms':'—';$('#biRightRt').textContent=r?Math.round(r)+' ms':'—';$('#biAsym').textContent=(l&&r)?Math.round(as)+' ms':'—';$('#biScore').textContent=(bi.hits+bi.errors)?score+'/100':'—'}
-function biReset(){bi.hits=0;bi.errors=0;bi.leftRts=[];bi.rightRts=[];bi.trial=0;biUpdate()}
-function biPos(side){const w=biStage.clientWidth,h=biStage.clientHeight,half=w/2,pad=48;return{x:side==='L'?(pad+Math.random()*Math.max(20,half-pad*2)):(half+pad+Math.random()*Math.max(20,half-pad*2)),y:pad+Math.random()*Math.max(20,h-pad*2)}}
-function biTarget(side,label='●'){const p=biPos(side),e=document.createElement('div');e.className='biTarget';e.textContent=label;e.style.left=(p.x-36)+'px';e.style.top=(p.y-36)+'px';biStage.appendChild(e);return e}
-function biRec(side,rt,ok=true){if(ok){bi.hits++;if(rt>0)(side==='L'?bi.leftRts:bi.rightRts).push(rt)}else bi.errors++;biUpdate()}
-function biFinish(){bi.running=false;biClear();$('#biCenterText').textContent='✓';const l=biMean(bi.leftRts),r=biMean(bi.rightRts);$('#biFeedback').innerHTML='<b>Sessão concluída.</b> '+bi.hits+' acertos · '+bi.errors+' erros'+(l&&r?' · assimetria '+Math.round(Math.abs(l-r))+' ms':'')+'.'}
-function biContinue(ms=650){if(!bi.running)return;if((bi.quickEnd&&Date.now()>=bi.quickEnd)||(!bi.quickEnd&&bi.trial>=bi.total)){biFinish();return}biLater(biNext,ms)}
-function biNext(){if(!bi.running)return;biClear();bi.mode=$('#biMode').value;bi.trial++;({dualTap:biDualTap,sideReaction:biSideReaction,dualSequence:biDualSequence,holdTap:biHoldTap,dualTracking:biDualTracking,mirror:()=>biDirectional(true),opposite:()=>biDirectional(false),inhibition:biInhibition,rhythm:biRhythm,balanceTap:biBalanceTap}[bi.mode]||biDualTap)()}
-
-function biDualTap(){$('#biFeedback').textContent='Toca nos dois alvos o mais próximo possível no tempo.';$('#biCenterText').textContent='AGUARDA…';biLater(()=>{$('#biCenterText').textContent='';const L=biTarget('L','L'),R=biTarget('R','R'),st=performance.now();let a=false,b=false,tL=0,tR=0;const hit=(s,e)=>{e.preventDefault();const rt=performance.now()-st;if(s==='L'&&!a){a=true;tL=rt;L.classList.add('good');biRec('L',rt)}if(s==='R'&&!b){b=true;tR=rt;R.classList.add('good');biRec('R',rt)}if(a&&b){$('#biFeedback').innerHTML='<b>Diferença entre mãos:</b> '+Math.round(Math.abs(tL-tR))+' ms.';biContinue(750)}};L.addEventListener('pointerdown',e=>hit('L',e),{once:true});R.addEventListener('pointerdown',e=>hit('R',e),{once:true})},600+Math.random()*1200)}
-
-function biSideReaction(){$('#biFeedback').textContent='Toca apenas no alvo com a mão do mesmo lado.';$('#biCenterText').textContent='AGUARDA…';biLater(()=>{const s=Math.random()<.5?'L':'R';$('#biCenterText').textContent='';const T=biTarget(s,s==='L'?'←':'→'),st=performance.now();T.addEventListener('pointerdown',e=>{e.preventDefault();biRec(s,performance.now()-st);T.classList.add('good');biContinue(500)},{once:true})},650+Math.random()*1300)}
-
-function biDualSequence(){$('#biFeedback').textContent='Completa 1→2→3 à esquerda e A→B→C à direita.';$('#biCenterText').textContent='';let iL=0,iR=0,st=performance.now();['1','2','3'].forEach((lab,i)=>{const t=biTarget('L',lab);t.addEventListener('pointerdown',e=>{e.preventDefault();if(i===iL){iL++;bi.hits++;t.classList.add('good');if(iL===3)bi.leftRts.push(performance.now()-st)}else{bi.errors++;t.classList.add('bad')}biUpdate();if(iL===3&&iR===3)biContinue(650)})});['A','B','C'].forEach((lab,i)=>{const t=biTarget('R',lab);t.addEventListener('pointerdown',e=>{e.preventDefault();if(i===iR){iR++;bi.hits++;t.classList.add('good');if(iR===3)bi.rightRts.push(performance.now()-st)}else{bi.errors++;t.classList.add('bad')}biUpdate();if(iL===3&&iR===3)biContinue(650)})})}
-
-function biHoldTap(){$('#biFeedback').textContent='Mantém o quadrado esquerdo pressionado enquanto respondes aos alvos da direita.';$('#biCenterText').textContent='';const h=document.createElement('div');h.className='biHold';h.textContent='MANTÉM';h.style.left='18%';h.style.top='calc(50% - 46px)';biStage.appendChild(h);let holding=false,n=4;h.addEventListener('pointerdown',e=>{e.preventDefault();holding=true;h.setPointerCapture?.(e.pointerId)});h.addEventListener('pointerup',()=>{if(n>0){holding=false;bi.errors++;biUpdate()}});function spawn(){if(n<=0){if(holding){bi.hits++;biUpdate()}biContinue();return}const t=biTarget('R','●'),st=performance.now();t.addEventListener('pointerdown',e=>{e.preventDefault();if(holding)biRec('R',performance.now()-st);else{bi.errors++;biUpdate()}t.remove();n--;biLater(spawn,300+Math.random()*500)},{once:true})}biLater(spawn,500)}
-
-function biDualTracking(){$('#biFeedback').textContent='Mantém um dedo sobre cada alvo móvel durante 6 segundos.';$('#biCenterText').textContent='';const L=biTarget('L'),R=biTarget('R');let pL=null,pR=null,start=performance.now(),last=start;const read=(s,e)=>{e.preventDefault();const r=biStage.getBoundingClientRect(),p={x:e.clientX-r.left,y:e.clientY-r.top};if(s==='L')pL=p;else pR=p};['pointerdown','pointermove'].forEach(ev=>{L.addEventListener(ev,e=>read('L',e));R.addEventListener(ev,e=>read('R',e))});function f(now){const t=(now-start)/1000,w=biStage.clientWidth,h=biStage.clientHeight,posL={x:w*.25+Math.sin(t*1.7)*70,y:h*.5+Math.cos(t*1.25)*75},posR={x:w*.75+Math.cos(t*1.55)*70,y:h*.5+Math.sin(t*1.35)*75};L.style.left=(posL.x-36)+'px';L.style.top=(posL.y-36)+'px';R.style.left=(posR.x-36)+'px';R.style.top=(posR.y-36)+'px';if(pL)bi.trackErrL+=Math.hypot(pL.x-posL.x,pL.y-posL.y);if(pR)bi.trackErrR+=Math.hypot(pR.x-posR.x,pR.y-posR.y);bi.trackSamples++;if(t<6)bi.raf=requestAnimationFrame(f);else{const eL=bi.trackErrL/Math.max(1,bi.trackSamples),eR=bi.trackErrR/Math.max(1,bi.trackSamples);if(eL<90)bi.hits++;else bi.errors++;if(eR<90)bi.hits++;else bi.errors++;bi.leftRts.push(eL*10);bi.rightRts.push(eR*10);biUpdate();$('#biFeedback').innerHTML='<b>Erro médio:</b> esquerda '+Math.round(eL)+' px · direita '+Math.round(eR)+' px.';bi.trackErrL=bi.trackErrR=bi.trackSamples=0;biContinue(800)}}bi.raf=requestAnimationFrame(f)}
-
-function biDirectional(mirror){$('#biFeedback').textContent=mirror?'Toca na mesma direção dos dois lados.':'Toca em direções opostas.';$('#biCenterText').textContent='';const dirs=['↑','↓'],p=Math.random()<.5?0:1,L=biTarget('L',dirs[p]),R=biTarget('R',mirror?dirs[p]:dirs[1-p]),st=performance.now();let a=false,b=false,tL=0,tR=0;const hit=(s,e)=>{e.preventDefault();const rt=performance.now()-st;if(s==='L'&&!a){a=true;tL=rt;biRec('L',rt)}if(s==='R'&&!b){b=true;tR=rt;biRec('R',rt)}if(a&&b){$('#biFeedback').innerHTML='<b>Sincronia:</b> '+Math.round(Math.abs(tL-tR))+' ms.';biContinue()}};L.addEventListener('pointerdown',e=>hit('L',e),{once:true});R.addEventListener('pointerdown',e=>hit('R',e),{once:true})}
-
-function biInhibition(){$('#biFeedback').textContent='VERDE = toca. VERMELHO = não toques. Cada lado é independente.';$('#biCenterText').textContent='';let done=0;['L','R'].forEach(s=>{const go=Math.random()<.65,t=biTarget(s,go?'✓':'✕');t.style.background=go?'#dcfce7':'#fee2e2';const st=performance.now();let responded=false,finish=()=>{done++;if(done===2)biContinue(550)};t.addEventListener('pointerdown',e=>{e.preventDefault();responded=true;if(go)biRec(s,performance.now()-st);else{bi.errors++;biUpdate()}finish()},{once:true});biLater(()=>{if(!responded){if(!go){bi.hits++;biUpdate()}else{bi.errors++;biUpdate()}finish()}},1050)})}
-
-function biRhythm(){$('#biFeedback').textContent='Alterna esquerda-direita mantendo um ritmo regular: 10 toques.';$('#biCenterText').textContent='L ↔ R';let exp='L',count=0,last=0,ints=[];const press=(s,e)=>{e.preventDefault();const now=performance.now();if(s!==exp){bi.errors++;biUpdate();return}if(last)ints.push(now-last);last=now;bi.hits++;biUpdate();count++;exp=exp==='L'?'R':'L';if(count>=10){const m=biMean(ints),sd=Math.sqrt(biMean(ints.map(x=>(x-m)*(x-m))));$('#biFeedback').innerHTML='<b>Regularidade:</b> '+Math.round(m)+' ms entre toques · variação '+Math.round(sd)+' ms.';cleanup();biContinue(650)}};const l=e=>press('L',e),r=e=>press('R',e),cleanup=()=>{$('#biLeftZone').removeEventListener('pointerdown',l);$('#biRightZone').removeEventListener('pointerdown',r)};$('#biLeftZone').addEventListener('pointerdown',l);$('#biRightZone').addEventListener('pointerdown',r);biLater(cleanup,9000)}
-
-function biBalanceTap(){$('#biFeedback').textContent='Mantém a atenção no centro enquanto respondes alternadamente aos alvos laterais.';$('#biCenterText').textContent='CENTRO';const c=document.createElement('div');c.className='biHold';c.style.left='calc(50% - 46px)';c.style.top='calc(50% - 46px)';c.textContent='ESTÁVEL';biStage.appendChild(c);let n=6,s='L';function spawn(){if(n<=0){biContinue();return}const t=biTarget(s),st=performance.now();t.addEventListener('pointerdown',e=>{e.preventDefault();biRec(s,performance.now()-st);t.remove();s=s==='L'?'R':'L';n--;biLater(spawn,250+Math.random()*400)},{once:true})}biLater(spawn,450)}
-
-$('#biStart').onclick=()=>{bi.running=true;bi.quickEnd=0;biReset();biClear();biNext()};
-$('#biSession').onclick=()=>{bi.running=true;bi.quickEnd=Date.now()+10*60*1000;biReset();biClear();biNext();$('#biFeedback').innerHTML='<b>Sessão automática de 10 minutos iniciada.</b>'};
-$('#biStop').onclick=()=>biFinish();
-$('#biSave').onclick=()=>{if(!(bi.hits+bi.errors))return;const l=biMean(bi.leftRts),r=biMean(bi.rightRts),acc=bi.hits/(bi.hits+bi.errors),as=(l&&r)?Math.abs(l-r):0,sp=(l||r)?Math.max(0,1-((l+r)/(l&&r?2:1)-300)/1200):0,bal=(l&&r)?Math.max(0,1-as/700):.5,score=Math.round((acc*.55+sp*.25+bal*.20)*100);addHistory('Destreza bimanual',score,bi.hits+' acertos · '+bi.errors+' erros'+(l&&r?' · assimetria '+Math.round(as)+' ms':''))};
-
-// GYROSCOPE / MOTION TRAINING V5.1
-let gy={
-  enabled:false, mode:'lr', beta:0, gamma:0, baseBeta:0, baseGamma:0,
-  waiting:false, target:null, stimAt:0, hits:0, errors:0, rts:[], count:0, total:12,
-  timer:null, quickEnd:0, lastMoveAt:0
+// PERIPHERAL / ATENÇÃO DIVIDIDA
+let ph={
+  i:0,
+  centerCorrect:0,
+  centerErrors:0,
+  sideCorrect:0,
+  sideErrors:0,
+  sideEvents:0,
+  sideTimes:[],
+  number:0,
+  side:null,
+  sideStart:0,
+  sideTimer:null,
+  eventTimer:null,
+  centerAnswered:false,
+  sideAnswered:false,
+  active:false,
+  score:null
 };
 
-function gyUpdateStats(){
-  $('#gyHits').textContent=gy.hits;
-  $('#gyErr').textContent=gy.errors;
-  const avg=gy.rts.length?Math.round(gy.rts.reduce((a,b)=>a+b,0)/gy.rts.length):null;
-  $('#gyRt').textContent=avg?avg+' ms':'—';
-  const acc=(gy.hits+gy.errors)?gy.hits/(gy.hits+gy.errors):0;
-  const speed=avg?Math.max(0,1-(avg-250)/1200):0;
-  const score=Math.round((acc*.7+speed*.3)*100);
-  $('#gyScore').textContent=(gy.hits+gy.errors)?score+'/100':'—';
+function periphNext(){
+  if(ph.i>=20){periphFinish();return}
+
+  clearTimeout(ph.sideTimer);
+  clearTimeout(ph.eventTimer);
+
+  ph.number=Math.floor(Math.random()*10);
+  ph.centerAnswered=false;
+  ph.sideAnswered=false;
+  ph.active=true;
+  ph.side=null;
+
+  $('#centerTask .symbol').textContent=ph.number;
+  $('#leftSide').textContent='·';
+  $('#rightSide').textContent='·';
+  $('#periphMsg').textContent='Responde PAR/ÍMPAR mantendo os olhos no centro. Se surgir uma seta lateral, responde também ao lado.';
+
+  // Cerca de 70% dos eventos têm estímulo periférico.
+  const lv=adLevel('periph');const hasSide=Math.random()<Math.min(.95,.62+lv*.035);
+  if(hasSide){
+    ph.sideEvents++;
+    setTimeout(()=>{
+      if(!ph.active) return;
+      ph.side=Math.random()<0.5?'L':'R';
+      ph.sideStart=performance.now();
+      if(ph.side==='L'){
+        $('#leftSide').textContent='←';
+      } else {
+        $('#rightSide').textContent='→';
+      }
+
+      ph.sideTimer=setTimeout(()=>{
+        if(ph.active && !ph.sideAnswered){
+          ph.sideErrors++;
+          ph.sideAnswered=true;
+          maybeFinishPeriphEvent();
+        }
+      },Math.max(480,1200-lv*70));
+    },Math.max(120,360-lv*22)+Math.random()*Math.max(180,520-lv*25));
+  } else {
+    ph.sideAnswered=true;
+  }
+
+  // Limite total por evento.
+  ph.eventTimer=setTimeout(()=>{
+    if(!ph.centerAnswered){
+      ph.centerErrors++;
+      ph.centerAnswered=true;
+    }
+    if(hasSide && !ph.sideAnswered){
+      ph.sideErrors++;
+      ph.sideAnswered=true;
+    }
+    maybeFinishPeriphEvent();
+  },Math.max(850,1950-lv*95));
 }
+
+function periphCenterPress(kind){
+  if(!ph.active || ph.centerAnswered) return;
+  const correct=(ph.number%2===0 && kind==='even') || (ph.number%2!==0 && kind==='odd');
+  if(correct) ph.centerCorrect++;
+  else ph.centerErrors++;
+  ph.centerAnswered=true;
+  maybeFinishPeriphEvent();
+}
+
+function periphSidePress(side){
+  if(!ph.active) return;
+
+  if(ph.side===null){
+    ph.sideErrors++;
+    return;
+  }
+
+  if(ph.sideAnswered) return;
+
+  ph.sideTimes.push(performance.now()-ph.sideStart);
+  if(side===ph.side) ph.sideCorrect++;
+  else ph.sideErrors++;
+
+  ph.sideAnswered=true;
+  clearTimeout(ph.sideTimer);
+  maybeFinishPeriphEvent();
+}
+
+function maybeFinishPeriphEvent(){
+  if(!ph.active) return;
+  if(!ph.centerAnswered || !ph.sideAnswered) return;
+
+  ph.active=false;
+  clearTimeout(ph.sideTimer);
+  clearTimeout(ph.eventTimer);
+
+  ph.i++;
+
+  $('#leftSide').textContent='·';
+  $('#rightSide').textContent='·';
+
+  setTimeout(periphNext,250);
+}
+
+$('#evenBtn').onclick=()=>periphCenterPress('even');
+$('#oddBtn').onclick=()=>periphCenterPress('odd');
+$('#leftBtn').onclick=()=>periphSidePress('L');
+$('#rightBtn').onclick=()=>periphSidePress('R');
+
+$('#periphStart').onclick=()=>{
+  ph={
+    i:0,
+    centerCorrect:0,
+    centerErrors:0,
+    sideCorrect:0,
+    sideErrors:0,
+    sideEvents:0,
+    sideTimes:[],
+    number:0,
+    side:null,
+    sideStart:0,
+    sideTimer:null,
+    eventTimer:null,
+    centerAnswered:false,
+    sideAnswered:false,
+    active:false,
+    score:null
+  };
+  $('#phCenter').textContent='—';
+  $('#phSide').textContent='—';
+  $('#phTime').textContent='—';
+  $('#phScore').textContent='—';
+  periphNext();
+};
+
+function periphFinish(){
+  clearTimeout(ph.sideTimer);
+  clearTimeout(ph.eventTimer);
+  ph.active=false;
+
+  const avg=ph.sideTimes.length
+    ? Math.round(ph.sideTimes.reduce((a,b)=>a+b,0)/ph.sideTimes.length)
+    : 9999;
+
+  const centerRate=ph.centerCorrect/20;
+  const sideRate=ph.sideEvents ? ph.sideCorrect/ph.sideEvents : 0;
+
+  // Peso maior para exatidão, menor para velocidade.
+  const speedBonus = avg<9000 ? Math.max(0,1-(avg-300)/1000) : 0;
+  ph.score=Math.max(0,Math.min(100,Math.round(
+    centerRate*45 +
+    sideRate*40 +
+    speedBonus*15 -
+    Math.min(15,ph.sideErrors*1.5)
+  )));
+
+  $('#phCenter').textContent=ph.centerCorrect+'/20';
+  $('#phSide').textContent=ph.sideCorrect+'/'+ph.sideEvents;
+  $('#phTime').textContent=(avg<9000?avg+' ms':'—');
+  $('#phScore').textContent=ph.score+'/100';
+
+  adUpdate('periph',ph.score);
+  $('#periphMsg').innerHTML=
+    '<b>Fim · '+adLabel('periph')+'.</b> Centro: '+ph.centerCorrect+'/20 · Periferia: '+ph.sideCorrect+'/'+ph.sideEvents+
+    (avg<9000?' · tempo lateral médio '+avg+' ms':'');
+}
+
+$('#periphSave').onclick=()=>{
+  if(ph.score==null) return alert('Conclui o treino primeiro.');
+  addHistory(
+    'Periférica',
+    ph.score,
+    'Centro '+ph.centerCorrect+'/20 · periferia '+ph.sideCorrect+'/'+ph.sideEvents
+  );
+  alert('Guardado.');
+};
+
+// GYROSCOPE / DRIVING DUAL-TASK V5.5
+let gy={
+  enabled:false,running:false,beta:0,gamma:0,baseBeta:0,baseGamma:0,
+  duration:90000,endAt:0,startAt:0,last:0,raf:null,
+  carX:.5,roadOffset:0,roadCurve:0,roadPhase:0,
+  speed:0,baseSpeed:0,maxSpeed:0,
+  roadSamples:0,insideSamples:0,outEpisodes:0,wasOut:false,
+  hits:0,stimErrors:0,rts:[],stim:null,stimTimer:null,
+  score:null
+};
+const driveCanvas=$('#driveCanvas');
+const dctx=driveCanvas.getContext('2d');
+const driveSymbols={
+  circle:{char:'●',label:'círculo'},
+  triangle:{char:'▲',label:'triângulo'},
+  square:{char:'■',label:'quadrado'},
+  star:{char:'★',label:'estrela'}
+};
 
 function gyPermission(){
   const done=()=>{
     window.addEventListener('deviceorientation',e=>{
-      if(typeof e.beta==='number') gy.beta=e.beta;
-      if(typeof e.gamma==='number') gy.gamma=e.gamma;
-      gyCheck();
-      gyFollowUpdate();
-    });
+      if(typeof e.beta==='number')gy.beta=e.beta;
+      if(typeof e.gamma==='number')gy.gamma=e.gamma;
+    },true);
     gy.enabled=true;
-    gy.baseBeta=gy.beta; gy.baseGamma=gy.gamma;
-    $('#gyroStart').disabled=false;
-    $('#gyroSupport').innerHTML='<b>Sensores ativos.</b> Mantém o dispositivo aproximadamente na posição atual para começar.';
-    $('#gyroPermission').textContent='Sensores ativos';
-    $('#gyroPermission').disabled=true;
+    gy.baseBeta=gy.beta;gy.baseGamma=gy.gamma;
+    $('#gyroStart').disabled=false;$('#gyroQuick').disabled=false;$('#gyroCalibrate').disabled=false;
+    $('#gyroPermission').disabled=true;$('#gyroPermission').textContent='Sensores ativos';
+    $('#gyroSupport').innerHTML='<b>Sensores ativos.</b> Apoia o iPad, mantém-no em horizontal e toca em <b>Calibrar centro</b>.';
+    gyDraw(performance.now());
   };
-
   try{
-    if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
+    if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
       DeviceOrientationEvent.requestPermission().then(state=>{
-        if(state==='granted') done();
-        else $('#gyroSupport').innerHTML='<b>Permissão não concedida.</b> No iPhone/iPad, autoriza o acesso aos sensores para usar este módulo.';
+        if(state==='granted')done();
+        else $('#gyroSupport').innerHTML='<b>Permissão não concedida.</b> Autoriza o acesso ao movimento no Safari.';
       }).catch(()=>$('#gyroSupport').textContent='Não foi possível ativar os sensores.');
-    } else if('DeviceOrientationEvent' in window){
-      done();
-    } else {
-      $('#gyroSupport').innerHTML='<b>Este dispositivo/navegador não disponibiliza orientação.</b> Usa Safari num iPhone/iPad compatível.';
-    }
-  }catch(e){
-    $('#gyroSupport').textContent='Erro ao pedir acesso aos sensores.';
-  }
+    }else if('DeviceOrientationEvent' in window){done()}
+    else $('#gyroSupport').innerHTML='<b>Orientação não disponível.</b> Usa Safari num iPad/iPhone compatível.';
+  }catch(e){$('#gyroSupport').textContent='Erro ao ativar os sensores.'}
 }
 $('#gyroPermission').onclick=gyPermission;
 
-function gyDelta(){
-  return {x:gy.gamma-gy.baseGamma, y:gy.beta-gy.baseBeta};
+function gyCalibrate(){
+  gy.baseBeta=gy.beta;gy.baseGamma=gy.gamma;gy.carX=.5;
+  $('#gyroSupport').innerHTML='<b>Centro calibrado.</b> Inclina ligeiramente o iPad para dirigir.';
 }
-function gyDirFromDelta(){
-  const d=gyDelta(), ax=Math.abs(d.x), ay=Math.abs(d.y), th=10;
-  if(ax<th && ay<th)return null;
-  if(ax>=ay)return d.x<0?'L':'R';
-  return d.y<0?'U':'D';
+$('#gyroCalibrate').onclick=gyCalibrate;
+
+function gyRoadCenter(y,t){
+  const prog=1-y/driveCanvas.height;
+  const a=Math.sin(gy.roadPhase + prog*2.2)*gy.roadCurve;
+  const b=Math.sin(gy.roadPhase*.47 + prog*4.4)*gy.roadCurve*.34;
+  return driveCanvas.width*.5 + a+b;
 }
-function gyCheck(){
-  if(!gy.enabled||!gy.waiting)return;
-  const mode=gy.mode;
-  if(mode==='stability'||mode==='follow')return;
-  const dir=gyDirFromDelta();
-  if(!dir)return;
+function gyRoadHalf(y){
+  const perspective=.44+.56*(y/driveCanvas.height);
+  return (120+110*perspective);
+}
+function gyCarPX(){return gy.carX*driveCanvas.width}
 
-  const now=performance.now();
-  if(now-gy.lastMoveAt<350)return;
-  gy.lastMoveAt=now;
+function gyDraw(now){
+  const W=driveCanvas.width,H=driveCanvas.height;
+  dctx.clearRect(0,0,W,H);
 
-  if(mode==='gonogo' && gy.target==='NO'){
-    gy.errors++;
-    gy.waiting=false;
-    $('#gyroFeedback').innerHTML='<b>Erro:</b> mexeste num estímulo No-Go.';
-    gyUpdateStats();
-    setTimeout(gyNext,650);
-    return;
+  // terrain
+  dctx.fillStyle='#315f32';dctx.fillRect(0,0,W,H);
+
+  // road polygon
+  const left=[],right=[];
+  for(let y=0;y<=H;y+=8){
+    const c=gyRoadCenter(y,now),half=gyRoadHalf(y);
+    left.push([c-half,y]);right.push([c+half,y]);
+  }
+  dctx.beginPath();
+  dctx.moveTo(left[0][0],left[0][1]);
+  left.forEach(p=>dctx.lineTo(p[0],p[1]));
+  right.reverse().forEach(p=>dctx.lineTo(p[0],p[1]));
+  dctx.closePath();dctx.fillStyle='#50555c';dctx.fill();
+
+  // edge lines
+  dctx.strokeStyle='#f8fafc';dctx.lineWidth=7;
+  [left,right.reverse()].forEach(arr=>{
+    dctx.beginPath();arr.forEach((p,i)=>i?dctx.lineTo(p[0],p[1]):dctx.moveTo(p[0],p[1]));dctx.stroke();
+  });
+
+  // dashed center line scrolling with speed
+  dctx.strokeStyle='#facc15';dctx.lineWidth=5;dctx.setLineDash([24,28]);
+  dctx.lineDashOffset=-(gy.roadOffset%52);
+  dctx.beginPath();
+  for(let y=0;y<=H;y+=7){
+    const c=gyRoadCenter(y,now);
+    if(y===0)dctx.moveTo(c,y);else dctx.lineTo(c,y);
+  }
+  dctx.stroke();dctx.setLineDash([]);
+
+  // road-side markers create stronger sensation of speed
+  const spacing=70;
+  const off=gy.roadOffset%spacing;
+  for(let y=-spacing+off;y<H;y+=spacing){
+    const c=gyRoadCenter(y,now),h=gyRoadHalf(y);
+    dctx.fillStyle='#e2e8f0';
+    dctx.fillRect(c-h-18,y,8,24);
+    dctx.fillRect(c+h+10,y,8,24);
   }
 
-  if(dir===gy.target){
-    gy.hits++;
-    gy.rts.push(now-gy.stimAt);
-    gy.waiting=false;
-    $('#gyroFeedback').innerHTML='<b>Certo.</b> '+Math.round(now-gy.stimAt)+' ms. Volta ao centro.';
-  }else{
-    gy.errors++;
-    gy.waiting=false;
-    $('#gyroFeedback').innerHTML='<b>Direção errada.</b> Volta ao centro.';
+  // car
+  const carY=H-82,x=gyCarPX();
+  dctx.save();dctx.translate(x,carY);
+  dctx.fillStyle='#facc15';dctx.strokeStyle='#111827';dctx.lineWidth=4;
+  dctx.beginPath();dctx.roundRect(-30,-48,60,90,12);dctx.fill();dctx.stroke();
+  dctx.fillStyle='#1f2937';dctx.fillRect(-20,-30,40,28);
+  dctx.fillStyle='#111827';dctx.fillRect(-36,-26,8,24);dctx.fillRect(28,-26,8,24);dctx.fillRect(-36,18,8,24);dctx.fillRect(28,18,8,24);
+  dctx.restore();
+
+  if(!gy.running){
+    dctx.fillStyle='rgba(15,23,42,.62)';dctx.fillRect(0,H*.40,W,H*.18);
+    dctx.fillStyle='white';dctx.font='700 34px system-ui';dctx.textAlign='center';
+    dctx.fillText(gy.enabled?'CALIBRA E INICIA':'ATIVA OS SENSORES',W/2,H*.51);
   }
-  gyUpdateStats();
-  setTimeout(gyNext,650);
 }
 
-function gyNext(){
-  if(gy.quickEnd && Date.now()>=gy.quickEnd){gyFinish();return}
-  if(!gy.quickEnd && gy.count>=gy.total){gyFinish();return}
-
-  gy.mode=$('#gyroMode').value;
-  gy.baseBeta=gy.beta; gy.baseGamma=gy.gamma;
-  gy.count++;
-
-  if(gy.mode==='stability'){gyStability();return}
-  if(gy.mode==='follow'){gyFollowStart();return}
-
-  const dirs=gy.mode==='lr'?['L','R']:['L','R','U','D'];
-  if(gy.mode==='gonogo' && Math.random()<.28){
-    gy.target='NO';
-    $('#gyroStimulus').textContent='●';
-    $('#gyroStimulus').style.color='#ef4444';
-  }else{
-    gy.target=dirs[Math.floor(Math.random()*dirs.length)];
-    const sym={L:'←',R:'→',U:'↑',D:'↓'}[gy.target];
-    $('#gyroStimulus').textContent=sym;
-    $('#gyroStimulus').style.color='';
-  }
-
-  gy.waiting=false;
-  $('#gyroFeedback').textContent='AGUARDA…';
-  clearTimeout(gy.timer);
-  gy.timer=setTimeout(()=>{
-    gy.stimAt=performance.now();
-    gy.waiting=true;
-    $('#gyroFeedback').textContent=gy.target==='NO'?'NÃO MEXAS.':'MOVE!';
-    if(gy.target==='NO'){
-      setTimeout(()=>{
-        if(gy.waiting){
-          gy.hits++;gy.waiting=false;gyUpdateStats();
-          $('#gyroFeedback').innerHTML='<b>Certo:</b> não mexeste.';
-          setTimeout(gyNext,500);
-        }
-      },1100);
-    }
-  },700+Math.random()*1600);
-}
-
-function gyStability(){
-  $('#gyroStimulus').textContent='MANTÉM';
-  $('#gyroBall').style.display='block';
-  $('#gyroTarget').style.display='block';
-  let start=performance.now(), bad=0, samples=0;
-  function sample(){
-    if(gy.mode!=='stability')return;
-    const d=gyDelta(),dist=Math.hypot(d.x,d.y);samples++;
-    if(dist>6)bad++;
-    const b=$('#gyroBall');
-    b.style.left='calc(50% - 17px + '+Math.max(-120,Math.min(120,d.x*4))+'px)';
-    b.style.top='calc(50% - 17px + '+Math.max(-120,Math.min(120,d.y*4))+'px)';
-    if(performance.now()-start<5000) requestAnimationFrame(sample);
-    else{
-      $('#gyroBall').style.display='none';$('#gyroTarget').style.display='none';
-      const ok=bad/samples<.2;
-      if(ok)gy.hits++;else gy.errors++;
+function gySpawnStim(){
+  if(!gy.running)return;
+  clearTimeout(gy.stimTimer);
+  if(gy.stim)return;
+  const keys=Object.keys(driveSymbols),key=keys[Math.floor(Math.random()*keys.length)];
+  gy.stim={key,at:performance.now()};
+  const box=$('#driveStim');box.textContent=driveSymbols[key].char;box.style.display='block';
+  const lv=adLevel('gyro');
+  const deadline=Math.max(620,1450-lv*55-Math.min(300,(gy.speed-55)*4));
+  gy.stimTimer=setTimeout(()=>{
+    if(gy.stim){
+      gy.stimErrors++;
+      gy.stim=null;box.style.display='none';
       gyUpdateStats();
-      $('#gyroFeedback').innerHTML='<b>Estabilidade:</b> '+Math.round((1-bad/samples)*100)+'% dentro da zona.';
-      setTimeout(gyNext,650);
+      gyScheduleStim();
     }
-  } sample();
+  },deadline);
 }
+function gyScheduleStim(){
+  if(!gy.running)return;
+  clearTimeout(gy.stimTimer);
+  const lv=adLevel('gyro');
+  const elapsed=(performance.now()-gy.startAt)/1000;
+  const wait=Math.max(650,2100-lv*70-Math.min(700,elapsed*8))+Math.random()*650;
+  gy.stimTimer=setTimeout(gySpawnStim,wait);
+}
+document.querySelectorAll('.driveResp').forEach(b=>b.addEventListener('pointerdown',()=>{
+  if(!gy.running)return;
+  const key=b.dataset.drive;
+  if(!gy.stim){gy.stimErrors++;gyUpdateStats();return}
+  const rt=performance.now()-gy.stim.at;
+  if(key===gy.stim.key){gy.hits++;gy.rts.push(rt)}
+  else gy.stimErrors++;
+  gy.stim=null;$('#driveStim').style.display='none';clearTimeout(gy.stimTimer);
+  gyUpdateStats();gyScheduleStim();
+}));
 
-function gyFollowStart(){
-  $('#gyroStimulus').textContent='SEGUE';
-  $('#gyroBall').style.display='block';
-  $('#gyroTarget').style.display='block';
-  gy.followStart=performance.now();gy.followError=0;gy.followSamples=0;
-  gy.followTarget={x:(Math.random()*2-1)*70,y:(Math.random()*2-1)*70};
-  const t=$('#gyroTarget');
-  t.style.left='calc(50% - 42px + '+gy.followTarget.x+'px)';
-  t.style.top='calc(50% - 42px + '+gy.followTarget.y+'px)';
-  $('#gyroFeedback').textContent='Inclina o dispositivo para levar a bola ao centro do alvo.';
-  setTimeout(()=>{
-    const avg=gy.followSamples?gy.followError/gy.followSamples:999;
-    if(avg<38)gy.hits++;else gy.errors++;
-    gyUpdateStats();
-    $('#gyroFeedback').innerHTML='<b>Precisão média:</b> '+Math.round(avg)+' px.';
-    $('#gyroBall').style.display='none';$('#gyroTarget').style.display='none';
-    setTimeout(gyNext,650);
-  },5000);
+function gyUpdateStats(){
+  const roadPct=gy.roadSamples?Math.round(gy.insideSamples/gy.roadSamples*100):0;
+  const avg=gy.rts.length?Math.round(gy.rts.reduce((a,b)=>a+b,0)/gy.rts.length):0;
+  const stimTotal=gy.hits+gy.stimErrors;
+  const stimAcc=stimTotal?gy.hits/stimTotal:1;
+  const rtScore=avg?Math.max(0,Math.min(1,1-(avg-450)/950)):.65;
+  const score=Math.max(0,Math.round(roadPct*.68+stimAcc*22+rtScore*10-Math.min(12,gy.outEpisodes*.35)));
+  gy.score=score;
+  $('#gyRoad').textContent=gy.roadSamples?roadPct+'%':'—';
+  $('#gyErr').textContent=gy.outEpisodes;
+  $('#gyHits').textContent=gy.hits+'/'+stimTotal;
+  $('#gyRt').textContent=avg?avg+' ms':'—';
+  $('#gySpeed').textContent=gy.running?Math.round(gy.speed)+' km/h':'—';
+  $('#gyScore').textContent=gy.roadSamples?score+'/100':'—';
+  $('#gyroLevel').textContent=adLevel('gyro')+'/10';
 }
-function gyFollowUpdate(){
-  if(gy.mode!=='follow'||!gy.followStart)return;
-  const d=gyDelta(), bx=Math.max(-120,Math.min(120,d.x*5)), by=Math.max(-120,Math.min(120,d.y*5));
-  const b=$('#gyroBall');
-  b.style.left='calc(50% - 17px + '+bx+'px)';
-  b.style.top='calc(50% - 17px + '+by+'px)';
-  const e=Math.hypot(bx-gy.followTarget.x,by-gy.followTarget.y);
-  gy.followError+=e;gy.followSamples++;
-}
+function gyLoop(now){
+  if(!gy.running)return;
+  if(now>=gy.endAt){gyFinish();return}
+  const dt=Math.min(.035,(now-gy.last)/1000||.016);gy.last=now;
+  const elapsed=(now-gy.startAt)/1000;
+  const lv=adLevel('gyro');
 
-function gyStart(){
-  if(!gy.enabled){$('#gyroSupport').textContent='Ativa primeiro os sensores de movimento.';return}
-  gy.quickEnd=0;gy.count=0;gy.hits=0;gy.errors=0;gy.rts=[];gyUpdateStats();
-  gyNext();
+  // speed rises continuously; higher adaptive levels start faster and climb faster
+  gy.speed=Math.min(gy.maxSpeed,gy.baseSpeed + elapsed*(0.42+lv*.035));
+  const speedFactor=gy.speed/70;
+  gy.roadOffset+=dt*220*speedFactor;
+  gy.roadPhase+=dt*(.23+.12*speedFactor);
+  gy.roadCurve=55 + lv*7 + Math.min(80,elapsed*.45);
+
+  // steering from iPad roll (gamma)
+  const steer=(gy.gamma-gy.baseGamma);
+  const sensitivity=.0056 + lv*.00016;
+  const desired=.5 + Math.max(-.42,Math.min(.42,steer*sensitivity*10));
+  gy.carX += (desired-gy.carX)*Math.min(1,dt*(5.2+lv*.16));
+  gy.carX=Math.max(.05,Math.min(.95,gy.carX));
+
+  // evaluate road keeping at car position
+  const carY=driveCanvas.height-82;
+  const center=gyRoadCenter(carY,now),half=gyRoadHalf(carY)-31;
+  const error=Math.abs(gyCarPX()-center);
+  const outside=error>half;
+  gy.roadSamples++;
+  if(!outside)gy.insideSamples++;
+  if(outside&&!gy.wasOut)gy.outEpisodes++;
+  gy.wasOut=outside;
+
+  gyDraw(now);
+  if(Math.floor(elapsed*5)!==Math.floor((elapsed-dt)*5))gyUpdateStats();
+  $('#driveStatus').textContent=Math.round(gy.speed)+' km/h · '+Math.max(0,Math.ceil((gy.endAt-now)/1000))+' s';
+  gy.raf=requestAnimationFrame(gyLoop);
+}
+function gyStartSession(ms){
+  if(!gy.enabled){$('#gyroSupport').textContent='Ativa primeiro os sensores.';return}
+  gyCalibrate();
+  clearTimeout(gy.stimTimer);if(gy.raf)cancelAnimationFrame(gy.raf);
+  const lv=adLevel('gyro');
+  gy.running=true;gy.duration=ms;gy.startAt=performance.now();gy.endAt=gy.startAt+ms;gy.last=gy.startAt;
+  gy.roadSamples=0;gy.insideSamples=0;gy.outEpisodes=0;gy.wasOut=false;gy.hits=0;gy.stimErrors=0;gy.rts=[];gy.score=null;gy.stim=null;gy.carX=.5;gy.roadPhase=0;gy.roadOffset=0;
+  gy.baseSpeed=42+lv*3.5;gy.maxSpeed=135+lv*7;
+  $('#driveStim').style.display='none';
+  $('#gyroFeedback').innerHTML='<b>Em andamento.</b> Mantém o carro na estrada e responde aos símbolos. A velocidade vai aumentar continuamente.';
+  gyUpdateStats();gyScheduleStim();gy.raf=requestAnimationFrame(gyLoop);
 }
 function gyFinish(){
-  clearTimeout(gy.timer);gy.waiting=false;
-  $('#gyroStimulus').textContent='✓';
-  $('#gyroFeedback').innerHTML='<b>Sessão concluída.</b> '+gy.hits+' acertos e '+gy.errors+' erros.';
+  if(!gy.running)return;
+  gy.running=false;clearTimeout(gy.stimTimer);if(gy.raf)cancelAnimationFrame(gy.raf);
+  gy.stim=null;$('#driveStim').style.display='none';gyDraw(performance.now());gyUpdateStats();
+  adUpdate('gyro',gy.score||0);
+  $('#gyroLevel').textContent=adLevel('gyro')+'/10';
+  const roadPct=gy.roadSamples?Math.round(gy.insideSamples/gy.roadSamples*100):0;
+  $('#gyroFeedback').innerHTML='<b>Sessão concluída · '+gy.score+'/100.</b> Estrada: '+roadPct+'% · '+gy.outEpisodes+' saídas · '+gy.hits+' estímulos corretos · '+gy.stimErrors+' erros. Próximo treino: '+adLabel('gyro')+'.';
 }
-$('#gyroStart').onclick=gyStart;
-$('#gyroQuick').onclick=()=>{
-  if(!gy.enabled){$('#gyroSupport').textContent='Ativa primeiro os sensores de movimento.';return}
-  gy.quickEnd=Date.now()+5*60*1000;gy.count=0;gy.hits=0;gy.errors=0;gy.rts=[];gyUpdateStats();gyNext();
-  $('#gyroFeedback').innerHTML='<b>Sessão rápida de 5 min iniciada.</b>';
-};
+$('#gyroStart').onclick=()=>gyStartSession(90000);
+$('#gyroQuick').onclick=()=>gyStartSession(5*60*1000);
+$('#gyroStop').onclick=()=>{if(gy.running)gyFinish()};
 $('#gyroSave').onclick=()=>{
-  if(!(gy.hits+gy.errors))return;
+  if(gy.score==null)return alert('Conclui primeiro um treino.');
   const avg=gy.rts.length?Math.round(gy.rts.reduce((a,b)=>a+b,0)/gy.rts.length):0;
-  const acc=gy.hits/(gy.hits+gy.errors);
-  const speed=avg?Math.max(0,1-(avg-250)/1200):0;
-  const score=Math.round((acc*.7+speed*.3)*100);
-  addHistory('Movimento / giroscópio',score,gy.hits+' acertos · '+gy.errors+' erros'+(avg?' · '+avg+' ms':''));
+  const roadPct=gy.roadSamples?Math.round(gy.insideSamples/gy.roadSamples*100):0;
+  addHistory('Condução psicomotora / giroscópio',gy.score,roadPct+'% na estrada · '+gy.outEpisodes+' saídas · '+gy.hits+' estímulos'+(avg?' · '+avg+' ms':''));
+  alert('Guardado.');
 };
+gyUpdateStats();gyDraw(performance.now());
 
 // REACTION
-let r={running:false,n:0,acc:0,err:0,times:[],timer:null,go:false,target:false,last:null};
-function reactionNext(){if(r.n>=12){reactionFinish();return}$('#reactionPad').className='';$('#reactionText').textContent='…';r.go=false;clearTimeout(r.timer);r.timer=setTimeout(()=>{const mode=$('#reactionMode').value;r.n++;let target=true,label='●',cls='go';if(mode==='selective'){target=Math.random()<.65;label=target?'●':'▲';cls=target?'go':'nogo'}if(mode==='nogo'){target=Math.random()<.7;label=target?'VERDE':'VERMELHO';cls=target?'go':'nogo'}r.target=target;r.go=true;r.last=performance.now();$('#reactionPad').classList.add(cls);$('#reactionText').textContent=label;if(!target){setTimeout(()=>{if(r.go){r.go=false;reactionNext()}},800)}},700+Math.random()*1500)}
+let r={running:false,n:0,acc:0,err:0,times:[],timer:null,deadline:null,go:false,target:false,last:null};
+function reactionNext(){
+  if(r.n>=12){reactionFinish();return}
+  $('#reactionPad').className='';$('#reactionText').textContent='…';r.go=false;
+  clearTimeout(r.timer);clearTimeout(r.deadline);
+  const lv=adLevel('reaction');
+  r.timer=setTimeout(()=>{
+    const mode=$('#reactionMode').value;r.n++;
+    let target=true,label='●',cls='go';
+    if(mode==='selective'){target=Math.random()<(0.78-lv*.025);label=target?'●':'▲';cls=target?'go':'nogo'}
+    if(mode==='nogo'){target=Math.random()<(0.82-lv*.025);label=target?'VERDE':'VERMELHO';cls=target?'go':'nogo'}
+    r.target=target;r.go=true;r.last=performance.now();
+    $('#reactionPad').classList.add(cls);$('#reactionText').textContent=label;
+    const deadline=Math.max(380,920-lv*55);
+    r.deadline=setTimeout(()=>{
+      if(!r.go)return;
+      if(target)r.err++;
+      r.go=false;reactionNext();
+    },target?deadline:Math.max(520,900-lv*30));
+  },Math.max(380,760-lv*25)+Math.random()*Math.max(500,1350-lv*60))
+}
 function reactionPress(){if(!r.running)return;if(!r.go){r.err++;return}if(r.target){r.acc++;r.times.push(performance.now()-r.last)}else r.err++;r.go=false;reactionNext()}
 $('#reactionPad').addEventListener('pointerdown',reactionPress);
 $('#reactionStart').onclick=()=>{r={running:true,n:0,acc:0,err:0,times:[],timer:null,go:false,target:false,last:null};reactionNext()}
-function reactionFinish(){r.running=false;clearTimeout(r.timer);const avg=r.times.length?Math.round(r.times.reduce((a,b)=>a+b,0)/r.times.length):9999,score=Math.max(0,Math.round((r.acc/12)*75+Math.max(0,1-(avg-250)/900)*25-r.err*3));$('#rAcc').textContent=r.acc+'/12';$('#rErr').textContent=r.err;$('#rTime').textContent=(avg<9000?avg+' ms':'—');$('#rScore').textContent=score+'/100';r.score=score;$('#reactionText').textContent='Fim';$('#reactionPad').className='';}
+function reactionFinish(){r.running=false;clearTimeout(r.timer);clearTimeout(r.deadline);const avg=r.times.length?Math.round(r.times.reduce((a,b)=>a+b,0)/r.times.length):9999,score=Math.max(0,Math.round((r.acc/12)*75+Math.max(0,1-(avg-250)/900)*25-r.err*3));$('#rAcc').textContent=r.acc+'/12';$('#rErr').textContent=r.err;$('#rTime').textContent=(avg<9000?avg+' ms':'—');$('#rScore').textContent=score+'/100';r.score=score;$('#reactionText').textContent='Fim · '+adLabel('reaction');$('#reactionPad').className='';adUpdate('reaction',score);}
 $('#reactionSave').onclick=()=>{if(r.score==null)return alert('Conclui o treino primeiro.');addHistory('Reação',r.score,r.acc+'/12 · '+Math.round((r.times.reduce((a,b)=>a+b,0)/(r.times.length||1)))+' ms');alert('Guardado.')};
 
 // SEARCH
 let sh={q:0,acc:0,times:[],start:0,score:null};
-function searchQuestion(){if(sh.q>=15){searchFinish();return}const mode=$('#searchMode').value,g=$('#searchGrid');g.innerHTML='';let target;if(mode==='numbers'){target=10+Math.floor(Math.random()*890);$('#searchTarget').textContent=target;let vals=new Set([target]);while(vals.size<35)vals.add(10+Math.floor(Math.random()*890));[...vals].sort(()=>Math.random()-.5).forEach(v=>{let b=document.createElement('button');b.textContent=v;b.onclick=()=>searchPick(v===target);g.appendChild(b)})}else{const sy=['▲','●','■','◆','✚','★'];target=sy[Math.floor(Math.random()*sy.length)];$('#searchTarget').textContent=target;let arr=Array.from({length:35},()=>sy[Math.floor(Math.random()*sy.length)]);arr[Math.floor(Math.random()*35)]=target;arr.forEach(v=>{let b=document.createElement('button');b.textContent=v;b.style.fontSize='24px';b.onclick=()=>searchPick(v===target);g.appendChild(b)})}g.style.gridTemplateColumns='repeat(5,minmax(0,1fr))';$('#searchQ').textContent=sh.q+1;sh.start=performance.now()}
+function searchQuestion(){
+  if(sh.q>=15){searchFinish();return}
+  const mode=$('#searchMode').value,g=$('#searchGrid'),lv=adLevel('search');
+  g.innerHTML='';const count=Math.min(64,28+lv*4),cols=lv>=8?8:lv>=5?7:6;let target;
+  if(mode==='numbers'){
+    target=100+Math.floor(Math.random()*800);$('#searchTarget').textContent=target;
+    let vals=new Set([target]),spread=Math.max(25,210-lv*18);
+    while(vals.size<count){
+      let v=target+Math.floor((Math.random()*2-1)*spread);
+      if(v>=10&&v<=999)vals.add(v)
+    }
+    [...vals].sort(()=>Math.random()-.5).forEach(v=>{let b=document.createElement('button');b.textContent=v;b.onclick=()=>searchPick(v===target);g.appendChild(b)})
+  }else{
+    const sy=['▲','●','■','◆','✚','★','⬟','⬢'];target=sy[Math.floor(Math.random()*sy.length)];$('#searchTarget').textContent=target;
+    let arr=Array.from({length:count},()=>sy[Math.floor(Math.random()*sy.length)]);arr[Math.floor(Math.random()*count)]=target;
+    arr.forEach(v=>{let b=document.createElement('button');b.textContent=v;b.style.fontSize=(lv>=7?'21px':'24px');b.onclick=()=>searchPick(v===target);g.appendChild(b)})
+  }
+  g.style.gridTemplateColumns='repeat('+cols+',minmax(0,1fr))';$('#searchQ').textContent=sh.q+1;sh.start=performance.now()
+}
 function searchPick(ok){sh.times.push(performance.now()-sh.start);if(ok)sh.acc++;sh.q++;searchQuestion()}
 $('#searchStart').onclick=()=>{sh={q:0,acc:0,times:[],start:0,score:null};$('#searchGame').classList.remove('hidden');searchQuestion()}
-function searchFinish(){const avg=Math.round(sh.times.reduce((a,b)=>a+b,0)/sh.times.length),best=Math.round(Math.min(...sh.times)),score=Math.max(0,Math.round((sh.acc/15)*75+Math.max(0,1-(avg-600)/3500)*25));sh.score=score;$('#sAcc').textContent=sh.acc+'/15';$('#sAvg').textContent=avg+' ms';$('#sBest').textContent=best+' ms';$('#sIdx').textContent=score+'/100';$('#searchGame').classList.add('hidden')}
+function searchFinish(){const avg=Math.round(sh.times.reduce((a,b)=>a+b,0)/sh.times.length),best=Math.round(Math.min(...sh.times)),score=Math.max(0,Math.round((sh.acc/15)*75+Math.max(0,1-(avg-600)/3500)*25));sh.score=score;$('#sAcc').textContent=sh.acc+'/15';$('#sAvg').textContent=avg+' ms';$('#sBest').textContent=best+' ms';$('#sIdx').textContent=score+'/100';$('#searchGame').classList.add('hidden');adUpdate('search',score)}
 $('#searchSave').onclick=()=>{if(sh.score==null)return alert('Conclui o treino primeiro.');addHistory('Atenção',sh.score,sh.acc+'/15');alert('Guardado.')};
 
 // PRESSURE
 let pr={i:0,acc:0,err:0,miss:0,target:null,answered:false,timer:null,score:null};const psym=['▲','●','■','◆'];
-function pressureNext(){if(pr.i>=20){pressureFinish();return}pr.target=psym[Math.floor(Math.random()*4)];pr.answered=false;$('#pressureStim .symbol').textContent=pr.target;const interval=Math.max(650,1500-pr.i*40);clearTimeout(pr.timer);pr.timer=setTimeout(()=>{if(!pr.answered)pr.miss++;pr.i++;pressureNext()},interval)}
+function pressureNext(){if(pr.i>=20){pressureFinish();return}pr.target=psym[Math.floor(Math.random()*4)];pr.answered=false;$('#pressureStim .symbol').textContent=pr.target;const lv=adLevel('pressure');const interval=Math.max(360,1550-lv*85-pr.i*28);clearTimeout(pr.timer);pr.timer=setTimeout(()=>{if(!pr.answered)pr.miss++;pr.i++;pressureNext()},interval)}
 $('#pressureButtons').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||pr.i>=20||pr.answered)return;pr.answered=true;if(b.dataset.p===pr.target)pr.acc++;else pr.err++;clearTimeout(pr.timer);pr.i++;setTimeout(pressureNext,100)})
 $('#pressureStart').onclick=()=>{pr={i:0,acc:0,err:0,miss:0,target:null,answered:false,timer:null,score:null};pressureNext()}
-function pressureFinish(){clearTimeout(pr.timer);pr.score=Math.max(0,Math.round((pr.acc/20)*100-pr.err*2-pr.miss*3));$('#pAcc').textContent=pr.acc+'/20';$('#pMiss').textContent=pr.miss;$('#pErr').textContent=pr.err;$('#pScore').textContent=pr.score+'/100';$('#pressureStim .symbol').textContent='Fim'}
+function pressureFinish(){clearTimeout(pr.timer);pr.score=Math.max(0,Math.round((pr.acc/20)*100-pr.err*2-pr.miss*3));$('#pAcc').textContent=pr.acc+'/20';$('#pMiss').textContent=pr.miss;$('#pErr').textContent=pr.err;$('#pScore').textContent=pr.score+'/100';$('#pressureStim .symbol').textContent='Fim · '+adLabel('pressure');adUpdate('pressure',pr.score)}
 $('#pressureSave').onclick=()=>{if(pr.score==null)return alert('Conclui o treino primeiro.');addHistory('Pressão',pr.score,pr.acc+'/20');alert('Guardado.')};
 
 // PERIPHERAL / ATENÇÃO DIVIDIDA
@@ -1696,18 +1987,25 @@ $('#periphSave').onclick=()=>{
 };
 
 // STROOP
-let st={i:0,acc:0,err:0,times:[],start:0,target:null,score:null};const colors=[['red','VERMELHO'],['blue','AZUL'],['green','VERDE'],['orange','LARANJA']];
-function stroopNext(){if(st.i>=20){stroopFinish();return}const word=colors[Math.floor(Math.random()*4)],col=colors[Math.floor(Math.random()*4)];$('#stroopWord').textContent=word[1];$('#stroopWord').style.color=col[0];st.target=col[0];st.start=performance.now()}
-$('#stroopBtns').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||st.i>=20)return;st.times.push(performance.now()-st.start);if(b.dataset.c===st.target)st.acc++;else st.err++;st.i++;stroopNext()})
+let st={i:0,acc:0,err:0,times:[],start:0,target:null,score:null,timer:null};const colors=[['red','VERMELHO'],['blue','AZUL'],['green','VERDE'],['orange','LARANJA']];
+function stroopNext(){
+  if(st.i>=20){stroopFinish();return}
+  clearTimeout(st.timer);const lv=adLevel('stroop');
+  const word=colors[Math.floor(Math.random()*4)];
+  let col=Math.random()<Math.min(.92,.50+lv*.045)?colors.filter(c=>c[0]!==word[0])[Math.floor(Math.random()*3)]:word;
+  $('#stroopWord').textContent=word[1];$('#stroopWord').style.color=col[0];st.target=col[0];st.start=performance.now();
+  st.timer=setTimeout(()=>{if(st.i<20){st.err++;st.i++;stroopNext()}},Math.max(520,1500-lv*85))
+}
+$('#stroopBtns').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||st.i>=20)return;clearTimeout(st.timer);st.times.push(performance.now()-st.start);if(b.dataset.c===st.target)st.acc++;else st.err++;st.i++;stroopNext()})
 $('#stroopStart').onclick=()=>{st={i:0,acc:0,err:0,times:[],start:0,target:null,score:null};stroopNext()}
-function stroopFinish(){const avg=Math.round(st.times.reduce((a,b)=>a+b,0)/st.times.length);st.score=Math.max(0,Math.round((st.acc/20)*80+Math.max(0,1-(avg-450)/1500)*20-st.err));$('#stAcc').textContent=st.acc+'/20';$('#stErr').textContent=st.err;$('#stTime').textContent=avg+' ms';$('#stScore').textContent=st.score+'/100';$('#stroopWord').textContent='FIM';$('#stroopWord').style.color='#172033'}
+function stroopFinish(){clearTimeout(st.timer);const avg=Math.round(st.times.reduce((a,b)=>a+b,0)/st.times.length);st.score=Math.max(0,Math.round((st.acc/20)*80+Math.max(0,1-(avg-450)/1500)*20-st.err));$('#stAcc').textContent=st.acc+'/20';$('#stErr').textContent=st.err;$('#stTime').textContent=avg+' ms';$('#stScore').textContent=st.score+'/100';$('#stroopWord').textContent='FIM · '+adLabel('stroop');$('#stroopWord').style.color='#172033';adUpdate('stroop',st.score)}
 $('#stroopSave').onclick=()=>{if(st.score==null)return alert('Conclui o treino primeiro.');addHistory('Stroop',st.score,st.acc+'/20');alert('Guardado.')};
 
 // MEMORY
 let mem={level:3,acc:0,err:0,seq:[],input:[],score:null};
-function memoryRound(){mem.seq=Array.from({length:mem.level},()=>Math.floor(Math.random()*10));mem.input=[];$('#memoryInput').classList.add('hidden');$('#memorySeq').innerHTML=mem.seq.map(v=>'<div class="memoryChip">'+v+'</div>').join('');setTimeout(()=>{$('#memorySeq').innerHTML='<div class="muted">Agora reproduz a sequência.</div>';const g=$('#memoryInput');g.innerHTML='';for(let v=0;v<=9;v++){let b=document.createElement('button');b.textContent=v;b.onclick=()=>memoryPick(v);g.appendChild(b)}g.classList.remove('hidden')},900+mem.level*220)}
-function memoryPick(v){mem.input.push(v);if(mem.input.length===mem.seq.length){const ok=mem.input.every((x,i)=>x===mem.seq[i]);if(ok){mem.acc++;mem.level=Math.min(9,mem.level+1);$('#memoryMsg').textContent='Correto. A sequência aumenta.'}else{mem.err++;mem.level=Math.max(3,mem.level-1);$('#memoryMsg').textContent='Incorreto. A sequência reduz ligeiramente.'}$('#memLevel').textContent=mem.level;$('#memAcc').textContent=mem.acc;$('#memErr').textContent=mem.err;mem.score=Math.min(100,Math.round(mem.level/9*70+mem.acc/(mem.acc+mem.err||1)*30));$('#memScore').textContent=mem.score+'/100';setTimeout(memoryRound,700)}}
-$('#memoryStart').onclick=()=>{mem={level:3,acc:0,err:0,seq:[],input:[],score:null};$('#memLevel').textContent=3;$('#memAcc').textContent=0;$('#memErr').textContent=0;memoryRound()}
+function memoryRound(){mem.seq=Array.from({length:mem.level},()=>Math.floor(Math.random()*10));mem.input=[];$('#memoryInput').classList.add('hidden');$('#memorySeq').innerHTML=mem.seq.map(v=>'<div class="memoryChip">'+v+'</div>').join('');const exposure=Math.max(520,980+mem.level*180-adLevel('memory')*55);setTimeout(()=>{$('#memorySeq').innerHTML='<div class="muted">Agora reproduz a sequência.</div>';const g=$('#memoryInput');g.innerHTML='';for(let v=0;v<=9;v++){let b=document.createElement('button');b.textContent=v;b.onclick=()=>memoryPick(v);g.appendChild(b)}g.classList.remove('hidden')},exposure)}
+function memoryPick(v){mem.input.push(v);if(mem.input.length===mem.seq.length){const ok=mem.input.every((x,i)=>x===mem.seq[i]);if(ok){mem.acc++;mem.level=Math.min(9,mem.level+1);$('#memoryMsg').textContent='Correto. A sequência aumenta.'}else{mem.err++;mem.level=Math.max(3,mem.level-1);$('#memoryMsg').textContent='Incorreto. A sequência reduz ligeiramente.'}$('#memLevel').textContent=mem.level;$('#memAcc').textContent=mem.acc;$('#memErr').textContent=mem.err;mem.score=Math.min(100,Math.round(mem.level/9*70+mem.acc/(mem.acc+mem.err||1)*30));$('#memScore').textContent=mem.score+'/100';adUpdate('memory',mem.score);setTimeout(memoryRound,Math.max(380,760-adLevel('memory')*35))}}
+$('#memoryStart').onclick=()=>{const startLevel=Math.max(3,Math.min(7,2+Math.floor(adLevel('memory')/2)));mem={level:startLevel,acc:0,err:0,seq:[],input:[],score:null};$('#memLevel').textContent=startLevel;$('#memAcc').textContent=0;$('#memErr').textContent=0;memoryRound()}
 $('#memorySave').onclick=()=>{if(mem.score==null)return alert('Faz algumas rondas primeiro.');addHistory('Memória',mem.score,'Nível '+mem.level);alert('Guardado.')};
 
 // COORD
@@ -1717,9 +2015,9 @@ function setPct(el,x,y){el.style.left=x+'%';el.style.top=y+'%'}
 setPct(tt,50,50);setPct(td,50,50);
 box.addEventListener('pointermove',e=>{if(!co.running)return;e.preventDefault();const r=box.getBoundingClientRect();co.pointer.x=Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100));co.pointer.y=Math.max(0,Math.min(100,(e.clientY-r.top)/r.height*100));setPct(td,co.pointer.x,co.pointer.y)})
 box.addEventListener('pointerdown',e=>{if(!co.running)return;e.preventDefault();box.setPointerCapture?.(e.pointerId);const r=box.getBoundingClientRect();co.pointer.x=(e.clientX-r.left)/r.width*100;co.pointer.y=(e.clientY-r.top)/r.height*100;setPct(td,co.pointer.x,co.pointer.y)})
-function coordLoop(now){if(!co.running)return;const t=(now-co.start)/1000;if(t>=20){coordFinish();return}const tx=50+35*Math.sin(t*1.1),ty=50+30*Math.sin(t*1.7+.8);setPct(tt,tx,ty);const dx=co.pointer.x-tx,dy=co.pointer.y-ty,d=Math.hypot(dx,dy);co.samples++;co.sum+=d;if(d<8)co.inside++;co.raf=requestAnimationFrame(coordLoop)}
+function coordLoop(now){if(!co.running)return;const t=(now-co.start)/1000;if(t>=20){coordFinish();return}const lv=adLevel('coord'),spd=.78+lv*.105;const tx=50+35*Math.sin(t*1.1*spd),ty=50+30*Math.sin(t*1.7*spd+.8);setPct(tt,tx,ty);const dx=co.pointer.x-tx,dy=co.pointer.y-ty,d=Math.hypot(dx,dy);co.samples++;co.sum+=d;if(d<8)co.inside++;co.raf=requestAnimationFrame(coordLoop)}
 $('#coordStart').onclick=()=>{co={running:true,start:performance.now(),raf:null,samples:0,sum:0,inside:0,score:null,pointer:{x:50,y:50}};setPct(td,50,50);co.raf=requestAnimationFrame(coordLoop)}
-function coordFinish(){co.running=false;cancelAnimationFrame(co.raf);const avg=co.sum/(co.samples||1),inside=co.inside/(co.samples||1)*100;co.score=Math.max(0,Math.round(100-avg*2+inside*.25));$('#cDist').textContent=avg.toFixed(1)+'%';$('#cInside').textContent=Math.round(inside)+'%';$('#cDur').textContent='20 s';$('#cScore').textContent=co.score+'/100'}
+function coordFinish(){co.running=false;cancelAnimationFrame(co.raf);const avg=co.sum/(co.samples||1),inside=co.inside/(co.samples||1)*100;co.score=Math.max(0,Math.round(100-avg*2+inside*.25));$('#cDist').textContent=avg.toFixed(1)+'%';$('#cInside').textContent=Math.round(inside)+'%';$('#cDur').textContent='20 s';$('#cScore').textContent=co.score+'/100';adUpdate('coord',co.score)}
 $('#coordSave').onclick=()=>{if(co.score==null)return alert('Conclui o treino primeiro.');addHistory('Coordenação',co.score,$('#cDist').textContent);alert('Guardado.')};
 
 // PERSONALITY
@@ -1732,7 +2030,7 @@ let pe={items:[],i:0,ans:[],times:[],start:0,timer:null,result:null};
 function persShow(){const it=pe.items[pe.i];$('#persQ').textContent=pe.i+1;$('#persText').textContent=it[0];$('#persProg').style.width=(pe.i/40*100)+'%';pe.start=performance.now();clearInterval(pe.timer);pe.timer=setInterval(()=>{$('#persTimer').textContent=((performance.now()-pe.start)/1000).toFixed(1)+' s'},100)}
 $('#persStart').onclick=()=>{pe={items:[...pbankV41].sort(()=>Math.random()-.5).slice(0,40),i:0,ans:[],times:[],start:0,timer:null,result:null};$('#persResult').classList.add('hidden');$('#persGame').classList.remove('hidden');persShow()}
 $$('#personality .scale button').forEach(b=>b.onclick=()=>{pe.ans.push(+b.dataset.v);pe.times.push(performance.now()-pe.start);pe.i++;if(pe.i>=40)persFinish();else persShow()})
-function persFinish(){clearInterval(pe.timer);$('#persGame').classList.add('hidden');const by={};pe.items.forEach((it,i)=>{const norm=it[2]?6-pe.ans[i]:pe.ans[i];(by[it[1]]||(by[it[1]]=[])).push(norm)});let flags=0;Object.values(by).forEach(a=>{if(a.length>1&&Math.max(...a)-Math.min(...a)>=3)flags++});const avg=Math.round(pe.times.reduce((a,b)=>a+b,0)/pe.times.length),cons=Math.max(0,100-flags*12);pe.result={score:cons,avg};$('#persResult').innerHTML='<b>Consistência de treino: '+cons+'/100</b><br>Tempo médio: '+(avg/1000).toFixed(1)+' s.<br><span class="muted">Não representa uma avaliação clínica nem indica uma personalidade “correta”. Serve apenas para treinar espontaneidade e coerência.</span>';$('#persResult').classList.remove('hidden')}
+function persFinish(){clearInterval(pe.timer);$('#persGame').classList.add('hidden');const by={};pe.items.forEach((it,i)=>{const norm=it[2]?6-pe.ans[i]:pe.ans[i];(by[it[1]]||(by[it[1]]=[])).push(norm)});let flags=0;Object.values(by).forEach(a=>{if(a.length>1&&Math.max(...a)-Math.min(...a)>=3)flags++});const avg=Math.round(pe.times.reduce((a,b)=>a+b,0)/pe.times.length),cons=Math.max(0,100-flags*12);pe.result={score:cons,avg};$('#persResult').innerHTML='<b>Consistência de treino: '+cons+'/100</b><br>Tempo médio: '+(avg/1000).toFixed(1)+' s.<br><span class="muted">Não representa uma avaliação clínica nem indica uma personalidade “correta”. Serve apenas para treinar espontaneidade e coerência. Este módulo não aumenta artificialmente a dificuldade, para não condicionar as respostas.</span>';$('#persResult').classList.remove('hidden')}
 $('#persSave').onclick=()=>{if(!pe.result)return alert('Conclui o questionário primeiro.');addHistory('Personalidade',pe.result.score,(pe.result.avg/1000).toFixed(1)+' s/item');alert('Guardado.')};
 
 // EXAM V4 — rápido (~10 min) e completo (~45–60 min)
@@ -2137,6 +2435,7 @@ function drawHist(){const c=$('#historyChart'),x=c.getContext('2d'),w=c.width,h=
 $('#clearHistory').onclick=()=>{if(confirm('Apagar todo o histórico?')){history=[];saveStore()}}
 
 renderHistory();updateDash();
+adRender();
 </script>
 
 <script>
