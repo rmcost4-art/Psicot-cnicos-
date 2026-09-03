@@ -1,4 +1,4 @@
-# Treino Psicotécnicos VMER — PWA V5.0
+# Treino Psicotécnicos VMER — PWA V5.1
 
 ## Publicar gratuitamente no GitHub Pages
 1. Crie um repositório no GitHub (por exemplo `vmer-treino`).
@@ -20,24 +20,29 @@ Depois de a app ter sido aberta pelo menos uma vez com internet, o Service Worke
 
 Nota: a disponibilidade de DeviceOrientation/giroscópio depende das permissões e políticas da versão do iOS/iPadOS/Safari.
 
-V5.0: ícone alterado para amarelo de alta visibilidade com elementos azuis.
+V5.1: ícone alterado para amarelo de alta visibilidade com elementos azuis.
 
-V5.0:
+V5.1:
 - Ícone amarelo com o nome “Psicotécnicos”.
 - No treino de antecipação temporal, após a resposta a zona oculta é revelada.
 - A bola amarela/azul mostra a posição real no instante do clique.
 - É indicada a distância que ainda faltava para o alvo ou quanto o alvo foi ultrapassado.
 
-V5.0: ícone final aprovado, amarelo, com “Psicotécnicos” e Estrela da Vida azul.
+V5.1: ícone final aprovado, amarelo, com “Psicotécnicos” e Estrela da Vida azul.
 
-V5.0:
+V5.1:
 - No treino principal de Antecipação, o toque fica ativo imediatamente quando a bola entra na zona oculta.
 - É possível responder antes do reaparecimento real.
 - O erro temporal passa a distinguir resposta precoce e tardia.
 - Após a resposta, verde mostra o ponto real de reaparecimento e vermelho a previsão.
 
-V5.0:
+V5.1:
 - Novo módulo “Destreza bimanual”.
 - 10 exercícios: toque simultâneo, reação mão correspondente, sequências independentes, manter + responder, seguimento duplo, movimentos espelho, movimentos opostos, inibição cruzada, ritmo bimanual e equilíbrio + resposta.
 - Sessão automática de 10 minutos.
 - Métricas separadas por mão, assimetria e índice bimanual.
+
+V5.1:
+- Corrigido o menu superior.
+- Adicionados os botões visíveis para Treino temporal, Destreza bimanual e Movimento.
+- Menu horizontal otimizado para deslizar no iPhone/iPad.

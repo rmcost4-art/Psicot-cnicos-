@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Psicotécnicos VMER">
 
-<title>Treino Psicotécnicos VMER — V5.0</title>
+<title>Treino Psicotécnicos VMER — V5.1</title>
 <style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#667085;--line:#d9e0ec;
@@ -324,6 +324,16 @@ tbody tr:last-child td{border-bottom:0}
 .biHold{position:absolute;width:92px;height:92px;border-radius:20px;border:3px solid #0f172a;display:flex;align-items:center;justify-content:center;font-weight:800;background:#fff;touch-action:none}
 @media (max-width:1024px){#biStage{height:330px!important}}
 @media (max-width:650px){#biStage{height:300px!important}.biTarget{width:64px;height:64px}}
+
+.tabs{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  white-space:nowrap;
+  scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:0 0 auto}
+
 </style>
 
 <link rel="manifest" href="manifest.webmanifest">
@@ -337,7 +347,7 @@ tbody tr:last-child td{border-bottom:0}
 <div class="wrap">
   <div class="hero">
     <div>
-      <h1>Treino Psicotécnicos VMER — V5.0</h1>
+      <h1>Treino Psicotécnicos VMER — V5.1</h1>
       <p>Plataforma offline de treino psicotécnico, otimizada para computador, iPad e telemóvel. Treina atenção, reação, antecipação, memória, coordenação e consistência numa interface simples e organizada.</p>
     </div>
     <div class="badge">Offline · PC · Mac · iPad · iPhone · Android</div>
@@ -346,6 +356,9 @@ tbody tr:last-child td{border-bottom:0}
   <div class="tabs">
     <button data-tab="home" class="active">Início</button>
     <button data-tab="motion">Antecipação</button>
+    <button data-tab="timing">Treino temporal</button>
+    <button data-tab="bimanual">Destreza bimanual</button>
+    <button data-tab="motiongyro">Movimento</button>
     <button data-tab="reaction">Reação</button>
     <button data-tab="search">Atenção</button>
     <button data-tab="pressure">Pressão</button>
@@ -372,6 +385,9 @@ tbody tr:last-child td{border-bottom:0}
       <h2>Módulos incluídos</h2>
       <div class="moduleGrid">
         <div class="moduleCard"><h3>Bolas / antecipação</h3><div class="muted">Reta, diagonal, curva, sinusoidal, aceleração e treino só de tempo.</div></div>
+        <div class="moduleCard"><h3>Treino temporal</h3><div class="muted">Time-to-contact, oclusão, ritmo, interceção e reprodução de duração.</div></div>
+        <div class="moduleCard"><h3>Destreza bimanual</h3><div class="muted">10 exercícios para coordenação, independência e equilíbrio entre as duas mãos.</div></div>
+        <div class="moduleCard"><h3>Movimento / giroscópio</h3><div class="muted">Reflexos por inclinação, Go/No-Go, estabilização e seguimento.</div></div>
         <div class="moduleCard"><h3>Reação</h3><div class="muted">Simples, seletiva e Go/No-Go.</div></div>
         <div class="moduleCard"><h3>Atenção visual</h3><div class="muted">Pesquisa numérica e procura de símbolos.</div></div>
         <div class="moduleCard"><h3>Sob pressão</h3><div class="muted">Estímulos em cadência cada vez mais rápida.</div></div>
@@ -1032,7 +1048,7 @@ $('#motionSave').onclick=()=>{
 drawMotionBase();
 
 
-// TEMPORAL ANTICIPATION V5.0
+// TEMPORAL ANTICIPATION V5.1
 const tc=$('#timingCanvas'),tx=tc.getContext('2d');
 let tm={errors:[],running:false,answerAt:0,raf:null,timer:null,sessionEnd:0,sessionTimer:null,mode:'ttc',difficulty:1,current:null};
 
@@ -1209,7 +1225,7 @@ $('#timingSave').onclick=()=>{
 
 
 
-// BIMANUAL DEXTERITY V5.0
+// BIMANUAL DEXTERITY V5.1
 let bi={mode:'dualTap',running:false,quickEnd:0,hits:0,errors:0,leftRts:[],rightRts:[],trial:0,total:14,timers:[],raf:null,trackErrL:0,trackErrR:0,trackSamples:0};
 const biStage=$('#biStage');
 function biMean(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:0}
@@ -1247,7 +1263,7 @@ $('#biSession').onclick=()=>{bi.running=true;bi.quickEnd=Date.now()+10*60*1000;b
 $('#biStop').onclick=()=>biFinish();
 $('#biSave').onclick=()=>{if(!(bi.hits+bi.errors))return;const l=biMean(bi.leftRts),r=biMean(bi.rightRts),acc=bi.hits/(bi.hits+bi.errors),as=(l&&r)?Math.abs(l-r):0,sp=(l||r)?Math.max(0,1-((l+r)/(l&&r?2:1)-300)/1200):0,bal=(l&&r)?Math.max(0,1-as/700):.5,score=Math.round((acc*.55+sp*.25+bal*.20)*100);addHistory('Destreza bimanual',score,bi.hits+' acertos · '+bi.errors+' erros'+(l&&r?' · assimetria '+Math.round(as)+' ms':''))};
 
-// GYROSCOPE / MOTION TRAINING V5.0
+// GYROSCOPE / MOTION TRAINING V5.1
 let gy={
   enabled:false, mode:'lr', beta:0, gamma:0, baseBeta:0, baseGamma:0,
   waiting:false, target:null, stimAt:0, hits:0, errors:0, rts:[], count:0, total:12,
