@@ -1,0 +1,1918 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1f4fd1">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Psicotécnicos VMER">
+
+<title>Treino Psicotécnicos VMER — V4.5</title>
+<style>
+:root{
+  --bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#667085;--line:#d9e0ec;
+  --accent:#2457d6;--accent2:#eaf0ff;--good:#18864b;--bad:#c83c36;--warn:#b7791f;
+}
+*{box-sizing:border-box}
+html{touch-action:manipulation}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,select,input{font:inherit}
+button{touch-action:manipulation}
+.wrap{max-width:1180px;margin:auto;padding:16px}
+.hero{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap}
+.hero h1{margin:0 0 6px;font-size:clamp(26px,5vw,42px)}
+.hero p{margin:0;color:var(--muted);max-width:780px}
+.badge{background:var(--accent2);color:var(--accent);padding:8px 12px;border-radius:999px;font-weight:800}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:14px 0 6px;scrollbar-width:thin}
+.tabs button,.btn{border:1px solid var(--line);background:var(--card);padding:12px 14px;border-radius:12px;font-weight:800;cursor:pointer;min-height:46px}
+.tabs button{white-space:nowrap}
+.tabs button.active,.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.good{background:var(--good);color:#fff;border-color:var(--good)}
+.btn.danger{color:var(--bad)}
+.panel{display:none}.panel.active{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spaced{justify-content:space-between}
+.muted{color:var(--muted)} .small{font-size:13px}
+.notice{background:var(--accent2);border-radius:12px;padding:12px;margin-top:12px}
+.goodBox{background:#edf9f2}.warnBox{background:#fff7e8}.badBox{background:#fff0ef}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.stat,.metric{background:#f7f9fc;border-radius:12px;padding:12px}
+.stat small,.metric small{display:block;color:var(--muted)}
+.stat b,.metric b{font-size:22px}
+.metricGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+canvas{display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:14px;background:#fff}
+.gameCanvas{aspect-ratio:15/7}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.grid{display:grid;gap:8px;margin-top:12px}
+.grid button,.choiceGrid button,.scale button{border:1px solid var(--line);background:#fff;border-radius:12px;font-weight:800;cursor:pointer;min-height:50px}
+.scale{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:14px}
+.choiceGrid{display:grid;gap:8px}
+.progress{height:10px;background:#edf1f6;border-radius:999px;overflow:hidden}.progress>div{height:100%;background:var(--accent);width:0}
+.hidden{display:none!important}
+.pill{background:#f2f4f7;border-radius:999px;padding:7px 10px}
+.kbd{border:1px solid var(--line);border-bottom-width:2px;background:#fff;border-radius:7px;padding:2px 7px}
+#reactionPad{min-height:230px;display:grid;place-items:center;border-radius:16px;border:1px solid var(--line);background:#eef1f5;user-select:none}
+#reactionPad.go{background:#dff6e8}
+#reactionPad.nogo{background:#fde6e4}
+.symbol{font-size:clamp(42px,12vw,86px);font-weight:900}
+.periphWrap{display:grid;grid-template-columns:80px 1fr 80px;gap:10px;align-items:center}
+.sideBox,.centerBox{min-height:210px;border:1px solid var(--line);border-radius:16px;background:#f8fafc;display:grid;place-items:center}
+.sideBox{font-size:52px}
+.stroopWord{font-size:clamp(42px,10vw,78px);font-weight:900;text-align:center;margin:26px 0}
+.memorySeq{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:20px 0}
+.memoryChip{min-width:52px;min-height:52px;display:grid;place-items:center;border:1px solid var(--line);border-radius:12px;background:#fff;font-weight:900;font-size:22px}
+.trackingBox{position:relative;min-height:280px;border:1px solid var(--line);border-radius:16px;background:#f8fafc;overflow:hidden;touch-action:none}
+.trackTarget{position:absolute;width:46px;height:46px;border-radius:50%;background:#111827;transform:translate(-50%,-50%)}
+.trackDot{position:absolute;width:22px;height:22px;border-radius:50%;background:#2457d6;transform:translate(-50%,-50%)}
+.chartWrap{overflow-x:auto}
+#historyChart{min-width:700px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--muted)}
+.moduleGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.moduleCard{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff}
+.moduleCard h3{margin:0 0 6px}
+select,input{border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;min-height:44px}
+@media(max-width:820px){
+  .stats,.metricGrid,.moduleGrid{grid-template-columns:repeat(2,1fr)}
+  .periphWrap{grid-template-columns:58px 1fr 58px}.sideBox{font-size:38px}
+}
+@media(max-width:560px){
+  .wrap{padding:10px}.stats,.metricGrid,.moduleGrid{grid-template-columns:1fr}
+  .scale button{font-size:13px;padding:8px}
+  .periphWrap{grid-template-columns:48px 1fr 48px;gap:6px}.sideBox,.centerBox{min-height:180px}
+  .controls .btn{flex:1 1 44%}
+}
+
+/* iPad / tablet */
+@media (min-width:700px) and (max-width:1180px){
+  .wrap{max-width:100%;padding:18px 22px}
+  .hero{align-items:center}
+  .tabs{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:10px;
+  }
+  .tabs button{min-height:52px;padding:13px 17px}
+  .card{padding:20px}
+  .gameCanvas{max-height:58vh}
+  .grid button,.choiceGrid button,.scale button{
+    min-height:58px;
+    font-size:17px;
+  }
+  .controls .btn{min-height:52px}
+  .periphWrap{grid-template-columns:90px 1fr 90px}
+  .sideBox,.centerBox{min-height:260px}
+  .trackingBox{min-height:380px}
+}
+
+/* iPad em horizontal */
+@media (min-width:900px) and (max-width:1366px) and (orientation:landscape){
+  .wrap{max-width:1280px;padding:14px 24px}
+  .hero h1{font-size:34px}
+  .card{padding:18px}
+  .gameCanvas{
+    width:100%;
+    max-height:62vh;
+    object-fit:contain;
+  }
+  .stats{grid-template-columns:repeat(4,1fr)}
+  .metricGrid{grid-template-columns:repeat(3,1fr)}
+  .moduleGrid{grid-template-columns:repeat(3,1fr)}
+  .trackingBox{min-height:340px}
+}
+
+/* iPad em vertical */
+@media (min-width:700px) and (max-width:1024px) and (orientation:portrait){
+  .hero h1{font-size:36px}
+  .moduleGrid{grid-template-columns:repeat(2,1fr)}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .metricGrid{grid-template-columns:repeat(3,1fr)}
+  .gameCanvas{max-height:50vh}
+  .periphWrap{grid-template-columns:76px 1fr 76px}
+  .sideBox,.centerBox{min-height:300px}
+  .trackingBox{min-height:420px}
+}
+
+/* Melhora o toque em Safari/iPadOS */
+@supports (-webkit-touch-callout:none){
+  button,.btn,.grid button,.choiceGrid button,.scale button{
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+    -webkit-user-select:none;
+  }
+  canvas,.trackingBox{
+    touch-action:none;
+    -webkit-user-select:none;
+  }
+}
+
+
+/* ===== V3.4 visual refresh ===== */
+:root{
+  --bg:#eef3f8;
+  --card:#ffffff;
+  --text:#172033;
+  --muted:#687386;
+  --line:#dbe3ee;
+  --accent:#2f5bea;
+  --accent-2:#eaf0ff;
+  --accent-3:#f6f8ff;
+  --good:#1f8a55;
+  --bad:#c84c45;
+  --warn:#b7791f;
+  --shadow:0 12px 32px rgba(28,39,60,.08);
+  --shadow-soft:0 6px 18px rgba(28,39,60,.06);
+}
+body{
+  background:
+    radial-gradient(circle at 15% 0%, rgba(47,91,234,.08), transparent 30%),
+    linear-gradient(180deg,#f7f9fc 0%,#eef3f8 100%);
+}
+.wrap{max-width:1240px;padding:24px}
+.hero{
+  background:linear-gradient(135deg,#ffffff 0%,#f7f9ff 100%);
+  border:1px solid var(--line);
+  border-radius:24px;
+  padding:26px 28px;
+  box-shadow:var(--shadow-soft);
+  margin-bottom:14px;
+}
+.hero h1{
+  font-size:clamp(28px,4vw,44px);
+  letter-spacing:-.03em;
+  line-height:1.05;
+}
+.hero p{font-size:16px;line-height:1.55}
+.badge{
+  background:#edf2ff;
+  color:#315bd9;
+  border:1px solid #dbe5ff;
+  box-shadow:none;
+}
+.tabs{
+  background:rgba(255,255,255,.78);
+  border:1px solid rgba(219,227,238,.95);
+  border-radius:18px;
+  padding:8px;
+  margin:16px 0;
+  box-shadow:var(--shadow-soft);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.tabs button{
+  border:0;
+  background:transparent;
+  color:#4a5568;
+  border-radius:12px;
+  min-height:44px;
+  padding:10px 14px;
+  transition:.18s ease;
+}
+.tabs button:hover{background:#f3f6fb;color:#22304a}
+.tabs button.active{
+  background:var(--accent);
+  color:#fff;
+  box-shadow:0 7px 18px rgba(47,91,234,.24);
+}
+.card{
+  border-radius:22px;
+  padding:22px;
+  border:1px solid var(--line);
+  box-shadow:var(--shadow-soft);
+}
+.card h2{
+  margin-top:0;
+  margin-bottom:6px;
+  font-size:24px;
+  letter-spacing:-.02em;
+}
+.card h3{letter-spacing:-.01em}
+.notice{
+  border:1px solid #dce6ff;
+  background:#f4f7ff;
+  color:#2d3d63;
+  line-height:1.5;
+}
+.warnBox{background:#fff9ee;border-color:#f2dfb8}
+.goodBox{background:#effaf4;border-color:#cdebd9}
+.badBox{background:#fff3f2;border-color:#f2d0cd}
+.metricGrid,.stats{gap:12px}
+.metric,.stat{
+  background:linear-gradient(180deg,#fafcff,#f5f8fc);
+  border:1px solid #e4eaf2;
+  box-shadow:inset 0 1px 0 #fff;
+}
+.metric b,.stat b{letter-spacing:-.02em}
+.moduleCard{
+  border-radius:18px;
+  background:linear-gradient(180deg,#fff,#fbfcfe);
+  box-shadow:var(--shadow-soft);
+  transition:.18s ease;
+}
+.moduleCard:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.moduleCard h3{font-size:18px}
+.btn{
+  border-radius:12px;
+  transition:.18s ease;
+  box-shadow:none;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{box-shadow:0 8px 18px rgba(47,91,234,.22)}
+.btn.good{box-shadow:0 8px 18px rgba(31,138,85,.17)}
+select,input{
+  border-color:#d5deea;
+  box-shadow:0 2px 6px rgba(28,39,60,.03);
+}
+canvas,.trackingBox,#reactionPad,.sideBox,.centerBox{
+  border-radius:18px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.6);
+}
+.gameCanvas{background:#fbfcfe}
+.grid button,.choiceGrid button,.scale button{
+  background:linear-gradient(180deg,#fff,#f8fafc);
+  border-color:#dbe3ee;
+  transition:.15s ease;
+}
+.grid button:hover,.choiceGrid button:hover,.scale button:hover{
+  border-color:#aebde0;
+  background:#f3f6ff;
+}
+.progress{height:9px;background:#edf1f6}
+.progress>div{background:linear-gradient(90deg,#2f5bea,#4c7af3)}
+.pill{background:#f0f3f8;color:#334155;border:1px solid #e2e8f0}
+table{
+  border-collapse:separate;
+  border-spacing:0;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:14px;
+}
+thead th{background:#f7f9fc}
+tbody tr:hover{background:#fafcff}
+th,td{border-bottom:1px solid #e8edf3}
+tbody tr:last-child td{border-bottom:0}
+
+/* Better visual hierarchy for the summary */
+#home .metric:first-child{background:linear-gradient(180deg,#f7f9ff,#f2f5ff)}
+#home .metric:nth-child(2){background:linear-gradient(180deg,#f4fbf7,#eff9f3)}
+#home .metric:nth-child(3){background:linear-gradient(180deg,#fffaf0,#fff7e8)}
+
+/* Compact, cleaner controls */
+.controls{margin-top:14px}
+.controls .btn{padding-left:18px;padding-right:18px}
+
+/* nicer mobile/iPad */
+@media(max-width:820px){
+  .wrap{padding:14px}
+  .hero{padding:20px}
+  .card{padding:18px}
+  .tabs{position:sticky;top:0;z-index:20}
+}
+@media(max-width:560px){
+  .hero{border-radius:18px;padding:18px}
+  .card{border-radius:18px;padding:16px}
+  .tabs{border-radius:14px;margin:10px 0 14px}
+  .tabs button{padding:10px 12px}
+  .metric,.stat{padding:14px}
+}
+
+</style>
+
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="VMER Treino">
+<link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <h1>Treino Psicotécnicos VMER — V4.5</h1>
+      <p>Plataforma offline de treino psicotécnico, otimizada para computador, iPad e telemóvel. Treina atenção, reação, antecipação, memória, coordenação e consistência numa interface simples e organizada.</p>
+    </div>
+    <div class="badge">Offline · PC · Mac · iPad · iPhone · Android</div>
+  </div>
+
+  <div class="tabs">
+    <button data-tab="home" class="active">Início</button>
+    <button data-tab="motion">Antecipação</button>
+    <button data-tab="reaction">Reação</button>
+    <button data-tab="search">Atenção</button>
+    <button data-tab="pressure">Pressão</button>
+    <button data-tab="periph">Periferia</button>
+    <button data-tab="stroop">Stroop</button>
+    <button data-tab="memory">Memória</button>
+    <button data-tab="coord">Coordenação</button>
+    <button data-tab="personality">Personalidade</button>
+    <button data-tab="exam">Simulação</button>
+    <button data-tab="history">Histórico</button>
+  </div>
+
+  <section id="home" class="panel active">
+    <div class="card">
+      <h2>Preparação global</h2>
+      <div class="metricGrid">
+        <div class="metric"><small>Sessões guardadas</small><b id="dashSessions">0</b></div>
+        <div class="metric"><small>Melhor pontuação</small><b id="dashBest">—</b></div>
+        <div class="metric"><small>Última simulação</small><b id="dashExam">—</b></div>
+      </div>
+      <div id="recommendation" class="notice">Começa por fazer 1 sessão de Bolas, Reação e Atenção.</div>
+    </div>
+    <div class="card">
+      <h2>Módulos incluídos</h2>
+      <div class="moduleGrid">
+        <div class="moduleCard"><h3>Bolas / antecipação</h3><div class="muted">Reta, diagonal, curva, sinusoidal, aceleração e treino só de tempo.</div></div>
+        <div class="moduleCard"><h3>Reação</h3><div class="muted">Simples, seletiva e Go/No-Go.</div></div>
+        <div class="moduleCard"><h3>Atenção visual</h3><div class="muted">Pesquisa numérica e procura de símbolos.</div></div>
+        <div class="moduleCard"><h3>Sob pressão</h3><div class="muted">Estímulos em cadência cada vez mais rápida.</div></div>
+        <div class="moduleCard"><h3>Perceção periférica</h3><div class="muted">Tarefa central + deteção lateral.</div></div>
+        <div class="moduleCard"><h3>Stroop</h3><div class="muted">Ignorar a palavra e responder à cor.</div></div>
+        <div class="moduleCard"><h3>Memória de trabalho</h3><div class="muted">Sequências progressivas de números.</div></div>
+        <div class="moduleCard"><h3>Coordenação</h3><div class="muted">Manter o cursor/dedo próximo de um alvo em movimento.</div></div>
+        <div class="moduleCard"><h3>Personalidade</h3><div class="muted">Banco alargado com itens diretos e invertidos.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="motion" class="panel">
+    <div class="card">
+      <div class="row spaced">
+        <div><h2>Bolas / antecipação do movimento</h2><p class="muted">Escolhe uma variante ou usa Aleatório.</p></div>
+        <select id="motionMode">
+          <option value="random">Aleatório</option>
+          <option value="linear">Reta</option>
+          <option value="diagonal">Diagonal</option>
+          <option value="curve">Curva</option>
+          <option value="sine">Sinusoidal</option>
+          <option value="accel">Aceleração</option>
+          <option value="time">Só tempo</option>
+        </select>
+      </div>
+      <canvas id="motionCanvas" class="gameCanvas" width="900" height="420"></canvas>
+      <div class="controls">
+        <button id="motionStart" class="btn primary">Nova tentativa</button>
+        <button id="motionSave" class="btn good">Guardar sessão</button>
+        <button id="motionReset" class="btn">Repor</button>
+      </div>
+      <div id="motionMsg" class="notice">Segue o movimento e tenta prever o reaparecimento.</div>
+      <div class="stats">
+        <div class="stat"><small>Tentativas</small><b id="mN">0</b></div>
+        <div class="stat"><small>Média</small><b id="mScore">—</b></div>
+        <div class="stat"><small>Erro posição</small><b id="mPos">—</b></div>
+        <div class="stat"><small>Erro tempo</small><b id="mTime">—</b></div>
+      </div>
+    </div>
+  </section>
+
+  
+<section id="timing" class="panel">
+  <div class="card">
+    <div class="row spaced">
+      <div>
+        <h2>Treino de antecipação temporal</h2>
+        <p class="muted">Exercícios específicos para aprender a prever <b>quando</b> um objeto chega ao alvo. O relatório distingue respostas precoces e tardias.</p>
+      </div>
+      <select id="timingMode">
+        <option value="ttc">Time-to-contact</option>
+        <option value="tunnel">Travessia oculta</option>
+        <option value="race">Qual chega primeiro?</option>
+        <option value="intercept">Interceção</option>
+        <option value="speed">Mudança de velocidade</option>
+        <option value="rhythm">Ritmo temporal</option>
+        <option value="duration">Reproduzir duração</option>
+        <option value="occlusion">Oclusão progressiva</option>
+      </select>
+    </div>
+    <canvas id="timingCanvas" width="900" height="360" class="gameCanvas"></canvas>
+    <div id="timingInstruction" class="notice">Escolhe um exercício e carrega em <b>Nova tentativa</b>.</div>
+    <div class="controls">
+      <button id="timingStart" class="btn primary">Nova tentativa</button>
+      <button id="timingRespond" class="btn" disabled>RESPONDER AGORA</button>
+      <button id="timingSession" class="btn">Sessão automática 10 min</button>
+      <button id="timingSave" class="btn good">Guardar</button>
+    </div>
+    <div class="metricGrid">
+      <div class="metric"><small>Tentativas</small><b id="tmN">0</b></div>
+      <div class="metric"><small>Erro absoluto médio</small><b id="tmAbs">—</b></div>
+      <div class="metric"><small>Viés temporal</small><b id="tmBias">—</b></div>
+      <div class="metric"><small>Índice temporal</small><b id="tmScore">—</b></div>
+    </div>
+    <div id="timingFeedback" class="notice" style="margin-top:10px">O objetivo é aproximar o viés de 0 ms e reduzir progressivamente o erro absoluto.</div>
+  </div>
+</section>
+
+<section id="motiongyro" class="panel">
+  <div class="card">
+    <div class="row spaced">
+      <div>
+        <h2>Reflexos por movimento</h2>
+        <p class="muted">Treino complementar com giroscópio/acelerómetro em iPhone e iPad. Mede reação motora, direção e controlo do movimento.</p>
+      </div>
+      <select id="gyroMode">
+        <option value="lr">Esquerda / Direita</option>
+        <option value="four">4 direções</option>
+        <option value="gonogo">Go / No-Go</option>
+        <option value="stability">Estabilização</option>
+        <option value="follow">Seguimento por inclinação</option>
+      </select>
+    </div>
+
+    <div id="gyroSupport" class="notice">Primeiro ativa os sensores de movimento.</div>
+
+    <div class="controls">
+      <button id="gyroPermission" class="btn primary">Ativar sensores de movimento</button>
+      <button id="gyroStart" class="btn" disabled>Iniciar 12 estímulos</button>
+      <button id="gyroQuick" class="btn">Sessão rápida 5 min</button>
+      <button id="gyroSave" class="btn good">Guardar</button>
+    </div>
+
+    <div id="gyroStage" class="gameCanvas" style="height:330px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+      <div id="gyroStimulus" style="font-size:76px;font-weight:900">—</div>
+      <div id="gyroBall" style="position:absolute;width:34px;height:34px;border-radius:50%;background:#111827;left:calc(50% - 17px);top:calc(50% - 17px);display:none"></div>
+      <div id="gyroTarget" style="position:absolute;width:84px;height:84px;border:3px solid #64748b;border-radius:50%;left:calc(50% - 42px);top:calc(50% - 42px);display:none"></div>
+    </div>
+
+    <div class="metricGrid">
+      <div class="metric"><small>Acertos</small><b id="gyHits">0</b></div>
+      <div class="metric"><small>Erros</small><b id="gyErr">0</b></div>
+      <div class="metric"><small>Reação média</small><b id="gyRt">—</b></div>
+      <div class="metric"><small>Índice</small><b id="gyScore">—</b></div>
+    </div>
+
+    <div id="gyroFeedback" class="notice" style="margin-top:10px">
+      Segura o dispositivo de forma confortável. Para esquerda/direita, inclina alguns graus na direção pedida e volta ao centro.
+    </div>
+  </div>
+</section>
+<section id="reaction" class="panel">
+    <div class="card">
+      <div class="row spaced">
+        <div><h2>Tempo de reação</h2><p class="muted">Toca/clica apenas quando aparecer o estímulo correto.</p></div>
+        <select id="reactionMode"><option value="simple">Simples</option><option value="selective">Seletiva</option><option value="nogo">Go / No-Go</option></select>
+      </div>
+      <div id="reactionPad"><div id="reactionText" class="symbol">Pronto?</div></div>
+      <div class="controls"><button id="reactionStart" class="btn primary">Iniciar 12 estímulos</button><button id="reactionSave" class="btn good">Guardar</button></div>
+      <div id="reactionMsg" class="notice">No modo seletivo, responde apenas ao círculo. No Go/No-Go, responde apenas ao verde.</div>
+      <div class="stats">
+        <div class="stat"><small>Acertos</small><b id="rAcc">—</b></div>
+        <div class="stat"><small>Erros</small><b id="rErr">—</b></div>
+        <div class="stat"><small>Tempo médio</small><b id="rTime">—</b></div>
+        <div class="stat"><small>Índice</small><b id="rScore">—</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="search" class="panel">
+    <div class="card">
+      <div class="row spaced">
+        <div><h2>Atenção e pesquisa visual</h2><p class="muted">Localiza o alvo no meio de distratores.</p></div>
+        <select id="searchMode"><option value="numbers">Números</option><option value="symbols">Símbolos</option></select>
+      </div>
+      <div id="searchGame" class="hidden">
+        <div class="row spaced"><div>Alvo: <b id="searchTarget" style="font-size:30px"></b></div><div>Questão <b id="searchQ">1</b>/15</div></div>
+        <div id="searchGrid" class="grid"></div>
+      </div>
+      <div class="controls"><button id="searchStart" class="btn primary">Iniciar</button><button id="searchSave" class="btn good">Guardar</button></div>
+      <div id="searchMsg" class="notice">Mantém a precisão antes de acelerar.</div>
+      <div class="stats">
+        <div class="stat"><small>Acertos</small><b id="sAcc">—</b></div>
+        <div class="stat"><small>Tempo médio</small><b id="sAvg">—</b></div>
+        <div class="stat"><small>Melhor resposta</small><b id="sBest">—</b></div>
+        <div class="stat"><small>Índice</small><b id="sIdx">—</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pressure" class="panel">
+    <div class="card">
+      <h2>Reação sob pressão</h2>
+      <p class="muted">Os estímulos aparecem cada vez mais rapidamente. Toca na opção correspondente antes do próximo estímulo.</p>
+      <div id="pressureStim" class="centerBox"><div class="symbol">—</div></div>
+      <div id="pressureButtons" class="choiceGrid" style="grid-template-columns:repeat(4,1fr);margin-top:12px">
+        <button data-p="▲">▲</button><button data-p="●">●</button><button data-p="■">■</button><button data-p="◆">◆</button>
+      </div>
+      <div class="controls"><button id="pressureStart" class="btn primary">Iniciar 20 estímulos</button><button id="pressureSave" class="btn good">Guardar</button></div>
+      <div id="pressureMsg" class="notice">A cadência acelera gradualmente.</div>
+      <div class="stats">
+        <div class="stat"><small>Acertos</small><b id="pAcc">—</b></div>
+        <div class="stat"><small>Omissões</small><b id="pMiss">—</b></div>
+        <div class="stat"><small>Erros</small><b id="pErr">—</b></div>
+        <div class="stat"><small>Índice</small><b id="pScore">—</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="periph" class="panel">
+    <div class="card">
+      <h2>Perceção periférica + atenção dividida</h2>
+      <p class="muted">Mantém os olhos no número do centro. Tens duas tarefas em simultâneo: classificar o número central como PAR/ÍMPAR e detetar a seta lateral sem desviar o olhar.</p>
+      <div class="notice warnBox">
+        <b>Como fazer:</b> primeiro responde ao número central com <b>PAR</b> ou <b>ÍMPAR</b>. Em alguns momentos aparece também uma seta à esquerda ou à direita; quando isso acontecer, responde ao lado correto. O objetivo é manter o foco central e usar a visão periférica.
+      </div>
+      <div class="periphWrap" style="margin-top:12px">
+        <div id="leftSide" class="sideBox">·</div>
+        <div id="centerTask" class="centerBox"><div class="symbol">5</div></div>
+        <div id="rightSide" class="sideBox">·</div>
+      </div>
+
+      <div class="choiceGrid" style="grid-template-columns:1fr 1fr;margin-top:10px">
+        <button id="evenBtn">PAR</button><button id="oddBtn">ÍMPAR</button>
+      </div>
+
+      <div class="choiceGrid" style="grid-template-columns:1fr 1fr;margin-top:8px">
+        <button id="leftBtn">← Esquerda</button><button id="rightBtn">Direita →</button>
+      </div>
+
+      <div class="controls">
+        <button id="periphStart" class="btn primary">Iniciar 20 eventos</button>
+        <button id="periphSave" class="btn good">Guardar</button>
+      </div>
+
+      <div id="periphMsg" class="notice">Evita olhar diretamente para as laterais. Mantém os olhos no centro.</div>
+
+      <div class="stats">
+        <div class="stat"><small>Centro correto</small><b id="phCenter">—</b></div>
+        <div class="stat"><small>Periferia correta</small><b id="phSide">—</b></div>
+        <div class="stat"><small>Tempo lateral</small><b id="phTime">—</b></div>
+        <div class="stat"><small>Índice</small><b id="phScore">—</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stroop" class="panel">
+    <div class="card">
+      <h2>Stroop / controlo de interferência</h2>
+      <p class="muted">Responde à COR da palavra, não ao significado.</p>
+      <div id="stroopWord" class="stroopWord">VERDE</div>
+      <div id="stroopBtns" class="choiceGrid" style="grid-template-columns:repeat(4,1fr)">
+        <button data-c="red">Vermelho</button><button data-c="blue">Azul</button><button data-c="green">Verde</button><button data-c="orange">Laranja</button>
+      </div>
+      <div class="controls"><button id="stroopStart" class="btn primary">Iniciar 20 itens</button><button id="stroopSave" class="btn good">Guardar</button></div>
+      <div id="stroopMsg" class="notice">Tenta responder de forma rápida sem leres automaticamente a palavra.</div>
+      <div class="stats">
+        <div class="stat"><small>Acertos</small><b id="stAcc">—</b></div>
+        <div class="stat"><small>Erros</small><b id="stErr">—</b></div>
+        <div class="stat"><small>Tempo médio</small><b id="stTime">—</b></div>
+        <div class="stat"><small>Índice</small><b id="stScore">—</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="memory" class="panel">
+    <div class="card">
+      <h2>Memória de trabalho</h2>
+      <p class="muted">Memoriza a sequência e reproduz pela mesma ordem.</p>
+      <div id="memorySeq" class="memorySeq"></div>
+      <div id="memoryInput" class="choiceGrid hidden" style="grid-template-columns:repeat(5,1fr)"></div>
+      <div class="controls"><button id="memoryStart" class="btn primary">Iniciar</button><button id="memorySave" class="btn good">Guardar</button></div>
+      <div id="memoryMsg" class="notice">Começa com 3 elementos e aumenta progressivamente.</div>
+      <div class="stats">
+        <div class="stat"><small>Nível</small><b id="memLevel">3</b></div>
+        <div class="stat"><small>Acertos</small><b id="memAcc">0</b></div>
+        <div class="stat"><small>Erros</small><b id="memErr">0</b></div>
+        <div class="stat"><small>Índice</small><b id="memScore">—</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="coord" class="panel">
+    <div class="card">
+      <h2>Coordenação olho-mão</h2>
+      <p class="muted">Mantém o ponto azul próximo do alvo preto durante 20 segundos. No telemóvel, arrasta com o dedo.</p>
+      <div id="trackingBox" class="trackingBox"><div id="trackTarget" class="trackTarget"></div><div id="trackDot" class="trackDot"></div></div>
+      <div class="controls"><button id="coordStart" class="btn primary">Iniciar 20 s</button><button id="coordSave" class="btn good">Guardar</button></div>
+      <div id="coordMsg" class="notice">Quanto menor a distância média, melhor.</div>
+      <div class="stats">
+        <div class="stat"><small>Distância média</small><b id="cDist">—</b></div>
+        <div class="stat"><small>Tempo dentro do alvo</small><b id="cInside">—</b></div>
+        <div class="stat"><small>Duração</small><b id="cDur">—</b></div>
+        <div class="stat"><small>Índice</small><b id="cScore">—</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="personality" class="panel">
+    <div class="card">
+      <h2>Personalidade — banco alargado</h2>
+      <p class="muted">30 perguntas escolhidas aleatoriamente de um banco maior. Não existem respostas certas.</p>
+      <div class="controls"><button id="persStart" class="btn primary">Iniciar 30 perguntas</button><button id="persSave" class="btn good">Guardar</button></div>
+      <div id="persGame" class="hidden" style="margin-top:14px">
+        <div class="row spaced"><div>Pergunta <b id="persQ">1</b>/30</div><div id="persTimer" class="pill">0.0 s</div></div>
+        <div class="progress"><div id="persProg"></div></div>
+        <h3 id="persText" style="min-height:70px"></h3>
+        <div class="scale">
+          <button data-v="1">1<br><small>Discordo</small></button><button data-v="2">2</button><button data-v="3">3<br><small>Neutro</small></button><button data-v="4">4</button><button data-v="5">5<br><small>Concordo</small></button>
+        </div>
+      </div>
+      <div id="persResult" class="hidden notice"></div>
+    </div>
+  </section>
+
+  <section id="exam" class="panel">
+    <div class="card">
+      <div class="row spaced">
+        <div>
+          <h2>Simulação de exame</h2>
+          <p class="muted">Escolhe entre uma simulação rápida (~10 min) ou uma simulação completa (~45–60 min). Em ambos os casos, os resultados só aparecem no final.</p>
+        </div>
+        <div id="examTimer" class="pill" style="font-size:26px;font-weight:900">00:00</div>
+      </div>
+
+      <div id="examSetup">
+        <div class="moduleGrid" style="margin-top:14px">
+          <div class="moduleCard">
+            <h3>Exame rápido</h3>
+            <p class="muted">Duração estimada: ~10 minutos.</p>
+            <p>Inclui uma amostra equilibrada de antecipação, atenção/influência e consistência de personalidade.</p>
+            <button id="quickExamStart" class="btn primary">Iniciar exame rápido</button>
+          </div>
+          <div class="moduleCard">
+            <h3>Exame completo</h3>
+            <p class="muted">Duração estimada: ~45–60 minutos.</p>
+            <p>Versão longa com mais tentativas e menor previsibilidade, pensada para treinar resistência e consistência.</p>
+            <button id="fullExamStart" class="btn primary">Iniciar exame completo</button>
+          </div>
+        </div>
+        <div class="notice warnBox">
+          <b>Nota:</b> estas durações são uma aproximação de treino. A estrutura exata da avaliação real pode variar.
+        </div>
+      </div>
+
+      <div id="examArea" class="hidden"></div>
+      <div id="examResult" class="hidden"></div>
+    </div>
+  </section>
+
+  <section id="history" class="panel">
+    <div class="card">
+      <div class="row spaced"><div><h2>Histórico</h2><p class="muted">Guardado localmente neste dispositivo.</p></div><button id="clearHistory" class="btn danger">Apagar histórico</button></div>
+      <div class="chartWrap"><canvas id="historyChart" width="1000" height="320"></canvas></div>
+      <div style="overflow-x:auto;margin-top:14px"><table><thead><tr><th>Data</th><th>Treino</th><th>Resultado</th><th>Detalhe</th></tr></thead><tbody id="historyBody"></tbody></table></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const STORE='vmerTrainerV3';
+let history=[];try{history=JSON.parse(localStorage.getItem(STORE)||'[]')}catch(e){}
+function fmt(ts){return new Date(ts).toLocaleString('pt-PT',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'})}
+function saveStore(){localStorage.setItem(STORE,JSON.stringify(history));renderHistory();updateDash()}
+function addHistory(type,score,detail){history.push({ts:Date.now(),type,score,detail});if(history.length>250)history=history.slice(-250);saveStore()}
+$$('.tabs button').forEach(b=>b.addEventListener('click',()=>{$$('.tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');$$('.panel').forEach(p=>p.classList.remove('active'));$('#'+b.dataset.tab).classList.add('active');if(b.dataset.tab==='motion')drawMotionBase();if(b.dataset.tab==='history')renderHistory()}));
+function updateDash(){ $('#dashSessions').textContent=history.length;$('#dashBest').textContent=history.length?Math.max(...history.map(x=>x.score))+'/100':'—';const ex=history.filter(x=>x.type==='Simulação').slice(-1)[0];$('#dashExam').textContent=ex?ex.score+'/100':'—';let rec='Começa por fazer 1 sessão de Bolas, Reação e Atenção.';if(history.length>=4){const recent=history.slice(-8);const avg=recent.reduce((a,b)=>a+b.score,0)/recent.length;rec=avg<65?'Foca-te nos módulos em que ficas abaixo de 65/100 e usa sessões curtas e frequentes.':avg<80?'Estás num nível intermédio. Alterna módulos e começa a usar a simulação aleatória.':'Bom equilíbrio recente. Mantém consistência e evita treinar só o que já dominas.'}$('#recommendation').textContent=rec}
+
+// MOTION
+const mc=$('#motionCanvas'),mx=mc.getContext('2d');
+let mRAF=null,mStartTimer=null,mBall=null,mExit=null,mWait=false,mLast=0;
+let mStat={n:0,sum:0,pos:0,time:0},mMode='linear',mStarting=false;
+
+function MD(){return{w:900,h:420,l:342,r:657}}
+
+function drawMotionBase(){
+  const d=MD();
+  mx.clearRect(0,0,d.w,d.h);
+  mx.fillStyle='#f8fafc';
+  mx.fillRect(0,0,d.w,d.h);
+  mx.fillStyle='#e5e7eb';
+  mx.fillRect(d.l,0,d.r-d.l,d.h);
+
+  mx.strokeStyle='#cfd6e4';
+  mx.lineWidth=2;
+  mx.strokeRect(d.l,0,d.r-d.l,d.h);
+
+  mx.fillStyle='#667085';
+  mx.font='20px system-ui';
+  mx.textAlign='center';
+  mx.fillText('ZONA OCULTA',(d.l+d.r)/2,30);
+
+  mx.font='14px system-ui';
+  const txt=mMode==='time'
+    ? 'Toca no lado direito no momento em que achas que reaparece'
+    : 'Toca no ponto e no momento em que achas que reaparece';
+  mx.fillText(txt,780,395);
+}
+
+function drawCountdown(n){
+  drawMotionBase();
+  mx.fillStyle='#172033';
+  mx.font='700 64px system-ui';
+  mx.textAlign='center';
+  mx.fillText(String(n),150,225);
+}
+
+function beginMotionRun(){
+  const modes=['linear','diagonal','curve','sine','accel','time'];
+  mMode=$('#motionMode').value==='random'
+    ? modes[Math.floor(Math.random()*modes.length)]
+    : $('#motionMode').value;
+
+  const d=MD();
+  const y=80+Math.random()*260;
+  const vx=145+Math.random()*85;
+
+  let vy=0;
+  if(mMode==='diagonal' || mMode==='curve' || mMode==='accel' || mMode==='time'){
+    vy=(Math.random()*2-1)*65;
+  }
+
+  mBall={
+    x:55,
+    y:y,
+    vx:vx,
+    vy:vy,
+    t:0,
+    ay:(Math.random()*2-1)*38,
+    baseY:y,
+    phase:Math.random()*Math.PI*2
+  };
+
+  mExit=null;
+  mWait=false;
+  mStarting=false;
+  mLast=performance.now();
+  $('#motionMsg').textContent='Variante: '+mMode+'. Segue a bola até desaparecer.';
+  mRAF=requestAnimationFrame(motionStep);
+}
+
+function motionStart(){
+  cancelAnimationFrame(mRAF);
+  clearTimeout(mStartTimer);
+  mWait=false;
+  mExit=null;
+  mStarting=false;
+
+  // Início imediato, sem contagem decrescente.
+  beginMotionRun();
+}
+function motionStep(now){
+  if(!mBall) return;
+
+  const dt=Math.min(.025,(now-mLast)/1000);
+  mLast=now;
+  drawMotionBase();
+
+  const d=MD();
+  mBall.t+=dt;
+
+  if(mMode==='accel') mBall.vx=Math.min(330,mBall.vx+30*dt);
+  if(mMode==='curve') mBall.vy+=mBall.ay*dt;
+
+  mBall.x+=mBall.vx*dt;
+
+  if(mMode==='sine'){
+    mBall.y=mBall.baseY+62*Math.sin(mBall.t*2.0+mBall.phase);
+  }else{
+    mBall.y+=mBall.vy*dt;
+  }
+
+  // Clamping explícito para a bola nunca ficar fora do canvas.
+  if(mBall.y<18){
+    mBall.y=18;
+    mBall.vy=Math.abs(mBall.vy);
+  }
+  if(mBall.y>d.h-18){
+    mBall.y=d.h-18;
+    mBall.vy=-Math.abs(mBall.vy);
+  }
+
+  if(mBall.x>=d.r){
+    mExit={x:d.r,y:mBall.y,t:now};
+    mWait=true;
+    drawMotionBase();
+    $('#motionMsg').textContent='A bola desapareceu. Faz agora a tua previsão.';
+    return;
+  }
+
+  // A bola é sempre desenhada até entrar na zona oculta.
+  if(mBall.x<d.l){
+    mx.fillStyle='#111827';
+    mx.beginPath();
+    mx.arc(mBall.x,mBall.y,14,0,Math.PI*2);
+    mx.fill();
+
+    // halo subtil para ficar bem visível em ecrãs pequenos
+    mx.strokeStyle='#ffffff';
+    mx.lineWidth=3;
+    mx.stroke();
+  }
+
+  mRAF=requestAnimationFrame(motionStep);
+}
+
+mc.addEventListener('pointerdown',e=>{e.preventDefault();
+  if(mStarting) return;
+  if(!mWait||!mExit) return;
+
+  const r=mc.getBoundingClientRect();
+  const x=(e.clientX-r.left)*900/r.width;
+  const y=(e.clientY-r.top)*420/r.height;
+  const pe=mMode==='time'?0:Math.hypot(x-mExit.x,y-mExit.y);
+  const te=Math.abs(performance.now()-mExit.t);
+
+  const score=Math.max(0,Math.round(
+    100-(mMode==='time'
+      ? Math.min(100,te/15)
+      : (Math.min(58,pe/4.5)+Math.min(42,te/42)))
+  ));
+
+  mStat.n++;
+  mStat.sum+=score;
+  mStat.pos+=pe;
+  mStat.time+=te;
+
+  $('#mN').textContent=mStat.n;
+  $('#mScore').textContent=Math.round(mStat.sum/mStat.n)+'/100';
+  $('#mPos').textContent=Math.round(mStat.pos/mStat.n)+' px';
+  $('#mTime').textContent=Math.round(mStat.time/mStat.n)+' ms';
+
+  drawMotionBase();
+
+  if(mMode!=='time'){
+    mx.fillStyle='#18864b';
+    mx.beginPath();
+    mx.arc(mExit.x,mExit.y,10,0,Math.PI*2);
+    mx.fill();
+
+    mx.fillStyle='#c83c36';
+    mx.beginPath();
+    mx.arc(x,y,10,0,Math.PI*2);
+    mx.fill();
+  }
+
+  $('#motionMsg').innerHTML=
+    '<b>'+score+'/100</b> · erro '+Math.round(pe)+' px · '+Math.round(te)+' ms. '+
+    '<span class="muted">Carrega em “Nova tentativa” para aparecer outra bola.</span>';
+
+  mWait=false;
+  mBall=null;
+});
+
+$('#motionStart').onclick=motionStart;
+
+$('#motionReset').onclick=()=>{
+  cancelAnimationFrame(mRAF);
+  clearTimeout(mStartTimer);
+  mStarting=false;
+  mWait=false;
+  mBall=null;
+  mExit=null;
+  mStat={n:0,sum:0,pos:0,time:0};
+  $('#mN').textContent='0';
+  $('#mScore').textContent=$('#mPos').textContent=$('#mTime').textContent='—';
+  $('#motionMsg').textContent='Sessão reposta. Carrega em “Nova tentativa”.';
+  drawMotionBase();
+};
+
+$('#motionSave').onclick=()=>{
+  if(!mStat.n) return alert('Faz algumas tentativas primeiro.');
+  addHistory('Bolas',Math.round(mStat.sum/mStat.n),mStat.n+' tentativas · '+Math.round(mStat.time/mStat.n)+' ms');
+  alert('Guardado.');
+};
+
+drawMotionBase();
+
+
+// TEMPORAL ANTICIPATION V4.5
+const tc=$('#timingCanvas'),tx=tc.getContext('2d');
+let tm={errors:[],running:false,answerAt:0,raf:null,timer:null,sessionEnd:0,sessionTimer:null,mode:'ttc',difficulty:1};
+
+function tmBase(){
+  tx.clearRect(0,0,900,360); tx.fillStyle='#f8fafc';tx.fillRect(0,0,900,360);
+}
+function tmStats(){
+  const n=tm.errors.length; $('#tmN').textContent=n;
+  if(!n){$('#tmAbs').textContent=$('#tmBias').textContent=$('#tmScore').textContent='—';return}
+  const abs=Math.round(tm.errors.reduce((a,b)=>a+Math.abs(b),0)/n);
+  const bias=Math.round(tm.errors.reduce((a,b)=>a+b,0)/n);
+  const score=Math.max(0,Math.round(100-Math.min(100,abs/7)));
+  $('#tmAbs').textContent=abs+' ms';
+  $('#tmBias').textContent=(bias>0?'+':'')+bias+' ms';
+  $('#tmScore').textContent=score+'/100';
+  const late=tm.errors.filter(e=>e>0).length/n*100;
+  $('#timingFeedback').innerHTML='<b>Tendência:</b> '+(Math.abs(bias)<100?'bem calibrada':bias>0?'responder tarde':'responder cedo')+
+    '. '+Math.round(late)+'% das respostas foram tardias. '+(abs<250?'Excelente controlo temporal.':abs<450?'Boa evolução; tenta aproximar de 250 ms.':'Prioriza este treino até baixares consistentemente dos 450 ms.');
+}
+function tmRecord(err){
+  tm.errors.push(err);tm.running=false;$('#timingRespond').disabled=true;tmStats();
+  const a=Math.abs(err);
+  $('#timingInstruction').innerHTML='<b>'+(err>0?'Tarde':'Cedo')+' '+Math.round(a)+' ms.</b> '+(a<200?'Muito bom.':a<400?'Bom.':'Repete tentando manter mentalmente a velocidade.');
+  if(tm.sessionEnd && Date.now()<tm.sessionEnd) setTimeout(tmStart,700);
+}
+function tmStart(){
+  cancelAnimationFrame(tm.raf);clearTimeout(tm.timer);tmBase();
+  tm.mode=$('#timingMode').value;tm.running=true;$('#timingRespond').disabled=false;
+  const now=performance.now();
+  const mode=tm.mode;
+
+  if(mode==='rhythm'){
+    let k=0; const interval=650+Math.random()*500;
+    $('#timingInstruction').textContent='Observa 4 batimentos. Depois carrega RESPONDER AGORA quando deveria ocorrer o 5.º.';
+    $('#timingRespond').disabled=true;
+    function beat(){
+      tmBase();tx.beginPath();tx.arc(450,180,32,0,Math.PI*2);tx.fill();
+      setTimeout(()=>{tmBase();k++; if(k<4)setTimeout(beat,Math.max(80,interval-120)); else {tm.answerAt=performance.now()+interval;$('#timingRespond').disabled=false;}},120);
+    } beat(); return;
+  }
+
+  if(mode==='duration'){
+    const dur=700+Math.random()*1400;
+    $('#timingInstruction').textContent='Memoriza quanto tempo o círculo fica visível. Depois reproduz esse intervalo com RESPONDER AGORA.';
+    tx.beginPath();tx.arc(450,180,34,0,Math.PI*2);tx.fill();
+    $('#timingRespond').disabled=true;
+    setTimeout(()=>{tmBase();tm.answerAt=performance.now()+dur;$('#timingRespond').disabled=false;$('#timingInstruction').textContent='Agora reproduz a duração: carrega quando achares que passou o mesmo tempo.';},dur);
+    return;
+  }
+
+  if(mode==='race'){
+    $('#timingRespond').disabled=true;
+    const v1=110+Math.random()*120,v2=110+Math.random()*120,x1=100,x2=100;
+    const t1=(700-x1)/v1,t2=(700-x2)/v2;
+    $('#timingInstruction').textContent='Qual das duas bolas chegará primeiro à linha? Clica na metade superior para A ou inferior para B.';
+    let st=performance.now();
+    function f(n){
+      tmBase();tx.strokeRect(700,30,2,300);
+      let s=(n-st)/1000;
+      tx.beginPath();tx.arc(Math.min(700,x1+v1*s),115,15,0,Math.PI*2);tx.fill();
+      tx.beginPath();tx.arc(Math.min(700,x2+v2*s),245,15,0,Math.PI*2);tx.fill();
+      if(s<Math.min(t1,t2)*.55)tm.raf=requestAnimationFrame(f);
+    } tm.raf=requestAnimationFrame(f);
+    tc.onpointerdown=e=>{const r=tc.getBoundingClientRect(),y=(e.clientY-r.top)*360/r.height;const pick=y<180?1:2;tmRecord(pick===(t1<t2?1:2)?0:700);tc.onpointerdown=null};
+    return;
+  }
+
+  let x=70,y=180,v=130+Math.random()*120,hiddenStart=mode==='occlusion'?(480-Math.min(180,tm.difficulty*25)):390,target=760;
+  let accel=mode==='speed'?(Math.random()<.5?35:-25):0;
+  let start=performance.now(),hideTime=null,predicted=null;
+  $('#timingInstruction').textContent=
+    mode==='intercept'?'Segue a bola. Quando desaparecer, responde no instante em que calculas que cruza a linha vertical.':
+    mode==='speed'?'A velocidade muda antes da ocultação. Responde quando calculas que chega à linha.':
+    mode==='occlusion'?'A zona invisível aumenta progressivamente. Responde quando a bola chega à linha.':
+    mode==='tunnel'?'A bola entra no túnel. Responde quando calculas que sai do outro lado.':
+    'Segue a velocidade. Depois da ocultação, responde quando calculas que a bola atinge a linha.';
+
+  function frame(n){
+    const dt=(n-start)/1000;
+    let curV=v;
+    let xx=x+v*dt+(accel?0.5*accel*dt*dt:0);
+    if(accel)curV=v+accel*dt;
+    tmBase();
+    tx.fillStyle='#e5e7eb';tx.fillRect(hiddenStart,0,target-hiddenStart,360);
+    tx.strokeStyle='#111827';tx.lineWidth=3;tx.beginPath();tx.moveTo(target,25);tx.lineTo(target,335);tx.stroke();
+    if(xx<hiddenStart){tx.fillStyle='#111827';tx.beginPath();tx.arc(xx,y,14,0,Math.PI*2);tx.fill();}
+    else if(!hideTime){
+      hideTime=n;
+      // Solve remaining travel with current velocity/acceleration.
+      const rem=target-hiddenStart;
+      let sec;
+      if(Math.abs(accel)<1)sec=rem/curV;
+      else {const disc=curV*curV+2*accel*rem;sec=(-curV+Math.sqrt(Math.max(0,disc)))/accel;if(!(sec>0))sec=rem/curV;}
+      tm.answerAt=n+sec*1000;
+    }
+    if(xx<target)tm.raf=requestAnimationFrame(frame);
+  }
+  tm.raf=requestAnimationFrame(frame);
+}
+$('#timingStart').onclick=tmStart;
+$('#timingRespond').onclick=()=>{if(!tm.running||!tm.answerAt)return;tmRecord(performance.now()-tm.answerAt);tm.difficulty=Math.min(7,tm.difficulty+(Math.abs(tm.errors.at(-1))<350?.25:-.08));};
+$('#timingSession').onclick=()=>{
+  tm.sessionEnd=Date.now()+10*60*1000;tm.errors=[];tmStats();tmStart();
+  $('#timingFeedback').innerHTML='<b>Sessão automática iniciada.</b> Durante 10 minutos, as tentativas avançam automaticamente.';
+};
+$('#timingSave').onclick=()=>{
+  if(!tm.errors.length)return;
+  const abs=Math.round(tm.errors.reduce((a,b)=>a+Math.abs(b),0)/tm.errors.length);
+  const score=Math.max(0,Math.round(100-Math.min(100,abs/7)));
+  addHistory('Antecipação temporal',score,tm.errors.length+' tentativas · '+abs+' ms erro absoluto médio');
+};
+
+
+// GYROSCOPE / MOTION TRAINING V4.5
+let gy={
+  enabled:false, mode:'lr', beta:0, gamma:0, baseBeta:0, baseGamma:0,
+  waiting:false, target:null, stimAt:0, hits:0, errors:0, rts:[], count:0, total:12,
+  timer:null, quickEnd:0, lastMoveAt:0
+};
+
+function gyUpdateStats(){
+  $('#gyHits').textContent=gy.hits;
+  $('#gyErr').textContent=gy.errors;
+  const avg=gy.rts.length?Math.round(gy.rts.reduce((a,b)=>a+b,0)/gy.rts.length):null;
+  $('#gyRt').textContent=avg?avg+' ms':'—';
+  const acc=(gy.hits+gy.errors)?gy.hits/(gy.hits+gy.errors):0;
+  const speed=avg?Math.max(0,1-(avg-250)/1200):0;
+  const score=Math.round((acc*.7+speed*.3)*100);
+  $('#gyScore').textContent=(gy.hits+gy.errors)?score+'/100':'—';
+}
+
+function gyPermission(){
+  const done=()=>{
+    window.addEventListener('deviceorientation',e=>{
+      if(typeof e.beta==='number') gy.beta=e.beta;
+      if(typeof e.gamma==='number') gy.gamma=e.gamma;
+      gyCheck();
+      gyFollowUpdate();
+    });
+    gy.enabled=true;
+    gy.baseBeta=gy.beta; gy.baseGamma=gy.gamma;
+    $('#gyroStart').disabled=false;
+    $('#gyroSupport').innerHTML='<b>Sensores ativos.</b> Mantém o dispositivo aproximadamente na posição atual para começar.';
+    $('#gyroPermission').textContent='Sensores ativos';
+    $('#gyroPermission').disabled=true;
+  };
+
+  try{
+    if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
+      DeviceOrientationEvent.requestPermission().then(state=>{
+        if(state==='granted') done();
+        else $('#gyroSupport').innerHTML='<b>Permissão não concedida.</b> No iPhone/iPad, autoriza o acesso aos sensores para usar este módulo.';
+      }).catch(()=>$('#gyroSupport').textContent='Não foi possível ativar os sensores.');
+    } else if('DeviceOrientationEvent' in window){
+      done();
+    } else {
+      $('#gyroSupport').innerHTML='<b>Este dispositivo/navegador não disponibiliza orientação.</b> Usa Safari num iPhone/iPad compatível.';
+    }
+  }catch(e){
+    $('#gyroSupport').textContent='Erro ao pedir acesso aos sensores.';
+  }
+}
+$('#gyroPermission').onclick=gyPermission;
+
+function gyDelta(){
+  return {x:gy.gamma-gy.baseGamma, y:gy.beta-gy.baseBeta};
+}
+function gyDirFromDelta(){
+  const d=gyDelta(), ax=Math.abs(d.x), ay=Math.abs(d.y), th=10;
+  if(ax<th && ay<th)return null;
+  if(ax>=ay)return d.x<0?'L':'R';
+  return d.y<0?'U':'D';
+}
+function gyCheck(){
+  if(!gy.enabled||!gy.waiting)return;
+  const mode=gy.mode;
+  if(mode==='stability'||mode==='follow')return;
+  const dir=gyDirFromDelta();
+  if(!dir)return;
+
+  const now=performance.now();
+  if(now-gy.lastMoveAt<350)return;
+  gy.lastMoveAt=now;
+
+  if(mode==='gonogo' && gy.target==='NO'){
+    gy.errors++;
+    gy.waiting=false;
+    $('#gyroFeedback').innerHTML='<b>Erro:</b> mexeste num estímulo No-Go.';
+    gyUpdateStats();
+    setTimeout(gyNext,650);
+    return;
+  }
+
+  if(dir===gy.target){
+    gy.hits++;
+    gy.rts.push(now-gy.stimAt);
+    gy.waiting=false;
+    $('#gyroFeedback').innerHTML='<b>Certo.</b> '+Math.round(now-gy.stimAt)+' ms. Volta ao centro.';
+  }else{
+    gy.errors++;
+    gy.waiting=false;
+    $('#gyroFeedback').innerHTML='<b>Direção errada.</b> Volta ao centro.';
+  }
+  gyUpdateStats();
+  setTimeout(gyNext,650);
+}
+
+function gyNext(){
+  if(gy.quickEnd && Date.now()>=gy.quickEnd){gyFinish();return}
+  if(!gy.quickEnd && gy.count>=gy.total){gyFinish();return}
+
+  gy.mode=$('#gyroMode').value;
+  gy.baseBeta=gy.beta; gy.baseGamma=gy.gamma;
+  gy.count++;
+
+  if(gy.mode==='stability'){gyStability();return}
+  if(gy.mode==='follow'){gyFollowStart();return}
+
+  const dirs=gy.mode==='lr'?['L','R']:['L','R','U','D'];
+  if(gy.mode==='gonogo' && Math.random()<.28){
+    gy.target='NO';
+    $('#gyroStimulus').textContent='●';
+    $('#gyroStimulus').style.color='#ef4444';
+  }else{
+    gy.target=dirs[Math.floor(Math.random()*dirs.length)];
+    const sym={L:'←',R:'→',U:'↑',D:'↓'}[gy.target];
+    $('#gyroStimulus').textContent=sym;
+    $('#gyroStimulus').style.color='';
+  }
+
+  gy.waiting=false;
+  $('#gyroFeedback').textContent='AGUARDA…';
+  clearTimeout(gy.timer);
+  gy.timer=setTimeout(()=>{
+    gy.stimAt=performance.now();
+    gy.waiting=true;
+    $('#gyroFeedback').textContent=gy.target==='NO'?'NÃO MEXAS.':'MOVE!';
+    if(gy.target==='NO'){
+      setTimeout(()=>{
+        if(gy.waiting){
+          gy.hits++;gy.waiting=false;gyUpdateStats();
+          $('#gyroFeedback').innerHTML='<b>Certo:</b> não mexeste.';
+          setTimeout(gyNext,500);
+        }
+      },1100);
+    }
+  },700+Math.random()*1600);
+}
+
+function gyStability(){
+  $('#gyroStimulus').textContent='MANTÉM';
+  $('#gyroBall').style.display='block';
+  $('#gyroTarget').style.display='block';
+  let start=performance.now(), bad=0, samples=0;
+  function sample(){
+    if(gy.mode!=='stability')return;
+    const d=gyDelta(),dist=Math.hypot(d.x,d.y);samples++;
+    if(dist>6)bad++;
+    const b=$('#gyroBall');
+    b.style.left='calc(50% - 17px + '+Math.max(-120,Math.min(120,d.x*4))+'px)';
+    b.style.top='calc(50% - 17px + '+Math.max(-120,Math.min(120,d.y*4))+'px)';
+    if(performance.now()-start<5000) requestAnimationFrame(sample);
+    else{
+      $('#gyroBall').style.display='none';$('#gyroTarget').style.display='none';
+      const ok=bad/samples<.2;
+      if(ok)gy.hits++;else gy.errors++;
+      gyUpdateStats();
+      $('#gyroFeedback').innerHTML='<b>Estabilidade:</b> '+Math.round((1-bad/samples)*100)+'% dentro da zona.';
+      setTimeout(gyNext,650);
+    }
+  } sample();
+}
+
+function gyFollowStart(){
+  $('#gyroStimulus').textContent='SEGUE';
+  $('#gyroBall').style.display='block';
+  $('#gyroTarget').style.display='block';
+  gy.followStart=performance.now();gy.followError=0;gy.followSamples=0;
+  gy.followTarget={x:(Math.random()*2-1)*70,y:(Math.random()*2-1)*70};
+  const t=$('#gyroTarget');
+  t.style.left='calc(50% - 42px + '+gy.followTarget.x+'px)';
+  t.style.top='calc(50% - 42px + '+gy.followTarget.y+'px)';
+  $('#gyroFeedback').textContent='Inclina o dispositivo para levar a bola ao centro do alvo.';
+  setTimeout(()=>{
+    const avg=gy.followSamples?gy.followError/gy.followSamples:999;
+    if(avg<38)gy.hits++;else gy.errors++;
+    gyUpdateStats();
+    $('#gyroFeedback').innerHTML='<b>Precisão média:</b> '+Math.round(avg)+' px.';
+    $('#gyroBall').style.display='none';$('#gyroTarget').style.display='none';
+    setTimeout(gyNext,650);
+  },5000);
+}
+function gyFollowUpdate(){
+  if(gy.mode!=='follow'||!gy.followStart)return;
+  const d=gyDelta(), bx=Math.max(-120,Math.min(120,d.x*5)), by=Math.max(-120,Math.min(120,d.y*5));
+  const b=$('#gyroBall');
+  b.style.left='calc(50% - 17px + '+bx+'px)';
+  b.style.top='calc(50% - 17px + '+by+'px)';
+  const e=Math.hypot(bx-gy.followTarget.x,by-gy.followTarget.y);
+  gy.followError+=e;gy.followSamples++;
+}
+
+function gyStart(){
+  if(!gy.enabled){$('#gyroSupport').textContent='Ativa primeiro os sensores de movimento.';return}
+  gy.quickEnd=0;gy.count=0;gy.hits=0;gy.errors=0;gy.rts=[];gyUpdateStats();
+  gyNext();
+}
+function gyFinish(){
+  clearTimeout(gy.timer);gy.waiting=false;
+  $('#gyroStimulus').textContent='✓';
+  $('#gyroFeedback').innerHTML='<b>Sessão concluída.</b> '+gy.hits+' acertos e '+gy.errors+' erros.';
+}
+$('#gyroStart').onclick=gyStart;
+$('#gyroQuick').onclick=()=>{
+  if(!gy.enabled){$('#gyroSupport').textContent='Ativa primeiro os sensores de movimento.';return}
+  gy.quickEnd=Date.now()+5*60*1000;gy.count=0;gy.hits=0;gy.errors=0;gy.rts=[];gyUpdateStats();gyNext();
+  $('#gyroFeedback').innerHTML='<b>Sessão rápida de 5 min iniciada.</b>';
+};
+$('#gyroSave').onclick=()=>{
+  if(!(gy.hits+gy.errors))return;
+  const avg=gy.rts.length?Math.round(gy.rts.reduce((a,b)=>a+b,0)/gy.rts.length):0;
+  const acc=gy.hits/(gy.hits+gy.errors);
+  const speed=avg?Math.max(0,1-(avg-250)/1200):0;
+  const score=Math.round((acc*.7+speed*.3)*100);
+  addHistory('Movimento / giroscópio',score,gy.hits+' acertos · '+gy.errors+' erros'+(avg?' · '+avg+' ms':''));
+};
+
+// REACTION
+let r={running:false,n:0,acc:0,err:0,times:[],timer:null,go:false,target:false,last:null};
+function reactionNext(){if(r.n>=12){reactionFinish();return}$('#reactionPad').className='';$('#reactionText').textContent='…';r.go=false;clearTimeout(r.timer);r.timer=setTimeout(()=>{const mode=$('#reactionMode').value;r.n++;let target=true,label='●',cls='go';if(mode==='selective'){target=Math.random()<.65;label=target?'●':'▲';cls=target?'go':'nogo'}if(mode==='nogo'){target=Math.random()<.7;label=target?'VERDE':'VERMELHO';cls=target?'go':'nogo'}r.target=target;r.go=true;r.last=performance.now();$('#reactionPad').classList.add(cls);$('#reactionText').textContent=label;if(!target){setTimeout(()=>{if(r.go){r.go=false;reactionNext()}},800)}},700+Math.random()*1500)}
+function reactionPress(){if(!r.running)return;if(!r.go){r.err++;return}if(r.target){r.acc++;r.times.push(performance.now()-r.last)}else r.err++;r.go=false;reactionNext()}
+$('#reactionPad').addEventListener('pointerdown',reactionPress);
+$('#reactionStart').onclick=()=>{r={running:true,n:0,acc:0,err:0,times:[],timer:null,go:false,target:false,last:null};reactionNext()}
+function reactionFinish(){r.running=false;clearTimeout(r.timer);const avg=r.times.length?Math.round(r.times.reduce((a,b)=>a+b,0)/r.times.length):9999,score=Math.max(0,Math.round((r.acc/12)*75+Math.max(0,1-(avg-250)/900)*25-r.err*3));$('#rAcc').textContent=r.acc+'/12';$('#rErr').textContent=r.err;$('#rTime').textContent=(avg<9000?avg+' ms':'—');$('#rScore').textContent=score+'/100';r.score=score;$('#reactionText').textContent='Fim';$('#reactionPad').className='';}
+$('#reactionSave').onclick=()=>{if(r.score==null)return alert('Conclui o treino primeiro.');addHistory('Reação',r.score,r.acc+'/12 · '+Math.round((r.times.reduce((a,b)=>a+b,0)/(r.times.length||1)))+' ms');alert('Guardado.')};
+
+// SEARCH
+let sh={q:0,acc:0,times:[],start:0,score:null};
+function searchQuestion(){if(sh.q>=15){searchFinish();return}const mode=$('#searchMode').value,g=$('#searchGrid');g.innerHTML='';let target;if(mode==='numbers'){target=10+Math.floor(Math.random()*890);$('#searchTarget').textContent=target;let vals=new Set([target]);while(vals.size<35)vals.add(10+Math.floor(Math.random()*890));[...vals].sort(()=>Math.random()-.5).forEach(v=>{let b=document.createElement('button');b.textContent=v;b.onclick=()=>searchPick(v===target);g.appendChild(b)})}else{const sy=['▲','●','■','◆','✚','★'];target=sy[Math.floor(Math.random()*sy.length)];$('#searchTarget').textContent=target;let arr=Array.from({length:35},()=>sy[Math.floor(Math.random()*sy.length)]);arr[Math.floor(Math.random()*35)]=target;arr.forEach(v=>{let b=document.createElement('button');b.textContent=v;b.style.fontSize='24px';b.onclick=()=>searchPick(v===target);g.appendChild(b)})}g.style.gridTemplateColumns='repeat(5,minmax(0,1fr))';$('#searchQ').textContent=sh.q+1;sh.start=performance.now()}
+function searchPick(ok){sh.times.push(performance.now()-sh.start);if(ok)sh.acc++;sh.q++;searchQuestion()}
+$('#searchStart').onclick=()=>{sh={q:0,acc:0,times:[],start:0,score:null};$('#searchGame').classList.remove('hidden');searchQuestion()}
+function searchFinish(){const avg=Math.round(sh.times.reduce((a,b)=>a+b,0)/sh.times.length),best=Math.round(Math.min(...sh.times)),score=Math.max(0,Math.round((sh.acc/15)*75+Math.max(0,1-(avg-600)/3500)*25));sh.score=score;$('#sAcc').textContent=sh.acc+'/15';$('#sAvg').textContent=avg+' ms';$('#sBest').textContent=best+' ms';$('#sIdx').textContent=score+'/100';$('#searchGame').classList.add('hidden')}
+$('#searchSave').onclick=()=>{if(sh.score==null)return alert('Conclui o treino primeiro.');addHistory('Atenção',sh.score,sh.acc+'/15');alert('Guardado.')};
+
+// PRESSURE
+let pr={i:0,acc:0,err:0,miss:0,target:null,answered:false,timer:null,score:null};const psym=['▲','●','■','◆'];
+function pressureNext(){if(pr.i>=20){pressureFinish();return}pr.target=psym[Math.floor(Math.random()*4)];pr.answered=false;$('#pressureStim .symbol').textContent=pr.target;const interval=Math.max(650,1500-pr.i*40);clearTimeout(pr.timer);pr.timer=setTimeout(()=>{if(!pr.answered)pr.miss++;pr.i++;pressureNext()},interval)}
+$('#pressureButtons').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||pr.i>=20||pr.answered)return;pr.answered=true;if(b.dataset.p===pr.target)pr.acc++;else pr.err++;clearTimeout(pr.timer);pr.i++;setTimeout(pressureNext,100)})
+$('#pressureStart').onclick=()=>{pr={i:0,acc:0,err:0,miss:0,target:null,answered:false,timer:null,score:null};pressureNext()}
+function pressureFinish(){clearTimeout(pr.timer);pr.score=Math.max(0,Math.round((pr.acc/20)*100-pr.err*2-pr.miss*3));$('#pAcc').textContent=pr.acc+'/20';$('#pMiss').textContent=pr.miss;$('#pErr').textContent=pr.err;$('#pScore').textContent=pr.score+'/100';$('#pressureStim .symbol').textContent='Fim'}
+$('#pressureSave').onclick=()=>{if(pr.score==null)return alert('Conclui o treino primeiro.');addHistory('Pressão',pr.score,pr.acc+'/20');alert('Guardado.')};
+
+// PERIPHERAL / ATENÇÃO DIVIDIDA
+let ph={
+  i:0,
+  centerCorrect:0,
+  centerErrors:0,
+  sideCorrect:0,
+  sideErrors:0,
+  sideEvents:0,
+  sideTimes:[],
+  number:0,
+  side:null,
+  sideStart:0,
+  sideTimer:null,
+  eventTimer:null,
+  centerAnswered:false,
+  sideAnswered:false,
+  active:false,
+  score:null
+};
+
+function periphNext(){
+  if(ph.i>=20){periphFinish();return}
+
+  clearTimeout(ph.sideTimer);
+  clearTimeout(ph.eventTimer);
+
+  ph.number=Math.floor(Math.random()*10);
+  ph.centerAnswered=false;
+  ph.sideAnswered=false;
+  ph.active=true;
+  ph.side=null;
+
+  $('#centerTask .symbol').textContent=ph.number;
+  $('#leftSide').textContent='·';
+  $('#rightSide').textContent='·';
+  $('#periphMsg').textContent='Responde PAR/ÍMPAR mantendo os olhos no centro. Se surgir uma seta lateral, responde também ao lado.';
+
+  // Cerca de 70% dos eventos têm estímulo periférico.
+  const hasSide=Math.random()<0.70;
+  if(hasSide){
+    ph.sideEvents++;
+    setTimeout(()=>{
+      if(!ph.active) return;
+      ph.side=Math.random()<0.5?'L':'R';
+      ph.sideStart=performance.now();
+      if(ph.side==='L'){
+        $('#leftSide').textContent='←';
+      } else {
+        $('#rightSide').textContent='→';
+      }
+
+      ph.sideTimer=setTimeout(()=>{
+        if(ph.active && !ph.sideAnswered){
+          ph.sideErrors++;
+          ph.sideAnswered=true;
+          maybeFinishPeriphEvent();
+        }
+      },1100);
+    },300+Math.random()*500);
+  } else {
+    ph.sideAnswered=true;
+  }
+
+  // Limite total por evento.
+  ph.eventTimer=setTimeout(()=>{
+    if(!ph.centerAnswered){
+      ph.centerErrors++;
+      ph.centerAnswered=true;
+    }
+    if(hasSide && !ph.sideAnswered){
+      ph.sideErrors++;
+      ph.sideAnswered=true;
+    }
+    maybeFinishPeriphEvent();
+  },1800);
+}
+
+function periphCenterPress(kind){
+  if(!ph.active || ph.centerAnswered) return;
+  const correct=(ph.number%2===0 && kind==='even') || (ph.number%2!==0 && kind==='odd');
+  if(correct) ph.centerCorrect++;
+  else ph.centerErrors++;
+  ph.centerAnswered=true;
+  maybeFinishPeriphEvent();
+}
+
+function periphSidePress(side){
+  if(!ph.active) return;
+
+  if(ph.side===null){
+    ph.sideErrors++;
+    return;
+  }
+
+  if(ph.sideAnswered) return;
+
+  ph.sideTimes.push(performance.now()-ph.sideStart);
+  if(side===ph.side) ph.sideCorrect++;
+  else ph.sideErrors++;
+
+  ph.sideAnswered=true;
+  clearTimeout(ph.sideTimer);
+  maybeFinishPeriphEvent();
+}
+
+function maybeFinishPeriphEvent(){
+  if(!ph.active) return;
+  if(!ph.centerAnswered || !ph.sideAnswered) return;
+
+  ph.active=false;
+  clearTimeout(ph.sideTimer);
+  clearTimeout(ph.eventTimer);
+
+  ph.i++;
+
+  $('#leftSide').textContent='·';
+  $('#rightSide').textContent='·';
+
+  setTimeout(periphNext,250);
+}
+
+$('#evenBtn').onclick=()=>periphCenterPress('even');
+$('#oddBtn').onclick=()=>periphCenterPress('odd');
+$('#leftBtn').onclick=()=>periphSidePress('L');
+$('#rightBtn').onclick=()=>periphSidePress('R');
+
+$('#periphStart').onclick=()=>{
+  ph={
+    i:0,
+    centerCorrect:0,
+    centerErrors:0,
+    sideCorrect:0,
+    sideErrors:0,
+    sideEvents:0,
+    sideTimes:[],
+    number:0,
+    side:null,
+    sideStart:0,
+    sideTimer:null,
+    eventTimer:null,
+    centerAnswered:false,
+    sideAnswered:false,
+    active:false,
+    score:null
+  };
+  $('#phCenter').textContent='—';
+  $('#phSide').textContent='—';
+  $('#phTime').textContent='—';
+  $('#phScore').textContent='—';
+  periphNext();
+};
+
+function periphFinish(){
+  clearTimeout(ph.sideTimer);
+  clearTimeout(ph.eventTimer);
+  ph.active=false;
+
+  const avg=ph.sideTimes.length
+    ? Math.round(ph.sideTimes.reduce((a,b)=>a+b,0)/ph.sideTimes.length)
+    : 9999;
+
+  const centerRate=ph.centerCorrect/20;
+  const sideRate=ph.sideEvents ? ph.sideCorrect/ph.sideEvents : 0;
+
+  // Peso maior para exatidão, menor para velocidade.
+  const speedBonus = avg<9000 ? Math.max(0,1-(avg-300)/1000) : 0;
+  ph.score=Math.max(0,Math.min(100,Math.round(
+    centerRate*45 +
+    sideRate*40 +
+    speedBonus*15 -
+    Math.min(15,ph.sideErrors*1.5)
+  )));
+
+  $('#phCenter').textContent=ph.centerCorrect+'/20';
+  $('#phSide').textContent=ph.sideCorrect+'/'+ph.sideEvents;
+  $('#phTime').textContent=(avg<9000?avg+' ms':'—');
+  $('#phScore').textContent=ph.score+'/100';
+
+  $('#periphMsg').innerHTML=
+    '<b>Fim.</b> Centro: '+ph.centerCorrect+'/20 · Periferia: '+ph.sideCorrect+'/'+ph.sideEvents+
+    (avg<9000?' · tempo lateral médio '+avg+' ms':'');
+}
+
+$('#periphSave').onclick=()=>{
+  if(ph.score==null) return alert('Conclui o treino primeiro.');
+  addHistory(
+    'Periférica',
+    ph.score,
+    'Centro '+ph.centerCorrect+'/20 · periferia '+ph.sideCorrect+'/'+ph.sideEvents
+  );
+  alert('Guardado.');
+};
+
+// STROOP
+let st={i:0,acc:0,err:0,times:[],start:0,target:null,score:null};const colors=[['red','VERMELHO'],['blue','AZUL'],['green','VERDE'],['orange','LARANJA']];
+function stroopNext(){if(st.i>=20){stroopFinish();return}const word=colors[Math.floor(Math.random()*4)],col=colors[Math.floor(Math.random()*4)];$('#stroopWord').textContent=word[1];$('#stroopWord').style.color=col[0];st.target=col[0];st.start=performance.now()}
+$('#stroopBtns').addEventListener('click',e=>{const b=e.target.closest('button');if(!b||st.i>=20)return;st.times.push(performance.now()-st.start);if(b.dataset.c===st.target)st.acc++;else st.err++;st.i++;stroopNext()})
+$('#stroopStart').onclick=()=>{st={i:0,acc:0,err:0,times:[],start:0,target:null,score:null};stroopNext()}
+function stroopFinish(){const avg=Math.round(st.times.reduce((a,b)=>a+b,0)/st.times.length);st.score=Math.max(0,Math.round((st.acc/20)*80+Math.max(0,1-(avg-450)/1500)*20-st.err));$('#stAcc').textContent=st.acc+'/20';$('#stErr').textContent=st.err;$('#stTime').textContent=avg+' ms';$('#stScore').textContent=st.score+'/100';$('#stroopWord').textContent='FIM';$('#stroopWord').style.color='#172033'}
+$('#stroopSave').onclick=()=>{if(st.score==null)return alert('Conclui o treino primeiro.');addHistory('Stroop',st.score,st.acc+'/20');alert('Guardado.')};
+
+// MEMORY
+let mem={level:3,acc:0,err:0,seq:[],input:[],score:null};
+function memoryRound(){mem.seq=Array.from({length:mem.level},()=>Math.floor(Math.random()*10));mem.input=[];$('#memoryInput').classList.add('hidden');$('#memorySeq').innerHTML=mem.seq.map(v=>'<div class="memoryChip">'+v+'</div>').join('');setTimeout(()=>{$('#memorySeq').innerHTML='<div class="muted">Agora reproduz a sequência.</div>';const g=$('#memoryInput');g.innerHTML='';for(let v=0;v<=9;v++){let b=document.createElement('button');b.textContent=v;b.onclick=()=>memoryPick(v);g.appendChild(b)}g.classList.remove('hidden')},900+mem.level*220)}
+function memoryPick(v){mem.input.push(v);if(mem.input.length===mem.seq.length){const ok=mem.input.every((x,i)=>x===mem.seq[i]);if(ok){mem.acc++;mem.level=Math.min(9,mem.level+1);$('#memoryMsg').textContent='Correto. A sequência aumenta.'}else{mem.err++;mem.level=Math.max(3,mem.level-1);$('#memoryMsg').textContent='Incorreto. A sequência reduz ligeiramente.'}$('#memLevel').textContent=mem.level;$('#memAcc').textContent=mem.acc;$('#memErr').textContent=mem.err;mem.score=Math.min(100,Math.round(mem.level/9*70+mem.acc/(mem.acc+mem.err||1)*30));$('#memScore').textContent=mem.score+'/100';setTimeout(memoryRound,700)}}
+$('#memoryStart').onclick=()=>{mem={level:3,acc:0,err:0,seq:[],input:[],score:null};$('#memLevel').textContent=3;$('#memAcc').textContent=0;$('#memErr').textContent=0;memoryRound()}
+$('#memorySave').onclick=()=>{if(mem.score==null)return alert('Faz algumas rondas primeiro.');addHistory('Memória',mem.score,'Nível '+mem.level);alert('Guardado.')};
+
+// COORD
+let co={running:false,start:0,raf:null,samples:0,sum:0,inside:0,score:null,pointer:{x:50,y:50}};
+const box=$('#trackingBox'),tt=$('#trackTarget'),td=$('#trackDot');
+function setPct(el,x,y){el.style.left=x+'%';el.style.top=y+'%'}
+setPct(tt,50,50);setPct(td,50,50);
+box.addEventListener('pointermove',e=>{if(!co.running)return;e.preventDefault();const r=box.getBoundingClientRect();co.pointer.x=Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100));co.pointer.y=Math.max(0,Math.min(100,(e.clientY-r.top)/r.height*100));setPct(td,co.pointer.x,co.pointer.y)})
+box.addEventListener('pointerdown',e=>{if(!co.running)return;e.preventDefault();box.setPointerCapture?.(e.pointerId);const r=box.getBoundingClientRect();co.pointer.x=(e.clientX-r.left)/r.width*100;co.pointer.y=(e.clientY-r.top)/r.height*100;setPct(td,co.pointer.x,co.pointer.y)})
+function coordLoop(now){if(!co.running)return;const t=(now-co.start)/1000;if(t>=20){coordFinish();return}const tx=50+35*Math.sin(t*1.1),ty=50+30*Math.sin(t*1.7+.8);setPct(tt,tx,ty);const dx=co.pointer.x-tx,dy=co.pointer.y-ty,d=Math.hypot(dx,dy);co.samples++;co.sum+=d;if(d<8)co.inside++;co.raf=requestAnimationFrame(coordLoop)}
+$('#coordStart').onclick=()=>{co={running:true,start:performance.now(),raf:null,samples:0,sum:0,inside:0,score:null,pointer:{x:50,y:50}};setPct(td,50,50);co.raf=requestAnimationFrame(coordLoop)}
+function coordFinish(){co.running=false;cancelAnimationFrame(co.raf);const avg=co.sum/(co.samples||1),inside=co.inside/(co.samples||1)*100;co.score=Math.max(0,Math.round(100-avg*2+inside*.25));$('#cDist').textContent=avg.toFixed(1)+'%';$('#cInside').textContent=Math.round(inside)+'%';$('#cDur').textContent='20 s';$('#cScore').textContent=co.score+'/100'}
+$('#coordSave').onclick=()=>{if(co.score==null)return alert('Conclui o treino primeiro.');addHistory('Coordenação',co.score,$('#cDist').textContent);alert('Guardado.')};
+
+// PERSONALITY
+const pbank=[
+['Consigo manter a calma quando tenho de tomar decisões sob pressão.','calm',0],['Quando algo corre mal, fico perturbado durante muito tempo.','calm',1],['Prefiro confirmar informação importante antes de agir.','care',0],['Por vezes ajo depressa mesmo sem informação suficiente.','care',1],['Sinto-me confortável a comunicar de forma direta com pessoas que não conheço.','social',0],['Evito dizer o que penso para não criar desacordo.','assert',1],['Consigo adaptar-me quando um plano muda inesperadamente.','adapt',0],['Mudanças de última hora deixam-me facilmente desorganizado.','adapt',1],['Quando tenho várias tarefas, consigo definir prioridades.','organ',0],['É frequente começar uma tarefa e distrair-me com outra.','organ',1],['Assumo os meus erros mesmo quando ninguém os detetou.','integrity',0],['Se uma regra me parece pouco importante, não vejo problema em ignorá-la.','integrity',1],['Gosto de colaborar e pedir ajuda quando é necessário.','team',0],['Prefiro resolver tudo sozinho mesmo quando trabalhar em equipa seria mais eficaz.','team',1],['Consigo ouvir críticas sem reagir imediatamente de forma defensiva.','calm',0],['Quando alguém discorda de mim, tenho dificuldade em mudar de perspetiva.','adapt',1],['Sou consistente na forma como trabalho mesmo quando estou cansado.','care',0],['Em situações exigentes, consigo comunicar de forma clara e objetiva.','assert',0],['Consigo manter o foco mesmo com distrações à minha volta.','organ',0],['Quando estou sob pressão, tomo decisões sem ponderar as consequências.','care',1],['Aceito facilmente orientações de alguém com mais experiência.','team',0],['Fico desconfortável quando tenho de assumir responsabilidade por uma decisão.','assert',1],['Tenho tendência a manter procedimentos mesmo quando a situação exige adaptação.','adapt',1],['Quando cometo um erro, procuro corrigi-lo e aprender com ele.','integrity',0],
+['Consigo recuperar rapidamente depois de uma situação stressante.','calm',0],['Fico facilmente irritado quando as pessoas trabalham de forma diferente da minha.','team',1],['Gosto de ter objetivos claros e acompanhar o meu progresso.','organ',0],['Por vezes deixo tarefas importantes para o último momento.','organ',1],['Consigo dizer “não” quando uma situação ultrapassa os limites adequados.','assert',0],['Tenho dificuldade em pedir ajuda mesmo quando preciso.','team',1],['Mantenho atenção aos detalhes mesmo em tarefas repetitivas.','care',0],['Quando surge um imprevisto, sinto que perco o controlo.','calm',1],['Sou capaz de mudar de estratégia quando percebo que a atual não funciona.','adapt',0],['É importante para mim cumprir regras mesmo quando ninguém está a observar.','integrity',0],['Evito conflitos mesmo quando é necessário esclarecer um problema.','assert',1],['Consigo trabalhar eficazmente com pessoas com estilos muito diferentes do meu.','team',0],['Costumo rever mentalmente decisões importantes antes de avançar.','care',0],['Quando recebo várias instruções ao mesmo tempo, perco-me facilmente.','organ',1],['Consigo distinguir urgência de importância.','organ',0],['Tenho tendência a responder impulsivamente quando me sinto pressionado.','calm',1]
+];
+const pbankV41=[["Consigo manter a calma quando uma situação muda subitamente.", "Estabilidade emocional", false], ["Sob pressão intensa, tenho dificuldade em pensar com clareza.", "Estabilidade emocional", true], ["Depois de um erro inesperado, recupero a concentração rapidamente.", "Estabilidade emocional", false], ["Quando várias pessoas exigem a minha atenção, fico facilmente perturbado.", "Estabilidade emocional", true], ["Consigo controlar o tom de voz mesmo em situações tensas.", "Estabilidade emocional", false], ["Um contratempo pequeno pode deixar-me irritado durante muito tempo.", "Estabilidade emocional", true], ["Perante uma emergência, consigo separar emoção e decisão.", "Estabilidade emocional", false], ["Quando sinto muita pressão, a minha capacidade de organização diminui bastante.", "Estabilidade emocional", true], ["Consigo manter um comportamento previsível quando os outros estão ansiosos.", "Estabilidade emocional", false], ["Situações de conflito afetam demasiado o meu desempenho.", "Estabilidade emocional", true], ["Mesmo perante sofrimento intenso, consigo manter o foco na tarefa.", "Estabilidade emocional", false], ["Quando algo corre mal, fico preso ao que aconteceu e custa-me avançar.", "Estabilidade emocional", true], ["Consigo reconhecer emoções fortes sem deixar que comandem a minha atuação.", "Estabilidade emocional", false], ["A urgência faz-me perder facilmente a serenidade.", "Estabilidade emocional", true], ["Cumpro procedimentos de segurança mesmo quando ninguém está a observar.", "Responsabilidade e maturidade", false], ["Quando estou atrasado, considero aceitável saltar verificações pouco importantes.", "Responsabilidade e maturidade", true], ["Assumo a responsabilidade pelas decisões que tomo.", "Responsabilidade e maturidade", false], ["Se um erro não tiver consequências, prefiro não o mencionar.", "Responsabilidade e maturidade", true], ["Preparo antecipadamente material e informação de que posso vir a precisar.", "Responsabilidade e maturidade", false], ["É frequente confiar que outra pessoa verificará aquilo que me compete.", "Responsabilidade e maturidade", true], ["Quando tenho dúvidas relevantes, procuro esclarecê-las antes de avançar.", "Responsabilidade e maturidade", false], ["Se tenho muita experiência numa tarefa, considero desnecessário seguir todos os passos.", "Responsabilidade e maturidade", true], ["Sou pontual em compromissos profissionais importantes.", "Responsabilidade e maturidade", false], ["Por vezes deixo tarefas importantes por concluir sem avisar ninguém.", "Responsabilidade e maturidade", true], ["Aceito que algumas responsabilidades profissionais exigem esforço mesmo quando estou cansado.", "Responsabilidade e maturidade", false], ["Quando algo corre mal, a minha primeira reação é procurar quem teve culpa.", "Responsabilidade e maturidade", true], ["Procuro corrigir falhas que deteto, mesmo que não tenham sido causadas por mim.", "Responsabilidade e maturidade", false], ["Se ninguém notar um pequeno incumprimento, não vejo necessidade de o corrigir.", "Responsabilidade e maturidade", true], ["Consigo estabelecer prioridades quando surgem vários problemas ao mesmo tempo.", "Decisão sob pressão", false], ["Quando tenho pouco tempo, escolho frequentemente a primeira solução que me ocorre.", "Decisão sob pressão", true], ["Antes de uma decisão crítica, tento identificar o risco mais importante.", "Decisão sob pressão", false], ["Sob pressão, tenho tendência para agir antes de compreender totalmente a situação.", "Decisão sob pressão", true], ["Consigo mudar de decisão quando aparecem dados novos relevantes.", "Decisão sob pressão", false], ["Depois de tomar uma decisão, custa-me admitir que pode ser necessário alterá-la.", "Decisão sob pressão", true], ["Distingo situações em que é preciso agir imediatamente das que permitem alguns segundos de análise.", "Decisão sob pressão", false], ["Numa emergência, pensar em alternativas é quase sempre perda de tempo.", "Decisão sob pressão", true], ["Consigo decidir mesmo quando não disponho de toda a informação desejável.", "Decisão sob pressão", false], ["A incerteza deixa-me bloqueado quando tenho de decidir rapidamente.", "Decisão sob pressão", true], ["Quando existem duas opções razoáveis, comparo riscos antes de escolher.", "Decisão sob pressão", false], ["Se estou confiante, raramente procuro informação que possa contrariar a minha decisão.", "Decisão sob pressão", true], ["Consigo explicar de forma simples por que tomei uma decisão importante.", "Decisão sob pressão", false], ["Quando sou pressionado por outras pessoas, altero facilmente uma decisão que considerava adequada.", "Decisão sob pressão", true], ["Consigo travar uma reação automática quando percebo que pode ser insegura.", "Impulsividade e autocontrolo", false], ["Às vezes ajo primeiro e penso nas consequências depois.", "Impulsividade e autocontrolo", true], ["Mesmo com urgência, evito confundir rapidez com precipitação.", "Impulsividade e autocontrolo", false], ["Quando alguém me provoca, sinto necessidade de responder imediatamente.", "Impulsividade e autocontrolo", true], ["Antes de assumir um risco, tento perceber se é realmente necessário.", "Impulsividade e autocontrolo", false], ["Quando estou muito confiante, tenho tendência para arriscar mais do que devia.", "Impulsividade e autocontrolo", true], ["Consigo manter autocontrolo perante comportamentos agressivos de terceiros.", "Impulsividade e autocontrolo", false], ["Quando estou irritado, digo coisas de que depois me arrependo.", "Impulsividade e autocontrolo", true], ["Se noto que estou a agir por impulso, consigo abrandar e reavaliar.", "Impulsividade e autocontrolo", false], ["Tenho dificuldade em esperar quando considero que os outros estão a ser demasiado lentos.", "Impulsividade e autocontrolo", true], ["Consigo aceitar uma provocação sem transformar a situação num confronto.", "Impulsividade e autocontrolo", false], ["Em momentos de adrenalina, gosto de testar os meus limites.", "Impulsividade e autocontrolo", true], ["Mesmo quando tenho razão, consigo escolher não prolongar um conflito.", "Impulsividade e autocontrolo", false], ["Quando quero muito atingir um objetivo, as consequências parecem-me menos importantes.", "Impulsividade e autocontrolo", true], ["A segurança continua prioritária mesmo quando existe pressão para chegar depressa.", "Segurança e risco rodoviário", false], ["Numa emergência, alguns segundos ganhos justificam riscos elevados na condução.", "Segurança e risco rodoviário", true], ["Adapto a velocidade às condições reais da via e do trânsito.", "Segurança e risco rodoviário", false], ["Se conheço muito bem uma estrada, posso reduzir algumas margens de segurança.", "Segurança e risco rodoviário", true], ["Antecipar erros dos outros condutores faz parte de uma condução segura.", "Segurança e risco rodoviário", false], ["Com sinalização de emergência ligada, espero que os restantes condutores reajam corretamente.", "Segurança e risco rodoviário", true], ["Prefiro perder alguns segundos a criar um risco desnecessário para terceiros.", "Segurança e risco rodoviário", false], ["Quando estou com pressa, aceito distâncias de segurança menores.", "Segurança e risco rodoviário", true], ["Num cruzamento, confirmo que fui efetivamente visto antes de confiar na prioridade.", "Segurança e risco rodoviário", false], ["Se tenho prioridade, não preciso de considerar tanto a possibilidade de outro veículo avançar.", "Segurança e risco rodoviário", true], ["A condução urgente exige mais antecipação, não menos.", "Segurança e risco rodoviário", false], ["Quanto maior a urgência da missão, menos importantes se tornam as regras habituais de segurança.", "Segurança e risco rodoviário", true], ["Considero peões e utilizadores vulneráveis mesmo quando estou concentrado no trânsito automóvel.", "Segurança e risco rodoviário", false], ["Um condutor experiente consegue compensar quase totalmente uma condução mais arriscada.", "Segurança e risco rodoviário", true], ["Procuro identificar antecipadamente zonas onde alguém possa entrar na minha trajetória.", "Condução defensiva", false], ["Fico facilmente irritado quando outro condutor demora a facilitar a passagem.", "Condução defensiva", true], ["Mantenho espaço para travar ou mudar de trajetória perante um imprevisto.", "Condução defensiva", false], ["Se outro condutor comete um erro perigoso, sinto vontade de lhe mostrar que agiu mal.", "Condução defensiva", true], ["Mesmo com boa visibilidade, considero a possibilidade de surgir um obstáculo inesperado.", "Condução defensiva", false], ["Quando a estrada está vazia, considero aceitável aproximar-me mais do limite das minhas capacidades.", "Condução defensiva", true], ["Observo o comportamento dos veículos à frente e não apenas o veículo imediatamente anterior.", "Condução defensiva", false], ["Se conduzo um veículo muito visível, preocupo-me menos com ângulos mortos.", "Condução defensiva", true], ["Reduzo a velocidade quando a informação disponível é insuficiente.", "Condução defensiva", false], ["A experiência permite-me manter a mesma velocidade em situações que obrigariam outros a abrandar.", "Condução defensiva", true], ["Procuro posicionar o veículo de forma a preservar opções de fuga.", "Condução defensiva", false], ["Quando outro condutor hesita, aproximo-me para o incentivar a decidir.", "Condução defensiva", true], ["Considero que um semáforo verde não elimina a necessidade de observar o cruzamento.", "Condução defensiva", false], ["Quando estou numa missão urgente, pequenas infrações dos outros condutores irritam-me especialmente.", "Condução defensiva", true], ["Consigo continuar eficaz quando uma tarefa não corre como esperava.", "Tolerância à frustração", false], ["Fico muito irritado quando tenho de repetir uma tarefa por erro de outra pessoa.", "Tolerância à frustração", true], ["Aceito correções sem as interpretar automaticamente como ataques pessoais.", "Tolerância à frustração", false], ["Quando sou contrariado, a qualidade do meu trabalho tende a diminuir.", "Tolerância à frustração", true], ["Consigo trabalhar com pessoas difíceis sem deixar que isso domine a tarefa.", "Tolerância à frustração", false], ["Uma crítica injusta afeta o meu desempenho durante bastante tempo.", "Tolerância à frustração", true], ["Perante um atraso inevitável, concentro-me no que ainda posso controlar.", "Tolerância à frustração", false], ["Quando um plano falha, custa-me abandonar a irritação e procurar outra solução.", "Tolerância à frustração", true], ["Consigo manter paciência com pessoas confusas ou assustadas.", "Tolerância à frustração", false], ["Repetir instruções várias vezes deixa-me rapidamente impaciente.", "Tolerância à frustração", true], ["Se uma tarefa exige mais tempo do que esperava, ajusto o ritmo sem perder o cuidado.", "Tolerância à frustração", false], ["Quando sinto que o meu esforço não é reconhecido, deixo de me empenhar da mesma forma.", "Tolerância à frustração", true], ["Consigo aceitar que nem todas as situações terão o resultado que desejo.", "Tolerância à frustração", false], ["Erros dos outros incomodam-me tanto que tenho dificuldade em concentrar-me depois.", "Tolerância à frustração", true], ["Partilho informação relevante de forma clara mesmo em situações tensas.", "Trabalho em equipa", false], ["Quando tenho a certeza de algo, não vejo grande utilidade em ouvir a equipa.", "Trabalho em equipa", true], ["Peço ajuda quando a situação ultrapassa os meus recursos.", "Trabalho em equipa", false], ["Prefiro resolver sozinho um problema a admitir que preciso de apoio.", "Trabalho em equipa", true], ["Se um colega identifica um risco que não vi, valorizo essa informação.", "Trabalho em equipa", false], ["Num conflito de equipa, tenho dificuldade em separar a pessoa do problema.", "Trabalho em equipa", true], ["Confirmo mensagens críticas quando existe risco de mal-entendido.", "Trabalho em equipa", false], ["Sob pressão, comunicar é secundário em relação a agir rapidamente.", "Trabalho em equipa", true], ["Consigo adaptar a minha atuação ao papel que me cabe na equipa.", "Trabalho em equipa", false], ["Se discordo da liderança, tenho dificuldade em colaborar até ao fim da tarefa.", "Trabalho em equipa", true], ["Partilho alterações importantes do plano com quem precisa de as conhecer.", "Trabalho em equipa", false], ["Quando estou muito ocupado, parto do princípio de que os colegas perceberão o que estou a fazer.", "Trabalho em equipa", true], ["Reconheço o contributo dos outros mesmo quando a decisão final é minha.", "Trabalho em equipa", false], ["Tenho dificuldade em aceitar orientação de alguém com menos experiência do que eu.", "Trabalho em equipa", true], ["Consigo discordar de um colega de forma clara e respeitosa.", "Comunicação e assertividade", false], ["Evito levantar dúvidas mesmo quando penso que uma decisão pode ser insegura.", "Comunicação e assertividade", true], ["Quando uma instrução não é clara, procuro confirmá-la.", "Comunicação e assertividade", false], ["Se uma pessoa tem mais experiência do que eu, raramente questiono a sua decisão.", "Comunicação e assertividade", true], ["Consigo dar instruções curtas e objetivas em situações de elevada pressão.", "Comunicação e assertividade", false], ["Quando estou stressado, a minha comunicação torna-se confusa.", "Comunicação e assertividade", true], ["Consigo transmitir más notícias ou dificuldades sem ser brusco.", "Comunicação e assertividade", false], ["Quando alguém não me compreende à primeira, tendo a repetir exatamente da mesma forma.", "Comunicação e assertividade", true], ["Se considero uma situação insegura, consigo dizê-lo mesmo perante alguém hierarquicamente superior.", "Comunicação e assertividade", false], ["Para evitar conflito, por vezes concordo com decisões que considero inadequadas.", "Comunicação e assertividade", true], ["Procuro confirmar que uma mensagem crítica foi compreendida.", "Comunicação e assertividade", false], ["Quando estou certo do que disse, considero desnecessário verificar se fui entendido.", "Comunicação e assertividade", true], ["Consigo adaptar a linguagem à pessoa com quem estou a comunicar.", "Comunicação e assertividade", false], ["Em situações urgentes, a forma como se fala com as pessoas é pouco importante.", "Comunicação e assertividade", true], ["Adapto o plano quando as circunstâncias mudam.", "Adaptabilidade e flexibilidade", false], ["Mudanças inesperadas deixam-me bloqueado por demasiado tempo.", "Adaptabilidade e flexibilidade", true], ["Consigo alternar entre tarefas sem perder completamente as prioridades.", "Adaptabilidade e flexibilidade", false], ["Prefiro continuar o plano inicial mesmo quando já não parece o melhor.", "Adaptabilidade e flexibilidade", true], ["Em ambientes imprevisíveis, reorganizo prioridades rapidamente.", "Adaptabilidade e flexibilidade", false], ["Tenho dificuldade em funcionar quando não existe uma rotina clara.", "Adaptabilidade e flexibilidade", true], ["Consigo aprender uma nova forma de executar uma tarefa quando há boas razões para mudar.", "Adaptabilidade e flexibilidade", false], ["Mudanças de procedimento incomodam-me mesmo quando são justificadas.", "Adaptabilidade e flexibilidade", true], ["Se um recurso deixa de estar disponível, procuro rapidamente uma alternativa segura.", "Adaptabilidade e flexibilidade", false], ["Quando uma situação foge ao habitual, espero que outra pessoa diga exatamente o que fazer.", "Adaptabilidade e flexibilidade", true], ["Consigo passar de uma tarefa técnica para uma tarefa de comunicação sem perder eficácia.", "Adaptabilidade e flexibilidade", false], ["Alterações de última hora prejudicam muito o meu desempenho.", "Adaptabilidade e flexibilidade", true], ["Aceito rever hábitos quando surgem melhores práticas.", "Adaptabilidade e flexibilidade", false], ["Prefiro métodos conhecidos mesmo quando existe evidência de que outro método é melhor.", "Adaptabilidade e flexibilidade", true], ["Se algo não parece coerente, confirmo antes de assumir que está certo.", "Atenção ao erro e vigilância", false], ["Erros pequenos não merecem atenção se não tiverem consequências imediatas.", "Atenção ao erro e vigilância", true], ["Depois de uma interrupção, confirmo em que ponto da tarefa estava.", "Atenção ao erro e vigilância", false], ["Quando faço uma tarefa muitas vezes, deixo de precisar de verificar os passos habituais.", "Atenção ao erro e vigilância", true], ["Procuro aprender com quase-erros, mesmo quando ninguém foi prejudicado.", "Atenção ao erro e vigilância", false], ["Se nunca tive problemas com um procedimento, não vejo necessidade de o rever.", "Atenção ao erro e vigilância", true], ["Em tarefas repetitivas, faço esforço consciente para manter a atenção.", "Atenção ao erro e vigilância", false], ["Quando uma atividade se torna monótona, é inevitável deixar de prestar atenção aos detalhes.", "Atenção ao erro e vigilância", true], ["Se encontro informação contraditória, tento perceber a origem da discrepância.", "Atenção ao erro e vigilância", false], ["Quando estou quase certo de uma informação, prefiro avançar a perder tempo a confirmá-la.", "Atenção ao erro e vigilância", true], ["Dou importância a sinais pequenos que possam indicar um problema maior.", "Atenção ao erro e vigilância", false], ["Se os indicadores principais parecem normais, raramente procuro sinais menos evidentes.", "Atenção ao erro e vigilância", true], ["Após uma sequência longa de tarefas, continuo a usar verificações estruturadas.", "Atenção ao erro e vigilância", false], ["Quando tudo tem corrido bem durante muito tempo, sinto que posso baixar a vigilância.", "Atenção ao erro e vigilância", true], ["Digo o que aconteceu mesmo quando isso me pode ser desfavorável.", "Integridade profissional", false], ["Há situações em que é aceitável alterar a versão dos factos para proteger a equipa.", "Integridade profissional", true], ["Respeito limites de competência mesmo quando gostaria de resolver a situação sozinho.", "Integridade profissional", false], ["Se sei que consigo fazer uma tarefa, os limites formais de competência são pouco importantes.", "Integridade profissional", true], ["Trato informação confidencial com cuidado mesmo em conversas informais.", "Integridade profissional", false], ["Se todos na equipa fazem determinada exceção, considero-a automaticamente aceitável.", "Integridade profissional", true], ["Registo informação importante de forma fiel, mesmo quando poderia gerar perguntas.", "Integridade profissional", false], ["Uma pequena omissão num registo é aceitável se evitar problemas desnecessários.", "Integridade profissional", true], ["Consigo admitir que não sei uma resposta.", "Integridade profissional", false], ["Prefiro dar uma resposta aproximada a admitir perante outros que não sei.", "Integridade profissional", true], ["Aplico os mesmos padrões de segurança mesmo quando estou sozinho.", "Integridade profissional", false], ["Uma regra deixa de ser importante quando ninguém fiscaliza o seu cumprimento.", "Integridade profissional", true], ["Se cometo um erro, considero importante que a equipa tenha a informação necessária para evitar consequências.", "Integridade profissional", false], ["Proteger a imagem de um colega pode justificar não mencionar uma falha pequena.", "Integridade profissional", true], ["Quando estou cansado, reconheço que a minha atenção pode piorar.", "Gestão da fadiga e pressão", false], ["A experiência compensa praticamente todos os efeitos do cansaço.", "Gestão da fadiga e pressão", true], ["Se noto quebra de concentração, aumento deliberadamente as verificações.", "Gestão da fadiga e pressão", false], ["Mesmo muito cansado, o meu desempenho é sempre igual.", "Gestão da fadiga e pressão", true], ["Consigo reconhecer quando preciso de reduzir o ritmo para evitar erros.", "Gestão da fadiga e pressão", false], ["Admitir fadiga numa equipa de emergência é sinal de fraqueza.", "Gestão da fadiga e pressão", true], ["Após muitas horas de atividade, tenho consciência de que decisões simples também podem piorar.", "Gestão da fadiga e pressão", false], ["Se estou motivado, o sono e o cansaço quase não influenciam o meu desempenho.", "Gestão da fadiga e pressão", true], ["Quando a carga de trabalho aumenta, tento preservar as tarefas críticas.", "Gestão da fadiga e pressão", false], ["Em períodos muito ocupados, considero inevitável deixar de cumprir algumas verificações de segurança.", "Gestão da fadiga e pressão", true], ["Consigo dizer à equipa quando noto que a minha capacidade de concentração diminuiu.", "Gestão da fadiga e pressão", false], ["Prefiro esconder sinais de cansaço para não parecer menos capaz.", "Gestão da fadiga e pressão", true], ["Em turnos exigentes, tento gerir pausas e recursos de forma preventiva.", "Gestão da fadiga e pressão", false], ["Quando existe muito trabalho, fazer uma pausa curta é sempre perda de tempo.", "Gestão da fadiga e pressão", true], ["Tenho confiança nas minhas capacidades sem assumir que sou imune ao erro.", "Confiança calibrada e aprendizagem", false], ["Quando domino uma tarefa, verificar novamente costuma ser desnecessário.", "Confiança calibrada e aprendizagem", true], ["Reconheço quando uma situação exige alguém mais experiente.", "Confiança calibrada e aprendizagem", false], ["Raramente duvido de uma decisão depois de a tomar.", "Confiança calibrada e aprendizagem", true], ["A experiência aumenta a minha capacidade, mas não elimina a necessidade de cautela.", "Confiança calibrada e aprendizagem", false], ["Se já fiz algo muitas vezes, é improvável que cometa um erro relevante.", "Confiança calibrada e aprendizagem", true], ["Consigo receber feedback sem sentir que põe em causa toda a minha competência.", "Confiança calibrada e aprendizagem", false], ["Quando alguém menos experiente me corrige, tenho dificuldade em aceitar.", "Confiança calibrada e aprendizagem", true], ["Procuro perceber por que ocorreu um erro em vez de apenas o esquecer.", "Confiança calibrada e aprendizagem", false], ["Se uma tarefa terminou bem, não vejo utilidade em rever decisões tomadas durante a mesma.", "Confiança calibrada e aprendizagem", true], ["Consigo distinguir confiança baseada em experiência de excesso de confiança.", "Confiança calibrada e aprendizagem", false], ["Quando tenho bons resultados repetidos, considero que posso confiar mais na intuição do que nos procedimentos.", "Confiança calibrada e aprendizagem", true], ["Estou disponível para atualizar conhecimentos mesmo em áreas que domino.", "Confiança calibrada e aprendizagem", false], ["Depois de muitos anos de experiência, formação adicional tende a acrescentar pouco.", "Confiança calibrada e aprendizagem", true], ["Consigo tratar uma pessoa ansiosa com respeito sem perder objetividade.", "Competências sociais e empatia funcional", false], ["Quando alguém está muito agitado, tenho pouca paciência para explicar o que estou a fazer.", "Competências sociais e empatia funcional", true], ["Procuro perceber como a minha forma de comunicar pode afetar a cooperação dos outros.", "Competências sociais e empatia funcional", false], ["Se uma pessoa não colabora, considero que a responsabilidade é apenas dela.", "Competências sociais e empatia funcional", true], ["Consigo estabelecer limites de forma firme sem humilhar a outra pessoa.", "Competências sociais e empatia funcional", false], ["Perante comportamentos difíceis, torno-me facilmente sarcástico.", "Competências sociais e empatia funcional", true], ["Mesmo quando discordo de alguém, consigo reconhecer a sua perspetiva.", "Competências sociais e empatia funcional", false], ["Tenho dificuldade em esconder irritação quando considero uma preocupação exagerada.", "Competências sociais e empatia funcional", true], ["Consigo adaptar a abordagem a pessoas com diferentes níveis de compreensão.", "Competências sociais e empatia funcional", false], ["Quando tenho pouco tempo, considero desnecessário explicar decisões às pessoas envolvidas.", "Competências sociais e empatia funcional", true], ["Mantenho respeito por alguém mesmo quando o seu comportamento dificulta o meu trabalho.", "Competências sociais e empatia funcional", false], ["Se alguém me trata mal, considero natural responder no mesmo tom.", "Competências sociais e empatia funcional", true], ["Consigo ser empático sem perder a capacidade de tomar decisões objetivas.", "Competências sociais e empatia funcional", false], ["Envolver-me emocionalmente numa situação torna sempre impossível decidir bem.", "Competências sociais e empatia funcional", true]];
+let pe={items:[],i:0,ans:[],times:[],start:0,timer:null,result:null};
+function persShow(){const it=pe.items[pe.i];$('#persQ').textContent=pe.i+1;$('#persText').textContent=it[0];$('#persProg').style.width=(pe.i/40*100)+'%';pe.start=performance.now();clearInterval(pe.timer);pe.timer=setInterval(()=>{$('#persTimer').textContent=((performance.now()-pe.start)/1000).toFixed(1)+' s'},100)}
+$('#persStart').onclick=()=>{pe={items:[...pbankV41].sort(()=>Math.random()-.5).slice(0,40),i:0,ans:[],times:[],start:0,timer:null,result:null};$('#persResult').classList.add('hidden');$('#persGame').classList.remove('hidden');persShow()}
+$$('#personality .scale button').forEach(b=>b.onclick=()=>{pe.ans.push(+b.dataset.v);pe.times.push(performance.now()-pe.start);pe.i++;if(pe.i>=40)persFinish();else persShow()})
+function persFinish(){clearInterval(pe.timer);$('#persGame').classList.add('hidden');const by={};pe.items.forEach((it,i)=>{const norm=it[2]?6-pe.ans[i]:pe.ans[i];(by[it[1]]||(by[it[1]]=[])).push(norm)});let flags=0;Object.values(by).forEach(a=>{if(a.length>1&&Math.max(...a)-Math.min(...a)>=3)flags++});const avg=Math.round(pe.times.reduce((a,b)=>a+b,0)/pe.times.length),cons=Math.max(0,100-flags*12);pe.result={score:cons,avg};$('#persResult').innerHTML='<b>Consistência de treino: '+cons+'/100</b><br>Tempo médio: '+(avg/1000).toFixed(1)+' s.<br><span class="muted">Não representa uma avaliação clínica nem indica uma personalidade “correta”. Serve apenas para treinar espontaneidade e coerência.</span>';$('#persResult').classList.remove('hidden')}
+$('#persSave').onclick=()=>{if(!pe.result)return alert('Conclui o questionário primeiro.');addHistory('Personalidade',pe.result.score,(pe.result.avg/1000).toFixed(1)+' s/item');alert('Guardado.')};
+
+// EXAM V4 — rápido (~10 min) e completo (~45–60 min)
+let ex={
+  mode:null,
+  start:0,
+  timer:null,
+  stage:0,
+  config:null,
+  motion:{scores:[],pos:[],time:[]},
+  influence:{batteries:[],targets:[],peerShift:[]},
+  personality:{items:[],answers:[],times:[]},
+  report:null
+};
+
+const exPBank = [...pbankV41];
+
+function exTimer(){
+  const s=Math.floor((Date.now()-ex.start)/1000);
+  $('#examTimer').textContent=
+    String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+}
+
+function startExam(mode){
+  ex={
+    mode,
+    start:Date.now(),
+    timer:null,
+    stage:0,
+    config: mode==='quick'
+      ? {motionN:10,inflBats:3,inflItems:10,persN:35}
+      : {motionN:36,inflBats:8,inflItems:14,persN:110},
+    motion:{scores:[],pos:[],time:[]},
+    influence:{batteries:[],targets:[],peerShift:[]},
+    personality:{items:[],answers:[],times:[]},
+    report:null
+  };
+
+  $('#examSetup').classList.add('hidden');
+  $('#examResult').classList.add('hidden');
+  $('#examArea').classList.remove('hidden');
+  $('#examTimer').textContent='00:00';
+  ex.timer=setInterval(exTimer,500);
+  exTimer();
+
+  exMotion();
+}
+
+$('#quickExamStart').onclick=()=>startExam('quick');
+$('#fullExamStart').onclick=()=>startExam('full');
+
+function exMotion(){
+  const area=$('#examArea');
+  const i=ex.motion.scores.length;
+  if(i>=ex.config.motionN){
+    exInfluenceIntro();
+    return;
+  }
+
+  area.innerHTML=
+    '<h3>Parte 1/3 — Antecipação de trajetória</h3>'+
+    '<p class="muted">Tentativa '+(i+1)+'/'+ex.config.motionN+'. O resultado não é mostrado durante o exame.</p>'+
+    '<canvas id="examMotionCanvas" width="900" height="420" class="gameCanvas"></canvas>'+
+    '<div class="notice">Segue a bola. Quando desaparecer, toca/clica no ponto e no momento em que prevês o reaparecimento.</div>';
+
+  const c=$('#examMotionCanvas'),x=c.getContext('2d'),d={w:900,h:420,l:342,r:657};
+  const modes=['linear','diagonal','curve','sine','accel'];
+  const mode=modes[Math.floor(Math.random()*modes.length)];
+
+  let y=80+Math.random()*260;
+  let vx=145+Math.random()*105;
+  let vy=(mode==='linear'?0:(Math.random()*2-1)*70);
+  let b={x:55,y,vx,vy,t:0,ay:(Math.random()*2-1)*40,baseY:y,phase:Math.random()*Math.PI*2};
+  let exit=null,waiting=false,lastT=performance.now(),raf;
+
+  function base(){
+    x.clearRect(0,0,900,420);
+    x.fillStyle='#f8fafc';x.fillRect(0,0,900,420);
+    x.fillStyle='#e5e7eb';x.fillRect(d.l,0,d.r-d.l,420);
+    x.strokeStyle='#cfd6e4';x.strokeRect(d.l,0,d.r-d.l,420);
+  }
+
+  function step(now){
+    const dt=Math.min(.025,(now-lastT)/1000);lastT=now;base();b.t+=dt;
+    if(mode==='accel') b.vx=Math.min(330,b.vx+30*dt);
+    if(mode==='curve') b.vy+=b.ay*dt;
+    b.x+=b.vx*dt;
+    if(mode==='sine') b.y=b.baseY+62*Math.sin(b.t*2+b.phase);
+    else b.y+=b.vy*dt;
+    if(b.y<18){b.y=18;b.vy=Math.abs(b.vy)}
+    if(b.y>402){b.y=402;b.vy=-Math.abs(b.vy)}
+    if(b.x>=d.r){
+      exit={x:d.r,y:b.y,t:now};waiting=true;base();return;
+    }
+    if(b.x<d.l){
+      x.fillStyle='#111827';x.beginPath();x.arc(b.x,b.y,14,0,Math.PI*2);x.fill();
+    }
+    raf=requestAnimationFrame(step);
+  }
+
+  c.addEventListener('pointerdown',e=>{
+    e.preventDefault();
+    if(!waiting||!exit)return;
+    const r=c.getBoundingClientRect();
+    const px=(e.clientX-r.left)*900/r.width;
+    const py=(e.clientY-r.top)*420/r.height;
+    const pe=Math.hypot(px-exit.x,py-exit.y);
+    const te=Math.abs(performance.now()-exit.t);
+    const score=Math.max(0,Math.round(100-(Math.min(58,pe/4.5)+Math.min(42,te/42))));
+    ex.motion.scores.push(score);
+    ex.motion.pos.push(pe);
+    ex.motion.time.push(te);
+    waiting=false;
+    cancelAnimationFrame(raf);
+    setTimeout(exMotion,150);
+  },{once:true});
+
+  raf=requestAnimationFrame(step);
+}
+
+function exInfluenceIntro(){
+  ex.stage=1;
+  exInfluenceBattery();
+}
+
+function exInfluenceBattery(){
+  const area=$('#examArea');
+  const bIndex=ex.influence.batteries.length;
+
+  if(bIndex>=ex.config.inflBats){
+    exPersonalityStart();
+    return;
+  }
+
+  let q=0,correct=0,totalTime=0,startQ=0,currentTarget=null;
+  const responses=[];
+
+  area.innerHTML=
+    '<h3>Parte 2/3 — Atenção e influência</h3>'+
+    '<p class="muted">Bateria '+(bIndex+1)+'/'+ex.config.inflBats+'. Encontra o número-alvo o mais rápido possível.</p>'+
+    '<div id="exInflGame"></div>';
+
+  function nextQ(){
+    if(q>=ex.config.inflItems){
+      finishBattery();
+      return;
+    }
+
+    currentTarget=10+Math.floor(Math.random()*890);
+    const set=new Set([currentTarget]);
+    while(set.size<30)set.add(10+Math.floor(Math.random()*890));
+
+    $('#exInflGame').innerHTML=
+      '<div class="row spaced"><div>Alvo: <b style="font-size:30px">'+currentTarget+'</b></div>'+
+      '<div>Questão '+(q+1)+'/'+ex.config.inflItems+'</div></div>'+
+      '<div id="exInflGrid" class="grid" style="grid-template-columns:repeat(5,minmax(0,1fr));margin-top:12px"></div>';
+
+    const g=$('#exInflGrid');
+    [...set].sort(()=>Math.random()-.5).forEach(v=>{
+      const btn=document.createElement('button');
+      btn.textContent=v;
+      btn.onclick=()=>{
+        const rt=performance.now()-startQ;
+        totalTime+=rt;
+        if(v===currentTarget) correct++;
+        responses.push({ok:v===currentTarget,rt});
+        q++;
+        nextQ();
+      };
+      g.appendChild(btn);
+    });
+    startQ=performance.now();
+  }
+
+  function finishBattery(){
+    const avg=Math.round(totalTime/ex.config.inflItems);
+    const score=Math.round((correct/ex.config.inflItems)*75+Math.max(0,1-(avg-600)/3200)*25);
+    ex.influence.batteries.push({correct,avg,score});
+
+    const peerCorrect=Math.min(ex.config.inflItems,Math.max(correct+1,Math.round(ex.config.inflItems*.88)));
+    const peerAvg=Math.max(450,Math.round(avg*(.72+Math.random()*.15)));
+
+    area.innerHTML=
+      '<h3>Parte 2/3 — Atenção e influência</h3>'+
+      '<div class="notice">'+
+        '<b>Resultado da bateria:</b> '+correct+'/'+ex.config.inflItems+' · '+avg+' ms/resposta.<br>'+
+        '<span class="muted">Referência apresentada: '+peerCorrect+'/'+ex.config.inflItems+' · '+peerAvg+' ms/resposta.</span>'+
+      '</div>'+
+      '<div style="margin-top:14px">'+
+        '<label><b>Meta para a próxima bateria</b><br>'+
+        '<input id="exTarget" type="number" min="1" max="'+ex.config.inflItems+'" value="'+Math.min(ex.config.inflItems,correct+1)+'"></label>'+
+      '</div>'+
+      '<button id="exTargetNext" class="btn primary" style="margin-top:12px">'+
+      (bIndex+1>=ex.config.inflBats?'Continuar':'Próxima bateria')+
+      '</button>';
+
+    $('#exTargetNext').onclick=()=>{
+      const target=Math.max(1,Math.min(ex.config.inflItems,+$('#exTarget').value||correct));
+      ex.influence.targets.push(target);
+      ex.influence.peerShift.push(target-correct);
+      exInfluenceBattery();
+    };
+  }
+
+  nextQ();
+}
+
+function exPersonalityStart(){
+  ex.stage=2;
+  const needed=ex.config.persN;
+
+  let pool=[];
+  while(pool.length<needed){
+    pool=pool.concat([...exPBank].sort(()=>Math.random()-.5));
+  }
+  ex.personality.items=pool.slice(0,needed);
+  ex.personality.answers=[];
+  ex.personality.times=[];
+  exPersonalityQ();
+}
+
+function exPersonalityQ(){
+  const area=$('#examArea');
+  const i=ex.personality.answers.length;
+
+  if(i>=ex.config.persN){
+    finishExamV4();
+    return;
+  }
+
+  const item=ex.personality.items[i];
+  const start=performance.now();
+
+  area.innerHTML=
+    '<h3>Parte 3/3 — Personalidade</h3>'+
+    '<div class="row spaced"><div>Pergunta '+(i+1)+'/'+ex.config.persN+'</div><div class="pill">Responde espontaneamente</div></div>'+
+    '<h3 style="min-height:72px;margin-top:18px">'+item[0]+'</h3>'+
+    '<div id="exPersScale" class="scale">'+
+      '<button data-v="1">1<br><small>Discordo</small></button>'+
+      '<button data-v="2">2</button>'+
+      '<button data-v="3">3<br><small>Neutro</small></button>'+
+      '<button data-v="4">4</button>'+
+      '<button data-v="5">5<br><small>Concordo</small></button>'+
+    '</div>';
+
+  $$('#exPersScale button').forEach(btn=>{
+    btn.onclick=()=>{
+      ex.personality.answers.push(+btn.dataset.v);
+      ex.personality.times.push(performance.now()-start);
+      exPersonalityQ();
+    };
+  });
+}
+
+function finishExamV4(){
+  clearInterval(ex.timer);
+  exTimer();
+  $('#examArea').classList.add('hidden');
+
+  // Trajectory metrics
+  const motionAvg=Math.round(ex.motion.scores.reduce((a,b)=>a+b,0)/ex.motion.scores.length);
+  const posAvg=Math.round(ex.motion.pos.reduce((a,b)=>a+b,0)/ex.motion.pos.length);
+  const timeAvg=Math.round(ex.motion.time.reduce((a,b)=>a+b,0)/ex.motion.time.length);
+  const posScore=Math.max(0,Math.round(100-Math.min(100,posAvg/2.5)));
+  const timeScore=Math.max(0,Math.round(100-Math.min(100,timeAvg/12)));
+
+  // Influence metrics
+  const inflScores=ex.influence.batteries.map(b=>b.score);
+  const inflAvg=Math.round(inflScores.reduce((a,b)=>a+b,0)/inflScores.length);
+  const accuracyPct=Math.round(
+    ex.influence.batteries.reduce((a,b)=>a+b.correct,0) /
+    (ex.config.inflBats*ex.config.inflItems) * 100
+  );
+  const inflRt=Math.round(
+    ex.influence.batteries.reduce((a,b)=>a+b.avg,0)/ex.influence.batteries.length
+  );
+
+  const shifts=ex.influence.peerShift;
+  const meanShift=shifts.length?shifts.reduce((a,b)=>a+b,0)/shifts.length:0;
+  const influenceResistance=Math.max(0,Math.min(100,Math.round(100-Math.max(0,meanShift-1)*18)));
+
+  // Personality consistency
+  const by={};
+  ex.personality.items.forEach((it,i)=>{
+    const norm=it[2]?6-ex.personality.answers[i]:ex.personality.answers[i];
+    (by[it[1]]||(by[it[1]]=[])).push(norm);
+  });
+  let flags=0;
+  const domainStats=[];
+  Object.entries(by).forEach(([name,a])=>{
+    const spread=a.length>1?Math.max(...a)-Math.min(...a):0;
+    if(a.length>1 && spread>=3) flags++;
+    domainStats.push({name,spread,n:a.length});
+  });
+  const persConsistency=Math.max(0,Math.round(100-flags*7));
+  const persTime=Math.round(ex.personality.times.reduce((a,b)=>a+b,0)/ex.personality.times.length);
+  const neutralPct=Math.round(ex.personality.answers.filter(v=>v===3).length/ex.personality.answers.length*100);
+  const extremePct=Math.round(ex.personality.answers.filter(v=>v===1||v===5).length/ex.personality.answers.length*100);
+  const inconsistentDomains=domainStats.filter(d=>d.spread>=3).map(d=>d.name);
+
+  // Global performance score. Personality consistency has limited weight.
+  const global=Math.round(
+    motionAvg*0.38 +
+    inflAvg*0.32 +
+    influenceResistance*0.10 +
+    persConsistency*0.20
+  );
+
+  const areas=[
+    {name:'Antecipação global',score:motionAvg,detail:'Média das trajetórias'},
+    {name:'Precisão espacial',score:posScore,detail:posAvg+' px de erro médio'},
+    {name:'Precisão temporal',score:timeScore,detail:timeAvg+' ms de erro médio'},
+    {name:'Atenção / velocidade',score:inflAvg,detail:accuracyPct+'% de precisão · '+inflRt+' ms'},
+    {name:'Resistência à influência',score:influenceResistance,detail:'Variação média da meta: '+meanShift.toFixed(1)},
+    {name:'Consistência de personalidade',score:persConsistency,detail:(persTime/1000).toFixed(1)+' s/item · '+neutralPct+'% neutras · '+extremePct+'% extremas'}
+  ];
+
+  const weak=[...areas].sort((a,b)=>a.score-b.score).slice(0,3);
+  const best=[...areas].sort((a,b)=>b.score-a.score).slice(0,2);
+
+  function label(s){
+    if(s>=85)return 'Muito forte';
+    if(s>=75)return 'Bom';
+    if(s>=65)return 'Razoável';
+    if(s>=50)return 'A melhorar';
+    return 'Prioridade';
+  }
+
+  const duration=Math.floor((Date.now()-ex.start)/1000);
+  const mins=Math.floor(duration/60),secs=duration%60;
+
+  let rows=areas.map(a=>
+    '<tr><td>'+a.name+'</td><td><b>'+a.score+'/100</b></td><td>'+label(a.score)+'</td><td>'+a.detail+'</td></tr>'
+  ).join('');
+
+  $('#examResult').innerHTML=
+    '<div class="card" style="margin-top:14px">'+
+      '<div class="row spaced">'+
+        '<div><h2>Relatório do exame '+(ex.mode==='quick'?'rápido':'completo')+'</h2>'+
+        '<p class="muted">Duração real desta simulação: '+mins+'m '+secs+'s</p></div>'+
+        '<div class="pill" style="font-size:28px;font-weight:900">'+global+'/100</div>'+
+      '</div>'+
+      '<div class="metricGrid" style="margin-top:14px">'+
+        '<div class="metric"><small>Nota quantitativa</small><b>'+global+'/100</b></div>'+
+        '<div class="metric"><small>Melhor área</small><b>'+best[0].name+'</b></div>'+
+        '<div class="metric"><small>Prioridade</small><b>'+weak[0].name+'</b></div>'+
+      '</div>'+
+      '<div style="overflow-x:auto;margin-top:16px">'+
+        '<table><thead><tr><th>Área</th><th>Resultado</th><th>Leitura</th><th>Detalhe</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+      '</div>'+
+      '<div class="notice warnBox" style="margin-top:16px">'+
+        '<b>Onde deves melhorar primeiro:</b><br>'+
+        '1. '+weak[0].name+' — '+weak[0].detail+'<br>'+
+        '2. '+weak[1].name+' — '+weak[1].detail+'<br>'+
+        '3. '+weak[2].name+' — '+weak[2].detail+
+      '</div>'+
+      '<div class="notice goodBox" style="margin-top:10px">'+
+        '<b>Pontos mais fortes:</b> '+best[0].name+' e '+best[1].name+'.'+
+      '</div>'+
+      '<div class="notice" style="margin-top:10px">'+
+        '<b>Sugestão para o próximo treino:</b> concentra 60% do tempo em '+weak[0].name+
+        ' e '+weak[1].name+', e usa os restantes 40% para manter as áreas fortes.'+
+      '</div>'+
+      '<div class="notice" style="margin-top:10px">'+
+        '<b>Personalidade — leitura de treino:</b> a pontuação representa sobretudo coerência entre itens relacionados e invertidos; não é uma classificação clínica nem existe uma “personalidade certa”. '+
+        (inconsistentDomains.length?'Áreas com maior divergência: '+inconsistentDomains.join(', ')+'.':'Não foram detetadas divergências fortes entre os domínios repetidos nesta sessão.')+
+        '<br><span class="muted">Neutras: '+neutralPct+'% · extremas: '+extremePct+'% · tempo médio: '+(persTime/1000).toFixed(1)+' s/item.</span>'+
+      '</div>'+
+      '<div class="controls">'+
+        '<button id="examRestartQuick" class="btn primary">Novo rápido</button>'+
+        '<button id="examRestartFull" class="btn">Novo completo</button>'+
+      '</div>'+
+    '</div>';
+
+  $('#examResult').classList.remove('hidden');
+
+  addHistory(
+    'Simulação',
+    global,
+    (ex.mode==='quick'?'Rápido':'Completo')+
+    ' · Antecipação '+motionAvg+
+    ' · Atenção '+inflAvg+
+    ' · Influência '+influenceResistance+
+    ' · Consistência '+persConsistency
+  );
+
+  $('#examRestartQuick').onclick=()=>{
+    $('#examResult').classList.add('hidden');
+    $('#examSetup').classList.remove('hidden');
+    $('#examTimer').textContent='00:00';
+  };
+  $('#examRestartFull').onclick=()=>{
+    $('#examResult').classList.add('hidden');
+    $('#examSetup').classList.remove('hidden');
+    $('#examTimer').textContent='00:00';
+  };
+}
+
+// HISTORY
+function renderHistory(){const b=$('#historyBody');b.innerHTML='';[...history].reverse().forEach(h=>{let tr=document.createElement('tr');tr.innerHTML='<td>'+fmt(h.ts)+'</td><td>'+h.type+'</td><td><b>'+h.score+'/100</b></td><td>'+h.detail+'</td>';b.appendChild(tr)});drawHist()}
+function drawHist(){const c=$('#historyChart'),x=c.getContext('2d'),w=c.width,h=c.height;x.clearRect(0,0,w,h);x.fillStyle='#fff';x.fillRect(0,0,w,h);x.strokeStyle='#d9e0ec';for(let yy=40;yy<=280;yy+=60){x.beginPath();x.moveTo(50,yy);x.lineTo(970,yy);x.stroke()}x.fillStyle='#667085';x.font='13px system-ui';x.textAlign='right';[100,75,50,25,0].forEach((v,i)=>x.fillText(v,42,44+i*60));let r=history.slice(-24);if(!r.length){x.textAlign='center';x.font='18px system-ui';x.fillText('Sem resultados guardados.',w/2,h/2);return}let step=r.length>1?880/(r.length-1):0;r.forEach((z,i)=>{let px=70+i*step,py=280-z.score/100*240;x.fillStyle='#2457d6';x.beginPath();x.arc(px,py,5,0,Math.PI*2);x.fill();if(i){let p=r[i-1],ppx=70+(i-1)*step,ppy=280-p.score/100*240;x.strokeStyle='#cfd6e4';x.beginPath();x.moveTo(ppx,ppy);x.lineTo(px,py);x.stroke()}})}
+$('#clearHistory').onclick=()=>{if(confirm('Apagar todo o histórico?')){history=[];saveStore()}}
+
+renderHistory();updateDash();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(console.error);
+  });
+}
+</script>
+</body>
+</html>
