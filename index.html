@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Psicotécnicos VMER">
 
-<title>Treino Psicotécnicos VMER — V4.5</title>
+<title>Treino Psicotécnicos VMER — V4.8</title>
 <style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#667085;--line:#d9e0ec;
@@ -321,17 +321,17 @@ tbody tr:last-child td{border-bottom:0}
 </style>
 
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#FFD100">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="VMER Treino">
+<meta name="apple-mobile-web-app-title" content="Psicotécnicos">
 <link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
 <div class="wrap">
   <div class="hero">
     <div>
-      <h1>Treino Psicotécnicos VMER — V4.5</h1>
+      <h1>Treino Psicotécnicos VMER — V4.8</h1>
       <p>Plataforma offline de treino psicotécnico, otimizada para computador, iPad e telemóvel. Treina atenção, reação, antecipação, memória, coordenação e consistência numa interface simples e organizada.</p>
     </div>
     <div class="badge">Offline · PC · Mac · iPad · iPhone · Android</div>
@@ -441,7 +441,7 @@ tbody tr:last-child td{border-bottom:0}
       <div class="metric"><small>Viés temporal</small><b id="tmBias">—</b></div>
       <div class="metric"><small>Índice temporal</small><b id="tmScore">—</b></div>
     </div>
-    <div id="timingFeedback" class="notice" style="margin-top:10px">O objetivo é aproximar o viés de 0 ms e reduzir progressivamente o erro absoluto.</div>
+    <div id="timingFeedback" class="notice" style="margin-top:10px">O objetivo é aproximar o viés de 0 ms e reduzir progressivamente o erro absoluto. Depois de responderes, a bola é revelada na posição real em que estava no instante do clique.</div>
   </div>
 </section>
 
@@ -917,9 +917,9 @@ $('#motionSave').onclick=()=>{
 drawMotionBase();
 
 
-// TEMPORAL ANTICIPATION V4.5
+// TEMPORAL ANTICIPATION V4.8
 const tc=$('#timingCanvas'),tx=tc.getContext('2d');
-let tm={errors:[],running:false,answerAt:0,raf:null,timer:null,sessionEnd:0,sessionTimer:null,mode:'ttc',difficulty:1};
+let tm={errors:[],running:false,answerAt:0,raf:null,timer:null,sessionEnd:0,sessionTimer:null,mode:'ttc',difficulty:1,current:null};
 
 function tmBase(){
   tx.clearRect(0,0,900,360); tx.fillStyle='#f8fafc';tx.fillRect(0,0,900,360);
@@ -937,17 +937,73 @@ function tmStats(){
   $('#timingFeedback').innerHTML='<b>Tendência:</b> '+(Math.abs(bias)<100?'bem calibrada':bias>0?'responder tarde':'responder cedo')+
     '. '+Math.round(late)+'% das respostas foram tardias. '+(abs<250?'Excelente controlo temporal.':abs<450?'Boa evolução; tenta aproximar de 250 ms.':'Prioriza este treino até baixares consistentemente dos 450 ms.');
 }
-function tmRecord(err){
+
+function tmMotionFeedback(clickNow, err){
+  const m=tm.current;
+  if(!m)return;
+
+  // Position that the ball really had at the instant of the response.
+  const dt=(clickNow-m.start)/1000;
+  let xx=m.x+m.v*dt+(m.accel?0.5*m.accel*dt*dt:0);
+
+  // Redraw the scene and reveal the hidden zone after answering.
+  tmBase();
+  tx.fillStyle='rgba(226,232,240,.38)';
+  tx.fillRect(m.hiddenStart,0,m.target-m.hiddenStart,360);
+
+  // Target line.
+  tx.strokeStyle='#111827';tx.lineWidth=3;
+  tx.beginPath();tx.moveTo(m.target,25);tx.lineTo(m.target,335);tx.stroke();
+
+  // True position at click: always drawn ABOVE the occlusion layer.
+  const shownX=Math.max(18,Math.min(875,xx));
+  tx.fillStyle='#FFD100';
+  tx.strokeStyle='#003DA5';tx.lineWidth=4;
+  tx.beginPath();tx.arc(shownX,m.y,17,0,Math.PI*2);tx.fill();tx.stroke();
+
+  // Marker on the target.
+  tx.fillStyle='#003DA5';
+  tx.beginPath();tx.arc(m.target,m.y,7,0,Math.PI*2);tx.fill();
+
+  // Distance indicator.
+  const dist=Math.round(Math.abs(m.target-xx));
+  tx.strokeStyle='#003DA5';tx.lineWidth=2;
+  tx.setLineDash([7,5]);
+  tx.beginPath();tx.moveTo(Math.min(shownX,m.target),m.y+35);
+  tx.lineTo(Math.max(shownX,m.target),m.y+35);tx.stroke();
+  tx.setLineDash([]);
+
+  tx.fillStyle='#0f172a';
+  tx.font='bold 18px system-ui,-apple-system,sans-serif';
+  const posText=xx<m.target
+    ? 'Faltavam '+dist+' px para o alvo'
+    : xx>m.target
+      ? 'Passaste o alvo por '+dist+' px'
+      : 'No alvo';
+  tx.fillText(posText, Math.max(20, Math.min(620, (shownX+m.target)/2-95)), m.y+66);
+
+  // Labels.
+  tx.font='14px system-ui,-apple-system,sans-serif';
+  tx.fillText('posição real ao clicar', Math.max(10,shownX-65), m.y-28);
+  tx.fillText('alvo', m.target-14, 20);
+}
+
+function tmRecord(err, clickNow=performance.now()){
   tm.errors.push(err);tm.running=false;$('#timingRespond').disabled=true;tmStats();
+  cancelAnimationFrame(tm.raf);
+  tmMotionFeedback(clickNow,err);
   const a=Math.abs(err);
-  $('#timingInstruction').innerHTML='<b>'+(err>0?'Tarde':'Cedo')+' '+Math.round(a)+' ms.</b> '+(a<200?'Muito bom.':a<400?'Bom.':'Repete tentando manter mentalmente a velocidade.');
-  if(tm.sessionEnd && Date.now()<tm.sessionEnd) setTimeout(tmStart,700);
+  $('#timingInstruction').innerHTML='<b>'+(err>0?'Tarde':'Cedo')+' '+Math.round(a)+' ms.</b> '+
+    (tm.current?'A bola amarela mostra onde ela estava realmente quando respondeste. ':'')+
+    (a<200?'Muito bom.':a<400?'Bom.':'Repete tentando manter mentalmente a velocidade.');
+  if(tm.sessionEnd && Date.now()<tm.sessionEnd) setTimeout(tmStart,1400);
 }
 function tmStart(){
   cancelAnimationFrame(tm.raf);clearTimeout(tm.timer);tmBase();
   tm.mode=$('#timingMode').value;tm.running=true;$('#timingRespond').disabled=false;
   const now=performance.now();
   const mode=tm.mode;
+  tm.current=null;
 
   if(mode==='rhythm'){
     let k=0; const interval=650+Math.random()*500;
@@ -988,6 +1044,7 @@ function tmStart(){
   let x=70,y=180,v=130+Math.random()*120,hiddenStart=mode==='occlusion'?(480-Math.min(180,tm.difficulty*25)):390,target=760;
   let accel=mode==='speed'?(Math.random()<.5?35:-25):0;
   let start=performance.now(),hideTime=null,predicted=null;
+  tm.current={x,y,v,accel,start,hiddenStart,target};
   $('#timingInstruction').textContent=
     mode==='intercept'?'Segue a bola. Quando desaparecer, responde no instante em que calculas que cruza a linha vertical.':
     mode==='speed'?'A velocidade muda antes da ocultação. Responde quando calculas que chega à linha.':
@@ -1018,7 +1075,12 @@ function tmStart(){
   tm.raf=requestAnimationFrame(frame);
 }
 $('#timingStart').onclick=tmStart;
-$('#timingRespond').onclick=()=>{if(!tm.running||!tm.answerAt)return;tmRecord(performance.now()-tm.answerAt);tm.difficulty=Math.min(7,tm.difficulty+(Math.abs(tm.errors.at(-1))<350?.25:-.08));};
+$('#timingRespond').onclick=()=>{
+  if(!tm.running||!tm.answerAt)return;
+  const clickNow=performance.now();
+  tmRecord(clickNow-tm.answerAt,clickNow);
+  tm.difficulty=Math.min(7,tm.difficulty+(Math.abs(tm.errors.at(-1))<350?.25:-.08));
+};
 $('#timingSession').onclick=()=>{
   tm.sessionEnd=Date.now()+10*60*1000;tm.errors=[];tmStats();tmStart();
   $('#timingFeedback').innerHTML='<b>Sessão automática iniciada.</b> Durante 10 minutos, as tentativas avançam automaticamente.';
@@ -1031,7 +1093,7 @@ $('#timingSave').onclick=()=>{
 };
 
 
-// GYROSCOPE / MOTION TRAINING V4.5
+// GYROSCOPE / MOTION TRAINING V4.8
 let gy={
   enabled:false, mode:'lr', beta:0, gamma:0, baseBeta:0, baseGamma:0,
   waiting:false, target:null, stimAt:0, hits:0, errors:0, rts:[], count:0, total:12,

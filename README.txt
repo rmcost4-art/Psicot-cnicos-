@@ -1,4 +1,4 @@
-# Treino Psicotécnicos VMER — PWA V4.5
+# Treino Psicotécnicos VMER — PWA V4.8
 
 ## Publicar gratuitamente no GitHub Pages
 1. Crie um repositório no GitHub (por exemplo `vmer-treino`).
@@ -19,3 +19,13 @@
 Depois de a app ter sido aberta pelo menos uma vez com internet, o Service Worker guarda os ficheiros essenciais em cache. A aplicação pode então abrir sem ligação à internet.
 
 Nota: a disponibilidade de DeviceOrientation/giroscópio depende das permissões e políticas da versão do iOS/iPadOS/Safari.
+
+V4.8: ícone alterado para amarelo de alta visibilidade com elementos azuis.
+
+V4.8:
+- Ícone amarelo com o nome “Psicotécnicos”.
+- No treino de antecipação temporal, após a resposta a zona oculta é revelada.
+- A bola amarela/azul mostra a posição real no instante do clique.
+- É indicada a distância que ainda faltava para o alvo ou quanto o alvo foi ultrapassado.
+
+V4.8: ícone final aprovado, amarelo, com “Psicotécnicos” e Estrela da Vida azul.

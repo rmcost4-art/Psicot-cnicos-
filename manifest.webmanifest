@@ -1,11 +1,11 @@
 {
-  "name": "Treino Psicotécnicos VMER",
-  "short_name": "VMER Treino",
+  "name": "Psicotécnicos — Treino VMER",
+  "short_name": "Psicotécnicos",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0f172a",
+  "background_color": "#FFD100",
+  "theme_color": "#FFD100",
   "description": "Treino psicotécnico complementar com antecipação, reação, atenção, personalidade e sensores de movimento.",
   "icons": [
     {
