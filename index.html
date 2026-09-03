@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Psicotécnicos VMER">
 
-<title>Treino Psicotécnicos VMER — V5.6</title>
+<title>Treino Psicotécnicos VMER — V5.7</title>
 <style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#667085;--line:#d9e0ec;
@@ -361,28 +361,28 @@ tbody tr:last-child td{border-bottom:0}
 <div class="wrap">
   <div class="hero">
     <div>
-      <h1>Treino Psicotécnicos VMER — V5.6</h1>
+      <h1>Treino Psicotécnicos VMER — V5.7</h1>
       <p>Plataforma offline de treino psicotécnico, otimizada para computador, iPad e telemóvel. Treina atenção, reação, antecipação, memória, coordenação e consistência numa interface simples e organizada.</p>
     </div>
     <div class="badge">Offline · PC · Mac · iPad · iPhone · Android</div>
   </div>
 
   <div class="tabs">
-    <button data-tab="home" class="active">Início</button>
-    <button data-tab="motion">Antecipação</button>
-    <button data-tab="timing">Treino temporal</button>
-    <button data-tab="bimanual">Destreza bimanual</button>
-    <button data-tab="motiongyro">Movimento</button>
-    <button data-tab="reaction">Reação</button>
-    <button data-tab="search">Atenção</button>
-    <button data-tab="pressure">Pressão</button>
-    <button data-tab="periph">Periferia</button>
-    <button data-tab="stroop">Stroop</button>
-    <button data-tab="memory">Memória</button>
-    <button data-tab="coord">Coordenação</button>
-    <button data-tab="personality">Personalidade</button>
-    <button data-tab="exam">Simulação</button>
-    <button data-tab="history">Histórico</button>
+    <button type="button" data-tab="home" class="active">Início</button>
+    <button type="button" data-tab="motion">Antecipação</button>
+    <button type="button" data-tab="timing">Treino temporal</button>
+    <button type="button" data-tab="bimanual">Destreza bimanual</button>
+    <button type="button" data-tab="motiongyro">Movimento</button>
+    <button type="button" data-tab="reaction">Reação</button>
+    <button type="button" data-tab="search">Atenção</button>
+    <button type="button" data-tab="pressure">Pressão</button>
+    <button type="button" data-tab="periph">Periferia</button>
+    <button type="button" data-tab="stroop">Stroop</button>
+    <button type="button" data-tab="memory">Memória</button>
+    <button type="button" data-tab="coord">Coordenação</button>
+    <button type="button" data-tab="personality">Personalidade</button>
+    <button type="button" data-tab="exam">Simulação</button>
+    <button type="button" data-tab="history">Histórico</button>
   </div>
 
   <section id="home" class="panel active">
@@ -400,7 +400,7 @@ tbody tr:last-child td{border-bottom:0}
       <div class="moduleGrid">
         <div class="moduleCard"><h3>Bolas / antecipação</h3><div class="muted">Reta, diagonal, curva, sinusoidal, aceleração e treino só de tempo.</div></div>
         <div class="moduleCard"><h3>Treino temporal</h3><div class="muted">Time-to-contact, oclusão, ritmo, interceção e reprodução de duração.</div></div>
-        <div class="moduleCard"><h3>Destreza bimanual</h3><div class="muted">10 exercícios para coordenação, independência e equilíbrio entre as duas mãos.</div></div>
+        <div class="moduleCard"><h3>Destreza bimanual</h3><div class="muted">Consola dinâmica para coordenação das duas mãos, controlo contínuo, reação, inibição e dupla tarefa.</div></div>
         <div class="moduleCard"><h3>Movimento / giroscópio</h3><div class="muted">Reflexos por inclinação, Go/No-Go, estabilização e seguimento.</div></div>
         <div class="moduleCard"><h3>Reação</h3><div class="muted">Simples, seletiva e Go/No-Go.</div></div>
         <div class="moduleCard"><h3>Atenção visual</h3><div class="muted">Pesquisa numérica e procura de símbolos.</div></div>
@@ -828,7 +828,23 @@ let history=[];try{history=JSON.parse(localStorage.getItem(STORE)||'[]')}catch(e
 function fmt(ts){return new Date(ts).toLocaleString('pt-PT',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'})}
 function saveStore(){localStorage.setItem(STORE,JSON.stringify(history));renderHistory();updateDash()}
 function addHistory(type,score,detail){history.push({ts:Date.now(),type,score,detail});if(history.length>250)history=history.slice(-250);saveStore()}
-$$('.tabs button').forEach(b=>b.addEventListener('click',()=>{$$('.tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');$$('.panel').forEach(p=>p.classList.remove('active'));$('#'+b.dataset.tab).classList.add('active');if(b.dataset.tab==='motion')drawMotionBase();if(b.dataset.tab==='history')renderHistory()}));
+function openTab(id){
+  const panel=document.getElementById(id);
+  if(!panel)return;
+  $$('.tabs button').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));
+  $$('.panel').forEach(x=>x.classList.toggle('active',x.id===id));
+  if(id==='motion')drawMotionBase();
+  if(id==='history')renderHistory();
+}
+const tabsBar=document.querySelector('.tabs');
+if(tabsBar){
+  tabsBar.addEventListener('click',e=>{
+    const b=e.target.closest('button[data-tab]');
+    if(!b)return;
+    e.preventDefault();
+    openTab(b.dataset.tab);
+  });
+}
 function updateDash(){ $('#dashSessions').textContent=history.length;$('#dashBest').textContent=history.length?Math.max(...history.map(x=>x.score))+'/100':'—';const ex=history.filter(x=>x.type==='Simulação').slice(-1)[0];$('#dashExam').textContent=ex?ex.score+'/100':'—';let rec='Começa por fazer 1 sessão de Bolas, Reação e Atenção.';if(history.length>=4){const recent=history.slice(-8);const avg=recent.reduce((a,b)=>a+b.score,0)/recent.length;rec=avg<65?'Foca-te nos módulos em que ficas abaixo de 65/100 e usa sessões curtas e frequentes.':avg<80?'Estás num nível intermédio. Alterna módulos e começa a usar a simulação aleatória.':'Bom equilíbrio recente. Mantém consistência e evita treinar só o que já dominas.'}$('#recommendation').textContent=rec;adRender()}
 
 // MOTION
@@ -1113,7 +1129,7 @@ $('#motionSave').onclick=()=>{
 drawMotionBase();
 
 
-// TEMPORAL ANTICIPATION V5.6
+// TEMPORAL ANTICIPATION V5.7
 const tc=$('#timingCanvas'),tx=tc.getContext('2d');
 let tm={errors:[],running:false,answerAt:0,raf:null,timer:null,sessionEnd:0,sessionTimer:null,mode:'ttc',difficulty:1,current:null};
 
@@ -1486,7 +1502,7 @@ $('#periphSave').onclick=()=>{
   alert('Guardado.');
 };
 
-// GYROSCOPE / DRIVING DUAL-TASK V5.6
+// GYROSCOPE / DRIVING DUAL-TASK V5.7
 let gy={
   enabled:false,running:false,beta:0,gamma:0,baseBeta:0,baseGamma:0,
   duration:90000,endAt:0,startAt:0,last:0,raf:null,
