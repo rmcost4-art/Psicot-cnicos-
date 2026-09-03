@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Psicotécnicos VMER">
 
-<title>Treino Psicotécnicos VMER — V5.5</title>
+<title>Treino Psicotécnicos VMER — V5.6</title>
 <style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#667085;--line:#d9e0ec;
@@ -361,7 +361,7 @@ tbody tr:last-child td{border-bottom:0}
 <div class="wrap">
   <div class="hero">
     <div>
-      <h1>Treino Psicotécnicos VMER — V5.5</h1>
+      <h1>Treino Psicotécnicos VMER — V5.6</h1>
       <p>Plataforma offline de treino psicotécnico, otimizada para computador, iPad e telemóvel. Treina atenção, reação, antecipação, memória, coordenação e consistência numa interface simples e organizada.</p>
     </div>
     <div class="badge">Offline · PC · Mac · iPad · iPhone · Android</div>
@@ -1113,7 +1113,7 @@ $('#motionSave').onclick=()=>{
 drawMotionBase();
 
 
-// TEMPORAL ANTICIPATION V5.5
+// TEMPORAL ANTICIPATION V5.6
 const tc=$('#timingCanvas'),tx=tc.getContext('2d');
 let tm={errors:[],running:false,answerAt:0,raf:null,timer:null,sessionEnd:0,sessionTimer:null,mode:'ttc',difficulty:1,current:null};
 
@@ -1486,7 +1486,7 @@ $('#periphSave').onclick=()=>{
   alert('Guardado.');
 };
 
-// GYROSCOPE / DRIVING DUAL-TASK V5.5
+// GYROSCOPE / DRIVING DUAL-TASK V5.6
 let gy={
   enabled:false,running:false,beta:0,gamma:0,baseBeta:0,baseGamma:0,
   duration:90000,endAt:0,startAt:0,last:0,raf:null,
@@ -1792,199 +1792,6 @@ $('#pressureButtons').addEventListener('click',e=>{const b=e.target.closest('but
 $('#pressureStart').onclick=()=>{pr={i:0,acc:0,err:0,miss:0,target:null,answered:false,timer:null,score:null};pressureNext()}
 function pressureFinish(){clearTimeout(pr.timer);pr.score=Math.max(0,Math.round((pr.acc/20)*100-pr.err*2-pr.miss*3));$('#pAcc').textContent=pr.acc+'/20';$('#pMiss').textContent=pr.miss;$('#pErr').textContent=pr.err;$('#pScore').textContent=pr.score+'/100';$('#pressureStim .symbol').textContent='Fim · '+adLabel('pressure');adUpdate('pressure',pr.score)}
 $('#pressureSave').onclick=()=>{if(pr.score==null)return alert('Conclui o treino primeiro.');addHistory('Pressão',pr.score,pr.acc+'/20');alert('Guardado.')};
-
-// PERIPHERAL / ATENÇÃO DIVIDIDA
-let ph={
-  i:0,
-  centerCorrect:0,
-  centerErrors:0,
-  sideCorrect:0,
-  sideErrors:0,
-  sideEvents:0,
-  sideTimes:[],
-  number:0,
-  side:null,
-  sideStart:0,
-  sideTimer:null,
-  eventTimer:null,
-  centerAnswered:false,
-  sideAnswered:false,
-  active:false,
-  score:null
-};
-
-function periphNext(){
-  if(ph.i>=20){periphFinish();return}
-
-  clearTimeout(ph.sideTimer);
-  clearTimeout(ph.eventTimer);
-
-  ph.number=Math.floor(Math.random()*10);
-  ph.centerAnswered=false;
-  ph.sideAnswered=false;
-  ph.active=true;
-  ph.side=null;
-
-  $('#centerTask .symbol').textContent=ph.number;
-  $('#leftSide').textContent='·';
-  $('#rightSide').textContent='·';
-  $('#periphMsg').textContent='Responde PAR/ÍMPAR mantendo os olhos no centro. Se surgir uma seta lateral, responde também ao lado.';
-
-  // Cerca de 70% dos eventos têm estímulo periférico.
-  const hasSide=Math.random()<0.70;
-  if(hasSide){
-    ph.sideEvents++;
-    setTimeout(()=>{
-      if(!ph.active) return;
-      ph.side=Math.random()<0.5?'L':'R';
-      ph.sideStart=performance.now();
-      if(ph.side==='L'){
-        $('#leftSide').textContent='←';
-      } else {
-        $('#rightSide').textContent='→';
-      }
-
-      ph.sideTimer=setTimeout(()=>{
-        if(ph.active && !ph.sideAnswered){
-          ph.sideErrors++;
-          ph.sideAnswered=true;
-          maybeFinishPeriphEvent();
-        }
-      },1100);
-    },300+Math.random()*500);
-  } else {
-    ph.sideAnswered=true;
-  }
-
-  // Limite total por evento.
-  ph.eventTimer=setTimeout(()=>{
-    if(!ph.centerAnswered){
-      ph.centerErrors++;
-      ph.centerAnswered=true;
-    }
-    if(hasSide && !ph.sideAnswered){
-      ph.sideErrors++;
-      ph.sideAnswered=true;
-    }
-    maybeFinishPeriphEvent();
-  },1800);
-}
-
-function periphCenterPress(kind){
-  if(!ph.active || ph.centerAnswered) return;
-  const correct=(ph.number%2===0 && kind==='even') || (ph.number%2!==0 && kind==='odd');
-  if(correct) ph.centerCorrect++;
-  else ph.centerErrors++;
-  ph.centerAnswered=true;
-  maybeFinishPeriphEvent();
-}
-
-function periphSidePress(side){
-  if(!ph.active) return;
-
-  if(ph.side===null){
-    ph.sideErrors++;
-    return;
-  }
-
-  if(ph.sideAnswered) return;
-
-  ph.sideTimes.push(performance.now()-ph.sideStart);
-  if(side===ph.side) ph.sideCorrect++;
-  else ph.sideErrors++;
-
-  ph.sideAnswered=true;
-  clearTimeout(ph.sideTimer);
-  maybeFinishPeriphEvent();
-}
-
-function maybeFinishPeriphEvent(){
-  if(!ph.active) return;
-  if(!ph.centerAnswered || !ph.sideAnswered) return;
-
-  ph.active=false;
-  clearTimeout(ph.sideTimer);
-  clearTimeout(ph.eventTimer);
-
-  ph.i++;
-
-  $('#leftSide').textContent='·';
-  $('#rightSide').textContent='·';
-
-  setTimeout(periphNext,250);
-}
-
-$('#evenBtn').onclick=()=>periphCenterPress('even');
-$('#oddBtn').onclick=()=>periphCenterPress('odd');
-$('#leftBtn').onclick=()=>periphSidePress('L');
-$('#rightBtn').onclick=()=>periphSidePress('R');
-
-$('#periphStart').onclick=()=>{
-  ph={
-    i:0,
-    centerCorrect:0,
-    centerErrors:0,
-    sideCorrect:0,
-    sideErrors:0,
-    sideEvents:0,
-    sideTimes:[],
-    number:0,
-    side:null,
-    sideStart:0,
-    sideTimer:null,
-    eventTimer:null,
-    centerAnswered:false,
-    sideAnswered:false,
-    active:false,
-    score:null
-  };
-  $('#phCenter').textContent='—';
-  $('#phSide').textContent='—';
-  $('#phTime').textContent='—';
-  $('#phScore').textContent='—';
-  periphNext();
-};
-
-function periphFinish(){
-  clearTimeout(ph.sideTimer);
-  clearTimeout(ph.eventTimer);
-  ph.active=false;
-
-  const avg=ph.sideTimes.length
-    ? Math.round(ph.sideTimes.reduce((a,b)=>a+b,0)/ph.sideTimes.length)
-    : 9999;
-
-  const centerRate=ph.centerCorrect/20;
-  const sideRate=ph.sideEvents ? ph.sideCorrect/ph.sideEvents : 0;
-
-  // Peso maior para exatidão, menor para velocidade.
-  const speedBonus = avg<9000 ? Math.max(0,1-(avg-300)/1000) : 0;
-  ph.score=Math.max(0,Math.min(100,Math.round(
-    centerRate*45 +
-    sideRate*40 +
-    speedBonus*15 -
-    Math.min(15,ph.sideErrors*1.5)
-  )));
-
-  $('#phCenter').textContent=ph.centerCorrect+'/20';
-  $('#phSide').textContent=ph.sideCorrect+'/'+ph.sideEvents;
-  $('#phTime').textContent=(avg<9000?avg+' ms':'—');
-  $('#phScore').textContent=ph.score+'/100';
-
-  $('#periphMsg').innerHTML=
-    '<b>Fim.</b> Centro: '+ph.centerCorrect+'/20 · Periferia: '+ph.sideCorrect+'/'+ph.sideEvents+
-    (avg<9000?' · tempo lateral médio '+avg+' ms':'');
-}
-
-$('#periphSave').onclick=()=>{
-  if(ph.score==null) return alert('Conclui o treino primeiro.');
-  addHistory(
-    'Periférica',
-    ph.score,
-    'Centro '+ph.centerCorrect+'/20 · periferia '+ph.sideCorrect+'/'+ph.sideEvents
-  );
-  alert('Guardado.');
-};
 
 // STROOP
 let st={i:0,acc:0,err:0,times:[],start:0,target:null,score:null,timer:null};const colors=[['red','VERMELHO'],['blue','AZUL'],['green','VERDE'],['orange','LARANJA']];
