@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Psicotécnicos VMER">
 
-<title>Treino Psicotécnicos VMER — V4.9</title>
+<title>Treino Psicotécnicos VMER — V5.0</title>
 <style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#667085;--line:#d9e0ec;
@@ -318,6 +318,12 @@ tbody tr:last-child td{border-bottom:0}
   .metric,.stat{padding:14px}
 }
 
+
+.biTarget{position:absolute;width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;user-select:none;-webkit-user-select:none;touch-action:none;border:3px solid #0f172a;background:#fff}
+.biTarget.good{background:#dcfce7}.biTarget.bad{background:#fee2e2}
+.biHold{position:absolute;width:92px;height:92px;border-radius:20px;border:3px solid #0f172a;display:flex;align-items:center;justify-content:center;font-weight:800;background:#fff;touch-action:none}
+@media (max-width:1024px){#biStage{height:330px!important}}
+@media (max-width:650px){#biStage{height:300px!important}.biTarget{width:64px;height:64px}}
 </style>
 
 <link rel="manifest" href="manifest.webmanifest">
@@ -331,7 +337,7 @@ tbody tr:last-child td{border-bottom:0}
 <div class="wrap">
   <div class="hero">
     <div>
-      <h1>Treino Psicotécnicos VMER — V4.9</h1>
+      <h1>Treino Psicotécnicos VMER — V5.0</h1>
       <p>Plataforma offline de treino psicotécnico, otimizada para computador, iPad e telemóvel. Treina atenção, reação, antecipação, memória, coordenação e consistência numa interface simples e organizada.</p>
     </div>
     <div class="badge">Offline · PC · Mac · iPad · iPhone · Android</div>
@@ -445,6 +451,50 @@ tbody tr:last-child td{border-bottom:0}
   </div>
 </section>
 
+
+<section id="bimanual" class="panel">
+  <div class="card">
+    <div class="row spaced">
+      <div>
+        <h2>Destreza bimanual</h2>
+        <p class="muted">Treino de coordenação das duas mãos, reação dividida, controlo simultâneo e equilíbrio esquerda/direita. Idealmente usa o iPad em horizontal.</p>
+      </div>
+      <select id="biMode">
+        <option value="dualTap">Toque simultâneo</option>
+        <option value="sideReaction">Reação mão correspondente</option>
+        <option value="dualSequence">Sequências independentes</option>
+        <option value="holdTap">Manter + responder</option>
+        <option value="dualTracking">Seguimento duplo</option>
+        <option value="mirror">Movimentos espelho</option>
+        <option value="opposite">Movimentos opostos</option>
+        <option value="inhibition">Inibição cruzada</option>
+        <option value="rhythm">Ritmo bimanual</option>
+        <option value="balanceTap">Equilíbrio + resposta</option>
+      </select>
+    </div>
+    <div id="biNotice" class="notice">Escolhe um exercício e carrega em <b>Iniciar</b>. Mantém uma mão de cada lado do ecrã.</div>
+    <div id="biStage" class="gameCanvas" style="height:380px;position:relative;overflow:hidden;touch-action:none">
+      <div id="biLeftZone" style="position:absolute;left:0;top:0;width:50%;height:100%;border-right:1px solid #cbd5e1"></div>
+      <div id="biRightZone" style="position:absolute;right:0;top:0;width:50%;height:100%"></div>
+      <div id="biCenterText" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;pointer-events:none">—</div>
+    </div>
+    <div class="controls">
+      <button id="biStart" class="btn primary">Iniciar</button>
+      <button id="biSession" class="btn">Sessão automática 10 min</button>
+      <button id="biStop" class="btn">Parar</button>
+      <button id="biSave" class="btn good">Guardar</button>
+    </div>
+    <div class="metricGrid">
+      <div class="metric"><small>Acertos</small><b id="biHits">0</b></div>
+      <div class="metric"><small>Erros</small><b id="biErrors">0</b></div>
+      <div class="metric"><small>Reação esquerda</small><b id="biLeftRt">—</b></div>
+      <div class="metric"><small>Reação direita</small><b id="biRightRt">—</b></div>
+      <div class="metric"><small>Assimetria</small><b id="biAsym">—</b></div>
+      <div class="metric"><small>Índice bimanual</small><b id="biScore">—</b></div>
+    </div>
+    <div id="biFeedback" class="notice" style="margin-top:10px">O objetivo é manter rapidez, precisão e equilíbrio entre as duas mãos.</div>
+  </div>
+</section>
 <section id="motiongyro" class="panel">
   <div class="card">
     <div class="row spaced">
@@ -982,7 +1032,7 @@ $('#motionSave').onclick=()=>{
 drawMotionBase();
 
 
-// TEMPORAL ANTICIPATION V4.9
+// TEMPORAL ANTICIPATION V5.0
 const tc=$('#timingCanvas'),tx=tc.getContext('2d');
 let tm={errors:[],running:false,answerAt:0,raf:null,timer:null,sessionEnd:0,sessionTimer:null,mode:'ttc',difficulty:1,current:null};
 
@@ -1158,7 +1208,46 @@ $('#timingSave').onclick=()=>{
 };
 
 
-// GYROSCOPE / MOTION TRAINING V4.9
+
+// BIMANUAL DEXTERITY V5.0
+let bi={mode:'dualTap',running:false,quickEnd:0,hits:0,errors:0,leftRts:[],rightRts:[],trial:0,total:14,timers:[],raf:null,trackErrL:0,trackErrR:0,trackSamples:0};
+const biStage=$('#biStage');
+function biMean(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:0}
+function biLater(fn,ms){const t=setTimeout(fn,ms);bi.timers.push(t);return t}
+function biClear(){bi.timers.forEach(clearTimeout);bi.timers=[];if(bi.raf)cancelAnimationFrame(bi.raf);bi.raf=null;biStage.querySelectorAll('.biTarget,.biHold').forEach(e=>e.remove());$('#biCenterText').textContent='—'}
+function biUpdate(){const l=biMean(bi.leftRts),r=biMean(bi.rightRts),acc=(bi.hits+bi.errors)?bi.hits/(bi.hits+bi.errors):0,as=(l&&r)?Math.abs(l-r):0,sp=(l||r)?Math.max(0,1-((l+r)/(l&&r?2:1)-300)/1200):0,bal=(l&&r)?Math.max(0,1-as/700):.5,score=Math.round((acc*.55+sp*.25+bal*.20)*100);$('#biHits').textContent=bi.hits;$('#biErrors').textContent=bi.errors;$('#biLeftRt').textContent=l?Math.round(l)+' ms':'—';$('#biRightRt').textContent=r?Math.round(r)+' ms':'—';$('#biAsym').textContent=(l&&r)?Math.round(as)+' ms':'—';$('#biScore').textContent=(bi.hits+bi.errors)?score+'/100':'—'}
+function biReset(){bi.hits=0;bi.errors=0;bi.leftRts=[];bi.rightRts=[];bi.trial=0;biUpdate()}
+function biPos(side){const w=biStage.clientWidth,h=biStage.clientHeight,half=w/2,pad=48;return{x:side==='L'?(pad+Math.random()*Math.max(20,half-pad*2)):(half+pad+Math.random()*Math.max(20,half-pad*2)),y:pad+Math.random()*Math.max(20,h-pad*2)}}
+function biTarget(side,label='●'){const p=biPos(side),e=document.createElement('div');e.className='biTarget';e.textContent=label;e.style.left=(p.x-36)+'px';e.style.top=(p.y-36)+'px';biStage.appendChild(e);return e}
+function biRec(side,rt,ok=true){if(ok){bi.hits++;if(rt>0)(side==='L'?bi.leftRts:bi.rightRts).push(rt)}else bi.errors++;biUpdate()}
+function biFinish(){bi.running=false;biClear();$('#biCenterText').textContent='✓';const l=biMean(bi.leftRts),r=biMean(bi.rightRts);$('#biFeedback').innerHTML='<b>Sessão concluída.</b> '+bi.hits+' acertos · '+bi.errors+' erros'+(l&&r?' · assimetria '+Math.round(Math.abs(l-r))+' ms':'')+'.'}
+function biContinue(ms=650){if(!bi.running)return;if((bi.quickEnd&&Date.now()>=bi.quickEnd)||(!bi.quickEnd&&bi.trial>=bi.total)){biFinish();return}biLater(biNext,ms)}
+function biNext(){if(!bi.running)return;biClear();bi.mode=$('#biMode').value;bi.trial++;({dualTap:biDualTap,sideReaction:biSideReaction,dualSequence:biDualSequence,holdTap:biHoldTap,dualTracking:biDualTracking,mirror:()=>biDirectional(true),opposite:()=>biDirectional(false),inhibition:biInhibition,rhythm:biRhythm,balanceTap:biBalanceTap}[bi.mode]||biDualTap)()}
+
+function biDualTap(){$('#biFeedback').textContent='Toca nos dois alvos o mais próximo possível no tempo.';$('#biCenterText').textContent='AGUARDA…';biLater(()=>{$('#biCenterText').textContent='';const L=biTarget('L','L'),R=biTarget('R','R'),st=performance.now();let a=false,b=false,tL=0,tR=0;const hit=(s,e)=>{e.preventDefault();const rt=performance.now()-st;if(s==='L'&&!a){a=true;tL=rt;L.classList.add('good');biRec('L',rt)}if(s==='R'&&!b){b=true;tR=rt;R.classList.add('good');biRec('R',rt)}if(a&&b){$('#biFeedback').innerHTML='<b>Diferença entre mãos:</b> '+Math.round(Math.abs(tL-tR))+' ms.';biContinue(750)}};L.addEventListener('pointerdown',e=>hit('L',e),{once:true});R.addEventListener('pointerdown',e=>hit('R',e),{once:true})},600+Math.random()*1200)}
+
+function biSideReaction(){$('#biFeedback').textContent='Toca apenas no alvo com a mão do mesmo lado.';$('#biCenterText').textContent='AGUARDA…';biLater(()=>{const s=Math.random()<.5?'L':'R';$('#biCenterText').textContent='';const T=biTarget(s,s==='L'?'←':'→'),st=performance.now();T.addEventListener('pointerdown',e=>{e.preventDefault();biRec(s,performance.now()-st);T.classList.add('good');biContinue(500)},{once:true})},650+Math.random()*1300)}
+
+function biDualSequence(){$('#biFeedback').textContent='Completa 1→2→3 à esquerda e A→B→C à direita.';$('#biCenterText').textContent='';let iL=0,iR=0,st=performance.now();['1','2','3'].forEach((lab,i)=>{const t=biTarget('L',lab);t.addEventListener('pointerdown',e=>{e.preventDefault();if(i===iL){iL++;bi.hits++;t.classList.add('good');if(iL===3)bi.leftRts.push(performance.now()-st)}else{bi.errors++;t.classList.add('bad')}biUpdate();if(iL===3&&iR===3)biContinue(650)})});['A','B','C'].forEach((lab,i)=>{const t=biTarget('R',lab);t.addEventListener('pointerdown',e=>{e.preventDefault();if(i===iR){iR++;bi.hits++;t.classList.add('good');if(iR===3)bi.rightRts.push(performance.now()-st)}else{bi.errors++;t.classList.add('bad')}biUpdate();if(iL===3&&iR===3)biContinue(650)})})}
+
+function biHoldTap(){$('#biFeedback').textContent='Mantém o quadrado esquerdo pressionado enquanto respondes aos alvos da direita.';$('#biCenterText').textContent='';const h=document.createElement('div');h.className='biHold';h.textContent='MANTÉM';h.style.left='18%';h.style.top='calc(50% - 46px)';biStage.appendChild(h);let holding=false,n=4;h.addEventListener('pointerdown',e=>{e.preventDefault();holding=true;h.setPointerCapture?.(e.pointerId)});h.addEventListener('pointerup',()=>{if(n>0){holding=false;bi.errors++;biUpdate()}});function spawn(){if(n<=0){if(holding){bi.hits++;biUpdate()}biContinue();return}const t=biTarget('R','●'),st=performance.now();t.addEventListener('pointerdown',e=>{e.preventDefault();if(holding)biRec('R',performance.now()-st);else{bi.errors++;biUpdate()}t.remove();n--;biLater(spawn,300+Math.random()*500)},{once:true})}biLater(spawn,500)}
+
+function biDualTracking(){$('#biFeedback').textContent='Mantém um dedo sobre cada alvo móvel durante 6 segundos.';$('#biCenterText').textContent='';const L=biTarget('L'),R=biTarget('R');let pL=null,pR=null,start=performance.now(),last=start;const read=(s,e)=>{e.preventDefault();const r=biStage.getBoundingClientRect(),p={x:e.clientX-r.left,y:e.clientY-r.top};if(s==='L')pL=p;else pR=p};['pointerdown','pointermove'].forEach(ev=>{L.addEventListener(ev,e=>read('L',e));R.addEventListener(ev,e=>read('R',e))});function f(now){const t=(now-start)/1000,w=biStage.clientWidth,h=biStage.clientHeight,posL={x:w*.25+Math.sin(t*1.7)*70,y:h*.5+Math.cos(t*1.25)*75},posR={x:w*.75+Math.cos(t*1.55)*70,y:h*.5+Math.sin(t*1.35)*75};L.style.left=(posL.x-36)+'px';L.style.top=(posL.y-36)+'px';R.style.left=(posR.x-36)+'px';R.style.top=(posR.y-36)+'px';if(pL)bi.trackErrL+=Math.hypot(pL.x-posL.x,pL.y-posL.y);if(pR)bi.trackErrR+=Math.hypot(pR.x-posR.x,pR.y-posR.y);bi.trackSamples++;if(t<6)bi.raf=requestAnimationFrame(f);else{const eL=bi.trackErrL/Math.max(1,bi.trackSamples),eR=bi.trackErrR/Math.max(1,bi.trackSamples);if(eL<90)bi.hits++;else bi.errors++;if(eR<90)bi.hits++;else bi.errors++;bi.leftRts.push(eL*10);bi.rightRts.push(eR*10);biUpdate();$('#biFeedback').innerHTML='<b>Erro médio:</b> esquerda '+Math.round(eL)+' px · direita '+Math.round(eR)+' px.';bi.trackErrL=bi.trackErrR=bi.trackSamples=0;biContinue(800)}}bi.raf=requestAnimationFrame(f)}
+
+function biDirectional(mirror){$('#biFeedback').textContent=mirror?'Toca na mesma direção dos dois lados.':'Toca em direções opostas.';$('#biCenterText').textContent='';const dirs=['↑','↓'],p=Math.random()<.5?0:1,L=biTarget('L',dirs[p]),R=biTarget('R',mirror?dirs[p]:dirs[1-p]),st=performance.now();let a=false,b=false,tL=0,tR=0;const hit=(s,e)=>{e.preventDefault();const rt=performance.now()-st;if(s==='L'&&!a){a=true;tL=rt;biRec('L',rt)}if(s==='R'&&!b){b=true;tR=rt;biRec('R',rt)}if(a&&b){$('#biFeedback').innerHTML='<b>Sincronia:</b> '+Math.round(Math.abs(tL-tR))+' ms.';biContinue()}};L.addEventListener('pointerdown',e=>hit('L',e),{once:true});R.addEventListener('pointerdown',e=>hit('R',e),{once:true})}
+
+function biInhibition(){$('#biFeedback').textContent='VERDE = toca. VERMELHO = não toques. Cada lado é independente.';$('#biCenterText').textContent='';let done=0;['L','R'].forEach(s=>{const go=Math.random()<.65,t=biTarget(s,go?'✓':'✕');t.style.background=go?'#dcfce7':'#fee2e2';const st=performance.now();let responded=false,finish=()=>{done++;if(done===2)biContinue(550)};t.addEventListener('pointerdown',e=>{e.preventDefault();responded=true;if(go)biRec(s,performance.now()-st);else{bi.errors++;biUpdate()}finish()},{once:true});biLater(()=>{if(!responded){if(!go){bi.hits++;biUpdate()}else{bi.errors++;biUpdate()}finish()}},1050)})}
+
+function biRhythm(){$('#biFeedback').textContent='Alterna esquerda-direita mantendo um ritmo regular: 10 toques.';$('#biCenterText').textContent='L ↔ R';let exp='L',count=0,last=0,ints=[];const press=(s,e)=>{e.preventDefault();const now=performance.now();if(s!==exp){bi.errors++;biUpdate();return}if(last)ints.push(now-last);last=now;bi.hits++;biUpdate();count++;exp=exp==='L'?'R':'L';if(count>=10){const m=biMean(ints),sd=Math.sqrt(biMean(ints.map(x=>(x-m)*(x-m))));$('#biFeedback').innerHTML='<b>Regularidade:</b> '+Math.round(m)+' ms entre toques · variação '+Math.round(sd)+' ms.';cleanup();biContinue(650)}};const l=e=>press('L',e),r=e=>press('R',e),cleanup=()=>{$('#biLeftZone').removeEventListener('pointerdown',l);$('#biRightZone').removeEventListener('pointerdown',r)};$('#biLeftZone').addEventListener('pointerdown',l);$('#biRightZone').addEventListener('pointerdown',r);biLater(cleanup,9000)}
+
+function biBalanceTap(){$('#biFeedback').textContent='Mantém a atenção no centro enquanto respondes alternadamente aos alvos laterais.';$('#biCenterText').textContent='CENTRO';const c=document.createElement('div');c.className='biHold';c.style.left='calc(50% - 46px)';c.style.top='calc(50% - 46px)';c.textContent='ESTÁVEL';biStage.appendChild(c);let n=6,s='L';function spawn(){if(n<=0){biContinue();return}const t=biTarget(s),st=performance.now();t.addEventListener('pointerdown',e=>{e.preventDefault();biRec(s,performance.now()-st);t.remove();s=s==='L'?'R':'L';n--;biLater(spawn,250+Math.random()*400)},{once:true})}biLater(spawn,450)}
+
+$('#biStart').onclick=()=>{bi.running=true;bi.quickEnd=0;biReset();biClear();biNext()};
+$('#biSession').onclick=()=>{bi.running=true;bi.quickEnd=Date.now()+10*60*1000;biReset();biClear();biNext();$('#biFeedback').innerHTML='<b>Sessão automática de 10 minutos iniciada.</b>'};
+$('#biStop').onclick=()=>biFinish();
+$('#biSave').onclick=()=>{if(!(bi.hits+bi.errors))return;const l=biMean(bi.leftRts),r=biMean(bi.rightRts),acc=bi.hits/(bi.hits+bi.errors),as=(l&&r)?Math.abs(l-r):0,sp=(l||r)?Math.max(0,1-((l+r)/(l&&r?2:1)-300)/1200):0,bal=(l&&r)?Math.max(0,1-as/700):.5,score=Math.round((acc*.55+sp*.25+bal*.20)*100);addHistory('Destreza bimanual',score,bi.hits+' acertos · '+bi.errors+' erros'+(l&&r?' · assimetria '+Math.round(as)+' ms':''))};
+
+// GYROSCOPE / MOTION TRAINING V5.0
 let gy={
   enabled:false, mode:'lr', beta:0, gamma:0, baseBeta:0, baseGamma:0,
   waiting:false, target:null, stimAt:0, hits:0, errors:0, rts:[], count:0, total:12,
