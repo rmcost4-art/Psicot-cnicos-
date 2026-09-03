@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Psicotécnicos VMER">
 
-<title>Treino Psicotécnicos VMER — V4.8</title>
+<title>Treino Psicotécnicos VMER — V4.9</title>
 <style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#667085;--line:#d9e0ec;
@@ -331,7 +331,7 @@ tbody tr:last-child td{border-bottom:0}
 <div class="wrap">
   <div class="hero">
     <div>
-      <h1>Treino Psicotécnicos VMER — V4.8</h1>
+      <h1>Treino Psicotécnicos VMER — V4.9</h1>
       <p>Plataforma offline de treino psicotécnico, otimizada para computador, iPad e telemóvel. Treina atenção, reação, antecipação, memória, coordenação e consistência numa interface simples e organizada.</p>
     </div>
     <div class="badge">Offline · PC · Mac · iPad · iPhone · Android</div>
@@ -398,7 +398,7 @@ tbody tr:last-child td{border-bottom:0}
         <button id="motionSave" class="btn good">Guardar sessão</button>
         <button id="motionReset" class="btn">Repor</button>
       </div>
-      <div id="motionMsg" class="notice">Segue o movimento e tenta prever o reaparecimento.</div>
+      <div id="motionMsg" class="notice">Segue o movimento. Assim que a bola entrar na zona oculta, já podes tocar no ponto/momento em que prevês que reapareça.</div>
       <div class="stats">
         <div class="stat"><small>Tentativas</small><b id="mN">0</b></div>
         <div class="stat"><small>Média</small><b id="mScore">—</b></div>
@@ -708,7 +708,7 @@ function updateDash(){ $('#dashSessions').textContent=history.length;$('#dashBes
 
 // MOTION
 const mc=$('#motionCanvas'),mx=mc.getContext('2d');
-let mRAF=null,mStartTimer=null,mBall=null,mExit=null,mWait=false,mLast=0;
+let mRAF=null,mStartTimer=null,mBall=null,mExit=null,mWait=false,mLast=0,mHidden=false;
 let mStat={n:0,sum:0,pos:0,time:0},mMode='linear',mStarting=false;
 
 function MD(){return{w:900,h:420,l:342,r:657}}
@@ -745,6 +745,43 @@ function drawCountdown(n){
   mx.fillText(String(n),150,225);
 }
 
+
+function projectMotionExit(ball,mode,startNow){
+  const d=MD();
+  const b={...ball};
+  let elapsed=0;
+  const step=.002; // 2 ms internal projection for accurate crossing time.
+  let prevX=b.x,prevY=b.y,prevElapsed=0;
+
+  while(b.x<d.r && elapsed<8){
+    prevX=b.x; prevY=b.y; prevElapsed=elapsed;
+    b.t+=step;
+
+    if(mode==='accel') b.vx=Math.min(330,b.vx+30*step);
+    if(mode==='curve') b.vy+=b.ay*step;
+
+    b.x+=b.vx*step;
+
+    if(mode==='sine'){
+      b.y=b.baseY+62*Math.sin(b.t*2.0+b.phase);
+    }else{
+      b.y+=b.vy*step;
+    }
+
+    if(b.y<18){b.y=18;b.vy=Math.abs(b.vy);}
+    if(b.y>d.h-18){b.y=d.h-18;b.vy=-Math.abs(b.vy);}
+
+    elapsed+=step;
+  }
+
+  // Linear interpolation inside the final 2 ms step.
+  let frac=1;
+  if(b.x!==prevX) frac=Math.max(0,Math.min(1,(d.r-prevX)/(b.x-prevX)));
+  const crossElapsed=prevElapsed+(elapsed-prevElapsed)*frac;
+  const crossY=prevY+(b.y-prevY)*frac;
+  return {x:d.r,y:crossY,t:startNow+crossElapsed*1000};
+}
+
 function beginMotionRun(){
   const modes=['linear','diagonal','curve','sine','accel','time'];
   mMode=$('#motionMode').value==='random'
@@ -773,6 +810,7 @@ function beginMotionRun(){
 
   mExit=null;
   mWait=false;
+  mHidden=false;
   mStarting=false;
   mLast=performance.now();
   $('#motionMsg').textContent='Variante: '+mMode+'. Segue a bola até desaparecer.';
@@ -820,25 +858,32 @@ function motionStep(now){
     mBall.vy=-Math.abs(mBall.vy);
   }
 
-  if(mBall.x>=d.r){
-    mExit={x:d.r,y:mBall.y,t:now};
+  // Assim que entra na zona oculta, a resposta fica imediatamente ativa.
+  if(!mHidden && mBall.x>=d.l){
+    mHidden=true;
     mWait=true;
-    drawMotionBase();
-    $('#motionMsg').textContent='A bola desapareceu. Faz agora a tua previsão.';
-    return;
+    mExit=projectMotionExit(mBall,mMode,now);
+    $('#motionMsg').textContent='A bola desapareceu — já podes responder.';
   }
 
-  // A bola é sempre desenhada até entrar na zona oculta.
+  // A bola só é visível antes da zona oculta.
   if(mBall.x<d.l){
     mx.fillStyle='#111827';
     mx.beginPath();
     mx.arc(mBall.x,mBall.y,14,0,Math.PI*2);
     mx.fill();
 
-    // halo subtil para ficar bem visível em ecrãs pequenos
     mx.strokeStyle='#ffffff';
     mx.lineWidth=3;
     mx.stroke();
+  }
+
+  // Depois do instante real de reaparecimento, paramos a animação,
+  // mas continuamos a aceitar uma resposta tardia.
+  if(mHidden && now>=mExit.t){
+    drawMotionBase();
+    $('#motionMsg').textContent='A bola já deveria ter reaparecido — responde quando quiseres.';
+    return;
   }
 
   mRAF=requestAnimationFrame(motionStep);
@@ -848,11 +893,13 @@ mc.addEventListener('pointerdown',e=>{e.preventDefault();
   if(mStarting) return;
   if(!mWait||!mExit) return;
 
+  const clickNow=performance.now();
   const r=mc.getBoundingClientRect();
   const x=(e.clientX-r.left)*900/r.width;
   const y=(e.clientY-r.top)*420/r.height;
   const pe=mMode==='time'?0:Math.hypot(x-mExit.x,y-mExit.y);
-  const te=Math.abs(performance.now()-mExit.t);
+  const signedTe=clickNow-mExit.t; // negativo = cedo; positivo = tarde
+  const te=Math.abs(signedTe);
 
   const score=Math.max(0,Math.round(
     100-(mMode==='time'
@@ -870,25 +917,42 @@ mc.addEventListener('pointerdown',e=>{e.preventDefault();
   $('#mPos').textContent=Math.round(mStat.pos/mStat.n)+' px';
   $('#mTime').textContent=Math.round(mStat.time/mStat.n)+' ms';
 
+  cancelAnimationFrame(mRAF);
   drawMotionBase();
 
-  if(mMode!=='time'){
-    mx.fillStyle='#18864b';
-    mx.beginPath();
-    mx.arc(mExit.x,mExit.y,10,0,Math.PI*2);
-    mx.fill();
+  // Revela o ponto real de reaparecimento.
+  mx.fillStyle='#18864b';
+  mx.beginPath();
+  mx.arc(mExit.x,mExit.y,11,0,Math.PI*2);
+  mx.fill();
 
+  if(mMode!=='time'){
+    // Ponto escolhido pelo utilizador.
     mx.fillStyle='#c83c36';
     mx.beginPath();
-    mx.arc(x,y,10,0,Math.PI*2);
+    mx.arc(x,y,11,0,Math.PI*2);
     mx.fill();
+
+    // Linha entre previsão e ponto real para tornar o erro espacial evidente.
+    mx.strokeStyle='#667085';
+    mx.lineWidth=2;
+    mx.setLineDash([6,5]);
+    mx.beginPath();mx.moveTo(x,y);mx.lineTo(mExit.x,mExit.y);mx.stroke();
+    mx.setLineDash([]);
   }
 
+  const when=Math.abs(signedTe)<40?'praticamente no momento certo':
+    signedTe<0?'cedo '+Math.round(Math.abs(signedTe))+' ms':
+    'tarde '+Math.round(signedTe)+' ms';
+
   $('#motionMsg').innerHTML=
-    '<b>'+score+'/100</b> · erro '+Math.round(pe)+' px · '+Math.round(te)+' ms. '+
-    '<span class="muted">Carrega em “Nova tentativa” para aparecer outra bola.</span>';
+    '<b>'+score+'/100</b> · '+(mMode==='time'?'':('erro espacial '+Math.round(pe)+' px · '))+
+    '<b>'+when+'</b>. '+
+    '<span class="muted">Verde = ponto real de reaparecimento'+(mMode==='time'?'.':' · vermelho = a tua previsão.')+
+    ' Carrega em “Nova tentativa”.</span>';
 
   mWait=false;
+  mHidden=false;
   mBall=null;
 });
 
@@ -899,6 +963,7 @@ $('#motionReset').onclick=()=>{
   clearTimeout(mStartTimer);
   mStarting=false;
   mWait=false;
+  mHidden=false;
   mBall=null;
   mExit=null;
   mStat={n:0,sum:0,pos:0,time:0};
@@ -917,7 +982,7 @@ $('#motionSave').onclick=()=>{
 drawMotionBase();
 
 
-// TEMPORAL ANTICIPATION V4.8
+// TEMPORAL ANTICIPATION V4.9
 const tc=$('#timingCanvas'),tx=tc.getContext('2d');
 let tm={errors:[],running:false,answerAt:0,raf:null,timer:null,sessionEnd:0,sessionTimer:null,mode:'ttc',difficulty:1,current:null};
 
@@ -1093,7 +1158,7 @@ $('#timingSave').onclick=()=>{
 };
 
 
-// GYROSCOPE / MOTION TRAINING V4.8
+// GYROSCOPE / MOTION TRAINING V4.9
 let gy={
   enabled:false, mode:'lr', beta:0, gamma:0, baseBeta:0, baseGamma:0,
   waiting:false, target:null, stimAt:0, hits:0, errors:0, rts:[], count:0, total:12,
