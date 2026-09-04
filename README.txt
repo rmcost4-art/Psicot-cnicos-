@@ -1,4 +1,4 @@
-# Treino Psicotécnicos VMER — PWA V5.7
+# Treino Psicotécnicos VMER — PWA V5.8
 
 ## Publicar gratuitamente no GitHub Pages
 1. Crie um repositório no GitHub (por exemplo `vmer-treino`).
@@ -20,47 +20,47 @@ Depois de a app ter sido aberta pelo menos uma vez com internet, o Service Worke
 
 Nota: a disponibilidade de DeviceOrientation/giroscópio depende das permissões e políticas da versão do iOS/iPadOS/Safari.
 
-V5.7: ícone alterado para amarelo de alta visibilidade com elementos azuis.
+V5.8: ícone alterado para amarelo de alta visibilidade com elementos azuis.
 
-V5.7:
+V5.8:
 - Ícone amarelo com o nome “Psicotécnicos”.
 - No treino de antecipação temporal, após a resposta a zona oculta é revelada.
 - A bola amarela/azul mostra a posição real no instante do clique.
 - É indicada a distância que ainda faltava para o alvo ou quanto o alvo foi ultrapassado.
 
-V5.7: ícone final aprovado, amarelo, com “Psicotécnicos” e Estrela da Vida azul.
+V5.8: ícone final aprovado, amarelo, com “Psicotécnicos” e Estrela da Vida azul.
 
-V5.7:
+V5.8:
 - No treino principal de Antecipação, o toque fica ativo imediatamente quando a bola entra na zona oculta.
 - É possível responder antes do reaparecimento real.
 - O erro temporal passa a distinguir resposta precoce e tardia.
 - Após a resposta, verde mostra o ponto real de reaparecimento e vermelho a previsão.
 
-V5.7:
+V5.8:
 - Novo módulo “Destreza bimanual”.
 - 10 exercícios: toque simultâneo, reação mão correspondente, sequências independentes, manter + responder, seguimento duplo, movimentos espelho, movimentos opostos, inibição cruzada, ritmo bimanual e equilíbrio + resposta.
 - Sessão automática de 10 minutos.
 - Métricas separadas por mão, assimetria e índice bimanual.
 
-V5.7:
+V5.8:
 - Corrigido o menu superior.
 - Adicionados os botões visíveis para Treino temporal, Destreza bimanual e Movimento.
 - Menu horizontal otimizado para deslizar no iPhone/iPad.
 
-V5.7 — Destreza bimanual dinâmica
+V5.8 — Destreza bimanual dinâmica
 - Consola contínua com duas mãos.
 - Modos combinados e misto adaptativo.
 - Controlo + reação + inibição + mudança de regra.
 - Sessão de 90 s e sessão mista de 10 min.
 
-V5.7:
+V5.8:
 - Aumentada significativamente a velocidade dos alvos na destreza bimanual.
 - Modo precisão ainda mais rápido.
 - Dificuldade adaptativa progride mais depressa.
 - Estímulos de reação aparecem com intervalos menores.
 - No modo misto, as regras mudam com maior frequência.
 
-V5.7 — Dificuldade adaptativa global
+V5.8 — Dificuldade adaptativa global
 - Criado perfil persistente de dificuldade 1–10 por módulo.
 - Antecipação: velocidade, inclinação e extensão da oclusão adaptam-se.
 - Temporal: dificuldade inicial e evolução adaptadas.
@@ -77,7 +77,7 @@ V5.7 — Dificuldade adaptativa global
 - A simulação permanece padronizada para permitir comparação entre sessões.
 - Personalidade permanece não adaptativa para evitar condicionar respostas.
 
-V5.7 — Condução psicomotora com giroscópio
+V5.8 — Condução psicomotora com giroscópio
 - Módulo de giroscópio totalmente substituído.
 - Carro controlado pela inclinação lateral do iPad.
 - Estrada curva e dinâmica, com avaliação contínua de permanência dentro da faixa.
@@ -87,6 +87,13 @@ V5.7 — Condução psicomotora com giroscópio
 - Mede percentagem de tempo na estrada, número de saídas, acertos aos estímulos, erros, tempo de reação e índice global.
 - Sessão de 90 segundos e sessão de 5 minutos.
 
-V5.7 — Correção crítica: removido bloco JavaScript duplicado que impedia os botões da aplicação de responder.
+V5.8 — Correção crítica: removido bloco JavaScript duplicado que impedia os botões da aplicação de responder.
 
-V5.7 — Corrigida a navegação do menu, incluindo Destreza bimanual. O sistema de separadores foi refeito de forma mais robusta.
+V5.8 — Corrigida a navegação do menu, incluindo Destreza bimanual. O sistema de separadores foi refeito de forma mais robusta.
+
+V5.8
+- Antecipação reconstruída e corrigida.
+- Treino temporal reconstruído nos 8 modos; corrida A/B tem botões próprios e sessão automática alterna modos.
+- Movimento/giroscópio: estrada mais estreita, deslocação lateral real e velocidade muito superior/progressiva; manter horizontal deixa de funcionar.
+- Reação: 20 estímulos, intervalos mais curtos, janelas de resposta mais apertadas e mais distratores.
+- Removido completamente o antigo teste de coordenação com bola.

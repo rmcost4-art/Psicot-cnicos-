@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Psicotécnicos VMER">
 
-<title>Treino Psicotécnicos VMER — V5.7</title>
+<title>Treino Psicotécnicos VMER — V5.8</title>
 <style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#667085;--line:#d9e0ec;
@@ -361,8 +361,8 @@ tbody tr:last-child td{border-bottom:0}
 <div class="wrap">
   <div class="hero">
     <div>
-      <h1>Treino Psicotécnicos VMER — V5.7</h1>
-      <p>Plataforma offline de treino psicotécnico, otimizada para computador, iPad e telemóvel. Treina atenção, reação, antecipação, memória, coordenação e consistência numa interface simples e organizada.</p>
+      <h1>Treino Psicotécnicos VMER — V5.8</h1>
+      <p>Plataforma offline de treino psicotécnico, otimizada para computador, iPad e telemóvel. Treina atenção, reação, antecipação, memória, destreza e consistência numa interface simples e organizada.</p>
     </div>
     <div class="badge">Offline · PC · Mac · iPad · iPhone · Android</div>
   </div>
@@ -379,7 +379,7 @@ tbody tr:last-child td{border-bottom:0}
     <button type="button" data-tab="periph">Periferia</button>
     <button type="button" data-tab="stroop">Stroop</button>
     <button type="button" data-tab="memory">Memória</button>
-    <button type="button" data-tab="coord">Coordenação</button>
+    
     <button type="button" data-tab="personality">Personalidade</button>
     <button type="button" data-tab="exam">Simulação</button>
     <button type="button" data-tab="history">Histórico</button>
@@ -401,14 +401,14 @@ tbody tr:last-child td{border-bottom:0}
         <div class="moduleCard"><h3>Bolas / antecipação</h3><div class="muted">Reta, diagonal, curva, sinusoidal, aceleração e treino só de tempo.</div></div>
         <div class="moduleCard"><h3>Treino temporal</h3><div class="muted">Time-to-contact, oclusão, ritmo, interceção e reprodução de duração.</div></div>
         <div class="moduleCard"><h3>Destreza bimanual</h3><div class="muted">Consola dinâmica para coordenação das duas mãos, controlo contínuo, reação, inibição e dupla tarefa.</div></div>
-        <div class="moduleCard"><h3>Movimento / giroscópio</h3><div class="muted">Reflexos por inclinação, Go/No-Go, estabilização e seguimento.</div></div>
+        <div class="moduleCard"><h3>Movimento / giroscópio</h3><div class="muted">Condução dinâmica: seguir uma estrada móvel enquanto respondes a estímulos externos.</div></div>
         <div class="moduleCard"><h3>Reação</h3><div class="muted">Simples, seletiva e Go/No-Go.</div></div>
         <div class="moduleCard"><h3>Atenção visual</h3><div class="muted">Pesquisa numérica e procura de símbolos.</div></div>
         <div class="moduleCard"><h3>Sob pressão</h3><div class="muted">Estímulos em cadência cada vez mais rápida.</div></div>
         <div class="moduleCard"><h3>Perceção periférica</h3><div class="muted">Tarefa central + deteção lateral.</div></div>
         <div class="moduleCard"><h3>Stroop</h3><div class="muted">Ignorar a palavra e responder à cor.</div></div>
         <div class="moduleCard"><h3>Memória de trabalho</h3><div class="muted">Sequências progressivas de números.</div></div>
-        <div class="moduleCard"><h3>Coordenação</h3><div class="muted">Manter o cursor/dedo próximo de um alvo em movimento.</div></div>
+        
         <div class="moduleCard"><h3>Personalidade</h3><div class="muted">Banco alargado com itens diretos e invertidos.</div></div>
       </div>
     </div>
@@ -431,6 +431,7 @@ tbody tr:last-child td{border-bottom:0}
       <canvas id="motionCanvas" class="gameCanvas" width="900" height="420"></canvas>
       <div class="controls">
         <button id="motionStart" class="btn primary">Nova tentativa</button>
+        <button id="motionTimeRespond" class="btn" style="display:none" disabled>RESPONDER AGORA</button>
         <button id="motionSave" class="btn good">Guardar sessão</button>
         <button id="motionReset" class="btn">Repor</button>
       </div>
@@ -468,6 +469,8 @@ tbody tr:last-child td{border-bottom:0}
     <div class="controls">
       <button id="timingStart" class="btn primary">Nova tentativa</button>
       <button id="timingRespond" class="btn" disabled>RESPONDER AGORA</button>
+      <button id="timingA" class="btn" style="display:none">A</button>
+      <button id="timingB" class="btn" style="display:none">B</button>
       <button id="timingSession" class="btn">Sessão automática 10 min</button>
       <button id="timingSave" class="btn good">Guardar</button>
     </div>
@@ -583,7 +586,7 @@ tbody tr:last-child td{border-bottom:0}
     </div>
 
     <div id="gyroFeedback" class="notice" style="margin-top:10px">
-      O objetivo principal é manter o carro dentro da estrada. Quando aparecer um símbolo no canto superior direito, toca no símbolo correspondente em baixo sem deixar de conduzir.
+      O centro da estrada desloca-se continuamente: manter o dispositivo horizontal não é suficiente. Segue ativamente a faixa e responde aos símbolos externos.
     </div>
   </div>
 </section>
@@ -594,7 +597,7 @@ tbody tr:last-child td{border-bottom:0}
         <select id="reactionMode"><option value="simple">Simples</option><option value="selective">Seletiva</option><option value="nogo">Go / No-Go</option></select>
       </div>
       <div id="reactionPad"><div id="reactionText" class="symbol">Pronto?</div></div>
-      <div class="controls"><button id="reactionStart" class="btn primary">Iniciar 12 estímulos</button><button id="reactionSave" class="btn good">Guardar</button></div>
+      <div class="controls"><button id="reactionStart" class="btn primary">Iniciar 20 estímulos</button><button id="reactionSave" class="btn good">Guardar</button></div>
       <div id="reactionMsg" class="notice">No modo seletivo, responde apenas ao círculo. No Go/No-Go, responde apenas ao verde.</div>
       <div class="stats">
         <div class="stat"><small>Acertos</small><b id="rAcc">—</b></div>
@@ -718,22 +721,6 @@ tbody tr:last-child td{border-bottom:0}
     </div>
   </section>
 
-  <section id="coord" class="panel">
-    <div class="card">
-      <h2>Coordenação olho-mão</h2>
-      <p class="muted">Mantém o ponto azul próximo do alvo preto durante 20 segundos. No telemóvel, arrasta com o dedo.</p>
-      <div id="trackingBox" class="trackingBox"><div id="trackTarget" class="trackTarget"></div><div id="trackDot" class="trackDot"></div></div>
-      <div class="controls"><button id="coordStart" class="btn primary">Iniciar 20 s</button><button id="coordSave" class="btn good">Guardar</button></div>
-      <div id="coordMsg" class="notice">Quanto menor a distância média, melhor.</div>
-      <div class="stats">
-        <div class="stat"><small>Distância média</small><b id="cDist">—</b></div>
-        <div class="stat"><small>Tempo dentro do alvo</small><b id="cInside">—</b></div>
-        <div class="stat"><small>Duração</small><b id="cDur">—</b></div>
-        <div class="stat"><small>Índice</small><b id="cScore">—</b></div>
-      </div>
-    </div>
-  </section>
-
   <section id="personality" class="panel">
     <div class="card">
       <h2>Personalidade — banco alargado</h2>
@@ -799,7 +786,7 @@ tbody tr:last-child td{border-bottom:0}
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const STORE='vmerTrainerV3';
 const ADSTORE='vmerAdaptiveV1';
-const ADKEYS=['motion','timing','reaction','search','pressure','periph','stroop','memory','coord','bimanual','gyro'];
+const ADKEYS=['motion','timing','reaction','search','pressure','periph','stroop','memory','bimanual','gyro'];
 let adaptive={};
 try{adaptive=JSON.parse(localStorage.getItem(ADSTORE)||'{}')}catch(e){adaptive={}}
 ADKEYS.forEach(k=>{if(!adaptive[k])adaptive[k]={level:3,recent:[]}});
@@ -818,7 +805,7 @@ function adLabel(k){return 'Nível adaptativo '+adLevel(k)+'/10'}
 function adRender(){
   const box=$('#adaptiveLevels'),avg=$('#adaptiveAvg');
   if(!box||!avg)return;
-  const names={motion:'Antecipação',timing:'Temporal',reaction:'Reação',search:'Atenção',pressure:'Pressão',periph:'Periferia',stroop:'Stroop',memory:'Memória',coord:'Coordenação',bimanual:'Bimanual',gyro:'Movimento'};
+  const names={motion:'Antecipação',timing:'Temporal',reaction:'Reação',search:'Atenção',pressure:'Pressão',periph:'Periferia',stroop:'Stroop',memory:'Memória',bimanual:'Bimanual',gyro:'Movimento'};
   const vals=ADKEYS.map(k=>adLevel(k));
   avg.textContent=(vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(1)+'/10';
   box.textContent=ADKEYS.map(k=>names[k]+' '+adLevel(k)).join(' · ');
@@ -847,466 +834,201 @@ if(tabsBar){
 }
 function updateDash(){ $('#dashSessions').textContent=history.length;$('#dashBest').textContent=history.length?Math.max(...history.map(x=>x.score))+'/100':'—';const ex=history.filter(x=>x.type==='Simulação').slice(-1)[0];$('#dashExam').textContent=ex?ex.score+'/100':'—';let rec='Começa por fazer 1 sessão de Bolas, Reação e Atenção.';if(history.length>=4){const recent=history.slice(-8);const avg=recent.reduce((a,b)=>a+b.score,0)/recent.length;rec=avg<65?'Foca-te nos módulos em que ficas abaixo de 65/100 e usa sessões curtas e frequentes.':avg<80?'Estás num nível intermédio. Alterna módulos e começa a usar a simulação aleatória.':'Bom equilíbrio recente. Mantém consistência e evita treinar só o que já dominas.'}$('#recommendation').textContent=rec;adRender()}
 
-// MOTION
+// MOTION / ANTECIPAÇÃO V5.8 — motor refeito
 const mc=$('#motionCanvas'),mx=mc.getContext('2d');
-let mRAF=null,mStartTimer=null,mBall=null,mExit=null,mWait=false,mLast=0,mHidden=false;
-let mStat={n:0,sum:0,pos:0,time:0},mMode='linear',mStarting=false;
+let mRAF=null,mBall=null,mExit=null,mWait=false,mStat={n:0,sum:0,pos:0,time:0},mMode='linear';
 
 function MD(){
   const lv=adLevel('motion');
-  const widen=(lv-3)*12;
-  return{w:900,h:420,l:Math.max(255,342-widen),r:Math.min(745,657+widen)};
+  const widen=(lv-3)*10;
+  return {w:900,h:420,l:Math.max(285,345-widen),r:Math.min(735,655+widen)};
 }
-
 function drawMotionBase(){
   const d=MD();
   mx.clearRect(0,0,d.w,d.h);
-  mx.fillStyle='#f8fafc';
-  mx.fillRect(0,0,d.w,d.h);
-  mx.fillStyle='#e5e7eb';
-  mx.fillRect(d.l,0,d.r-d.l,d.h);
-
-  mx.strokeStyle='#cfd6e4';
-  mx.lineWidth=2;
-  mx.strokeRect(d.l,0,d.r-d.l,d.h);
-
-  mx.fillStyle='#667085';
-  mx.font='20px system-ui';
-  mx.textAlign='center';
-  mx.fillText('ZONA OCULTA',(d.l+d.r)/2,30);
-
+  mx.fillStyle='#f8fafc';mx.fillRect(0,0,d.w,d.h);
+  mx.fillStyle='#e5e7eb';mx.fillRect(d.l,0,d.r-d.l,d.h);
+  mx.strokeStyle='#cbd5e1';mx.lineWidth=2;mx.strokeRect(d.l,0,d.r-d.l,d.h);
+  mx.fillStyle='#475569';mx.font='700 18px system-ui';mx.textAlign='center';
+  mx.fillText('ZONA OCULTA',(d.l+d.r)/2,28);
   mx.font='14px system-ui';
-  const txt=mMode==='time'
-    ? 'Toca no lado direito no momento em que achas que reaparece'
-    : 'Toca no ponto e no momento em que achas que reaparece';
-  mx.fillText(txt,780,395);
+  mx.fillText(mMode==='time'?'Responde no momento em que a bola deveria reaparecer':'Toca no ponto onde achas que a bola reaparece',785,395);
 }
-
-function drawCountdown(n){
-  drawMotionBase();
-  mx.fillStyle='#172033';
-  mx.font='700 64px system-ui';
-  mx.textAlign='center';
-  mx.fillText(String(n),150,225);
+function mSolveTimeToX(x0,v,a,target){
+  if(Math.abs(a)<0.0001)return (target-x0)/v;
+  const A=.5*a,B=v,C=x0-target,disc=B*B-4*A*C;
+  if(disc<0)return (target-x0)/v;
+  const roots=[(-B+Math.sqrt(disc))/(2*A),(-B-Math.sqrt(disc))/(2*A)].filter(x=>x>0).sort((a,b)=>a-b);
+  return roots[0] || (target-x0)/v;
 }
-
-
-function projectMotionExit(ball,mode,startNow){
-  const d=MD();
-  const b={...ball};
-  let elapsed=0;
-  const step=.002; // 2 ms internal projection for accurate crossing time.
-  let prevX=b.x,prevY=b.y,prevElapsed=0;
-
-  while(b.x<d.r && elapsed<8){
-    prevX=b.x; prevY=b.y; prevElapsed=elapsed;
-    b.t+=step;
-
-    if(mode==='accel') b.vx=Math.min(330,b.vx+30*step);
-    if(mode==='curve') b.vy+=b.ay*step;
-
-    b.x+=b.vx*step;
-
-    if(mode==='sine'){
-      b.y=b.baseY+62*Math.sin(b.t*2.0+b.phase);
-    }else{
-      b.y+=b.vy*step;
-    }
-
-    if(b.y<18){b.y=18;b.vy=Math.abs(b.vy);}
-    if(b.y>d.h-18){b.y=d.h-18;b.vy=-Math.abs(b.vy);}
-
-    elapsed+=step;
-  }
-
-  // Linear interpolation inside the final 2 ms step.
-  let frac=1;
-  if(b.x!==prevX) frac=Math.max(0,Math.min(1,(d.r-prevX)/(b.x-prevX)));
-  const crossElapsed=prevElapsed+(elapsed-prevElapsed)*frac;
-  const crossY=prevY+(b.y-prevY)*frac;
-  return {x:d.r,y:crossY,t:startNow+crossElapsed*1000};
+function mPathY(ball,t){
+  const u=Math.max(0,Math.min(1,t/ball.tExit));
+  if(ball.mode==='diagonal')return ball.y0+ball.dy*u;
+  if(ball.mode==='curve')return ball.y0+ball.dy*u+ball.amp*4*u*(1-u);
+  if(ball.mode==='sine')return ball.y0+ball.dy*u+ball.amp*Math.sin(Math.PI*2*u);
+  return ball.y0;
 }
-
-function beginMotionRun(){
-  const modes=['linear','diagonal','curve','sine','accel','time'];
-  mMode=$('#motionMode').value==='random'
-    ? modes[Math.floor(Math.random()*modes.length)]
-    : $('#motionMode').value;
-
-  const d=MD();
-  const y=80+Math.random()*260;
-  const lv=adLevel('motion');
-  const vx=(145+Math.random()*85)*(0.88+lv*0.065);
-
-  let vy=0;
-  if(mMode==='diagonal' || mMode==='curve' || mMode==='accel' || mMode==='time'){
-    vy=(Math.random()*2-1)*(55+adLevel('motion')*7);
-  }
-
-  mBall={
-    x:55,
-    y:y,
-    vx:vx,
-    vy:vy,
-    t:0,
-    ay:(Math.random()*2-1)*38,
-    baseY:y,
-    phase:Math.random()*Math.PI*2
-  };
-
-  mExit=null;
-  mWait=false;
-  mHidden=false;
-  mStarting=false;
-  mLast=performance.now();
-  $('#motionMsg').textContent='Variante: '+mMode+'. Segue a bola até desaparecer.';
-  mRAF=requestAnimationFrame(motionStep);
-}
-
 function motionStart(){
   cancelAnimationFrame(mRAF);
-  clearTimeout(mStartTimer);
+  const modes=['linear','diagonal','curve','sine','accel','time'];
+  mMode=$('#motionMode').value==='random'?modes[Math.floor(Math.random()*modes.length)]:$('#motionMode').value;
+  const d=MD(),lv=adLevel('motion'),x0=55;
+  const v=(170+Math.random()*90)*(0.92+lv*.055);
+  const a=mMode==='accel'?(28+lv*3):0;
+  const tExit=mSolveTimeToX(x0,v,a,d.r),tHide=mSolveTimeToX(x0,v,a,d.l);
+  let y0=95+Math.random()*220,dy=(Math.random()*2-1)*(60+lv*5);
+  let amp=(mMode==='curve'||mMode==='sine')?(35+lv*4)*(Math.random()<.5?-1:1):0;
+  const end=y0+dy;
+  if(end<45)dy+=45-end;
+  if(end>375)dy-=end-375;
+  mBall={mode:mMode,x0,y0,v,a,dy,amp,t0:performance.now(),tExit,tHide};
+  mExit={x:d.r,y:mPathY(mBall,tExit),t:mBall.t0+tExit*1000};
   mWait=false;
-  mExit=null;
-  mStarting=false;
-
-  // Início imediato, sem contagem decrescente.
-  beginMotionRun();
-}
-function motionStep(now){
-  if(!mBall) return;
-
-  const dt=Math.min(.025,(now-mLast)/1000);
-  mLast=now;
-  drawMotionBase();
-
-  const d=MD();
-  mBall.t+=dt;
-
-  if(mMode==='accel') mBall.vx=Math.min(330,mBall.vx+30*dt);
-  if(mMode==='curve') mBall.vy+=mBall.ay*dt;
-
-  mBall.x+=mBall.vx*dt;
-
-  if(mMode==='sine'){
-    mBall.y=mBall.baseY+62*Math.sin(mBall.t*2.0+mBall.phase);
-  }else{
-    mBall.y+=mBall.vy*dt;
-  }
-
-  // Clamping explícito para a bola nunca ficar fora do canvas.
-  if(mBall.y<18){
-    mBall.y=18;
-    mBall.vy=Math.abs(mBall.vy);
-  }
-  if(mBall.y>d.h-18){
-    mBall.y=d.h-18;
-    mBall.vy=-Math.abs(mBall.vy);
-  }
-
-  // Assim que entra na zona oculta, a resposta fica imediatamente ativa.
-  if(!mHidden && mBall.x>=d.l){
-    mHidden=true;
-    mWait=true;
-    mExit=projectMotionExit(mBall,mMode,now);
-    $('#motionMsg').textContent='A bola desapareceu — já podes responder.';
-  }
-
-  // A bola só é visível antes da zona oculta.
-  if(mBall.x<d.l){
-    mx.fillStyle='#111827';
-    mx.beginPath();
-    mx.arc(mBall.x,mBall.y,14,0,Math.PI*2);
-    mx.fill();
-
-    mx.strokeStyle='#ffffff';
-    mx.lineWidth=3;
-    mx.stroke();
-  }
-
-  // Depois do instante real de reaparecimento, paramos a animação,
-  // mas continuamos a aceitar uma resposta tardia.
-  if(mHidden && now>=mExit.t){
-    drawMotionBase();
-    $('#motionMsg').textContent='A bola já deveria ter reaparecido — responde quando quiseres.';
-    return;
-  }
-
+  $('#motionTimeRespond').style.display=mMode==='time'?'inline-flex':'none';
+  $('#motionTimeRespond').disabled=true;
+  $('#motionMsg').textContent='Variante: '+mMode+'. Observa a velocidade e a trajetória.';
   mRAF=requestAnimationFrame(motionStep);
 }
-
-mc.addEventListener('pointerdown',e=>{e.preventDefault();
-  if(mStarting) return;
-  if(!mWait||!mExit) return;
-
-  const clickNow=performance.now();
-  const r=mc.getBoundingClientRect();
-  const x=(e.clientX-r.left)*900/r.width;
-  const y=(e.clientY-r.top)*420/r.height;
-  const pe=mMode==='time'?0:Math.hypot(x-mExit.x,y-mExit.y);
-  const signedTe=clickNow-mExit.t; // negativo = cedo; positivo = tarde
-  const te=Math.abs(signedTe);
-
-  const score=Math.max(0,Math.round(
-    100-(mMode==='time'
-      ? Math.min(100,te/15)
-      : (Math.min(58,pe/4.5)+Math.min(42,te/42)))
-  ));
-
-  mStat.n++;
-  mStat.sum+=score;
-  mStat.pos+=pe;
-  mStat.time+=te;
-  adUpdate('motion',score);
-
-  $('#mN').textContent=mStat.n;
-  $('#mScore').textContent=Math.round(mStat.sum/mStat.n)+'/100';
-  $('#mPos').textContent=Math.round(mStat.pos/mStat.n)+' px';
-  $('#mTime').textContent=Math.round(mStat.time/mStat.n)+' ms';
-
-  cancelAnimationFrame(mRAF);
+function motionStep(now){
+  if(!mBall)return;
+  const t=(now-mBall.t0)/1000;
   drawMotionBase();
-
-  // Revela o ponto real de reaparecimento.
-  mx.fillStyle='#18864b';
-  mx.beginPath();
-  mx.arc(mExit.x,mExit.y,11,0,Math.PI*2);
-  mx.fill();
-
-  if(mMode!=='time'){
-    // Ponto escolhido pelo utilizador.
-    mx.fillStyle='#c83c36';
-    mx.beginPath();
-    mx.arc(x,y,11,0,Math.PI*2);
-    mx.fill();
-
-    // Linha entre previsão e ponto real para tornar o erro espacial evidente.
-    mx.strokeStyle='#667085';
-    mx.lineWidth=2;
-    mx.setLineDash([6,5]);
-    mx.beginPath();mx.moveTo(x,y);mx.lineTo(mExit.x,mExit.y);mx.stroke();
-    mx.setLineDash([]);
+  const x=mBall.x0+mBall.v*t+.5*mBall.a*t*t,y=mPathY(mBall,t);
+  if(t<mBall.tHide){
+    mx.fillStyle='#111827';mx.beginPath();mx.arc(x,y,14,0,Math.PI*2);mx.fill();
+    mx.strokeStyle='#fff';mx.lineWidth=3;mx.stroke();
+  }else if(!mWait){
+    mWait=true;$('#motionTimeRespond').disabled=false;
+    $('#motionMsg').innerHTML='<b>A bola desapareceu.</b> '+(mMode==='time'?'Carrega em RESPONDER AGORA quando achares que reaparece.':'Toca já no ponto onde prevês que reapareça.');
   }
-
-  const when=Math.abs(signedTe)<40?'praticamente no momento certo':
-    signedTe<0?'cedo '+Math.round(Math.abs(signedTe))+' ms':
-    'tarde '+Math.round(signedTe)+' ms';
-
-  $('#motionMsg').innerHTML=
-    '<b>'+score+'/100</b> · '+(mMode==='time'?'':('erro espacial '+Math.round(pe)+' px · '))+
-    '<b>'+when+'</b>. '+
-    '<span class="muted">Verde = ponto real de reaparecimento'+(mMode==='time'?'.':' · vermelho = a tua previsão.')+
-    ' Carrega em “Nova tentativa”.</span>';
-
-  mWait=false;
-  mHidden=false;
-  mBall=null;
-});
-
+  if(t<mBall.tExit+1.5)mRAF=requestAnimationFrame(motionStep);
+  else $('#motionMsg').innerHTML='<b>Resposta tardia.</b> Ainda podes responder.';
+}
+function motionAnswer(clientX,clientY,fromButton=false){
+  if(!mWait||!mExit||!mBall)return;
+  const clickNow=performance.now(),r=mc.getBoundingClientRect();
+  let x=mExit.x,y=mExit.y;
+  if(!fromButton){x=(clientX-r.left)*900/r.width;y=(clientY-r.top)*420/r.height}
+  const pe=mMode==='time'?0:Math.hypot(x-mExit.x,y-mExit.y);
+  const signedTe=clickNow-mExit.t,te=Math.abs(signedTe);
+  const score=Math.max(0,Math.round(100-(mMode==='time'?Math.min(100,te/12):(Math.min(60,pe/4)+Math.min(40,te/35)))));
+  mStat.n++;mStat.sum+=score;mStat.pos+=pe;mStat.time+=te;adUpdate('motion',score);
+  $('#mN').textContent=mStat.n;$('#mScore').textContent=Math.round(mStat.sum/mStat.n)+'/100';
+  $('#mPos').textContent=Math.round(mStat.pos/mStat.n)+' px';$('#mTime').textContent=Math.round(mStat.time/mStat.n)+' ms';
+  cancelAnimationFrame(mRAF);drawMotionBase();
+  mx.fillStyle='#16a34a';mx.beginPath();mx.arc(mExit.x,mExit.y,12,0,Math.PI*2);mx.fill();
+  if(mMode!=='time'){
+    mx.fillStyle='#dc2626';mx.beginPath();mx.arc(x,y,11,0,Math.PI*2);mx.fill();
+    mx.strokeStyle='#64748b';mx.setLineDash([6,5]);mx.beginPath();mx.moveTo(x,y);mx.lineTo(mExit.x,mExit.y);mx.stroke();mx.setLineDash([]);
+  }
+  const when=Math.abs(signedTe)<45?'momento muito próximo do correto':signedTe<0?'cedo '+Math.round(-signedTe)+' ms':'tarde '+Math.round(signedTe)+' ms';
+  $('#motionMsg').innerHTML='<b>'+score+'/100</b> · '+(mMode==='time'?'':Math.round(pe)+' px · ')+'<b>'+when+'</b>. Verde = reaparecimento real.';
+  mWait=false;mBall=null;mExit=null;$('#motionTimeRespond').disabled=true;
+}
+mc.addEventListener('pointerdown',e=>{e.preventDefault();if(mMode!=='time')motionAnswer(e.clientX,e.clientY,false)});
+$('#motionTimeRespond').onclick=()=>motionAnswer(0,0,true);
 $('#motionStart').onclick=motionStart;
-
 $('#motionReset').onclick=()=>{
-  cancelAnimationFrame(mRAF);
-  clearTimeout(mStartTimer);
-  mStarting=false;
-  mWait=false;
-  mHidden=false;
-  mBall=null;
-  mExit=null;
-  mStat={n:0,sum:0,pos:0,time:0};
-  $('#mN').textContent='0';
-  $('#mScore').textContent=$('#mPos').textContent=$('#mTime').textContent='—';
-  $('#motionMsg').textContent='Sessão reposta. Carrega em “Nova tentativa”.';
-  drawMotionBase();
+  cancelAnimationFrame(mRAF);mBall=null;mExit=null;mWait=false;mStat={n:0,sum:0,pos:0,time:0};
+  $('#mN').textContent='0';$('#mScore').textContent=$('#mPos').textContent=$('#mTime').textContent='—';
+  $('#motionTimeRespond').style.display='none';drawMotionBase();$('#motionMsg').textContent='Sessão reposta.';
 };
-
-$('#motionSave').onclick=()=>{
-  if(!mStat.n) return alert('Faz algumas tentativas primeiro.');
-  addHistory('Bolas',Math.round(mStat.sum/mStat.n),mStat.n+' tentativas · '+Math.round(mStat.time/mStat.n)+' ms');
-  alert('Guardado.');
-};
-
+$('#motionSave').onclick=()=>{if(!mStat.n)return alert('Faz algumas tentativas primeiro.');addHistory('Bolas',Math.round(mStat.sum/mStat.n),mStat.n+' tentativas · '+Math.round(mStat.time/mStat.n)+' ms');alert('Guardado.')};
 drawMotionBase();
 
-
-// TEMPORAL ANTICIPATION V5.7
+// TEMPORAL ANTICIPATION V5.8 — oito modos revistos
 const tc=$('#timingCanvas'),tx=tc.getContext('2d');
-let tm={errors:[],running:false,answerAt:0,raf:null,timer:null,sessionEnd:0,sessionTimer:null,mode:'ttc',difficulty:1,current:null};
+let tm={errors:[],running:false,answerAt:0,raf:null,timer:null,sessionEnd:0,mode:'ttc',difficulty:1,current:null,token:0};
 
-function tmBase(){
-  tx.clearRect(0,0,900,360); tx.fillStyle='#f8fafc';tx.fillRect(0,0,900,360);
-}
+function tmBase(){tx.clearRect(0,0,900,360);tx.fillStyle='#f8fafc';tx.fillRect(0,0,900,360)}
 function tmStats(){
-  const n=tm.errors.length; $('#tmN').textContent=n;
+  const n=tm.errors.length;$('#tmN').textContent=n;
   if(!n){$('#tmAbs').textContent=$('#tmBias').textContent=$('#tmScore').textContent='—';return}
-  const abs=Math.round(tm.errors.reduce((a,b)=>a+Math.abs(b),0)/n);
-  const bias=Math.round(tm.errors.reduce((a,b)=>a+b,0)/n);
-  const score=Math.max(0,Math.round(100-Math.min(100,abs/7)));
-  $('#tmAbs').textContent=abs+' ms';
-  $('#tmBias').textContent=(bias>0?'+':'')+bias+' ms';
-  $('#tmScore').textContent=score+'/100';
-  const late=tm.errors.filter(e=>e>0).length/n*100;
-  $('#timingFeedback').innerHTML='<b>Tendência:</b> '+(Math.abs(bias)<100?'bem calibrada':bias>0?'responder tarde':'responder cedo')+
-    '. '+Math.round(late)+'% das respostas foram tardias. '+(abs<250?'Excelente controlo temporal.':abs<450?'Boa evolução; tenta aproximar de 250 ms.':'Prioriza este treino até baixares consistentemente dos 450 ms.');
+  const abs=Math.round(tm.errors.reduce((a,b)=>a+Math.abs(b),0)/n),bias=Math.round(tm.errors.reduce((a,b)=>a+b,0)/n);
+  const score=Math.max(0,Math.round(100-Math.min(100,abs/6)));
+  $('#tmAbs').textContent=abs+' ms';$('#tmBias').textContent=(bias>0?'+':'')+bias+' ms';$('#tmScore').textContent=score+'/100';
+  $('#timingFeedback').innerHTML='<b>'+score+'/100.</b> Viés '+(bias>0?'+':'')+bias+' ms · erro absoluto '+abs+' ms.';
 }
-
-function tmMotionFeedback(clickNow, err){
-  const m=tm.current;
-  if(!m)return;
-
-  // Position that the ball really had at the instant of the response.
-  const dt=(clickNow-m.start)/1000;
-  let xx=m.x+m.v*dt+(m.accel?0.5*m.accel*dt*dt:0);
-
-  // Redraw the scene and reveal the hidden zone after answering.
-  tmBase();
-  tx.fillStyle='rgba(226,232,240,.38)';
-  tx.fillRect(m.hiddenStart,0,m.target-m.hiddenStart,360);
-
-  // Target line.
-  tx.strokeStyle='#111827';tx.lineWidth=3;
-  tx.beginPath();tx.moveTo(m.target,25);tx.lineTo(m.target,335);tx.stroke();
-
-  // True position at click: always drawn ABOVE the occlusion layer.
-  const shownX=Math.max(18,Math.min(875,xx));
-  tx.fillStyle='#FFD100';
-  tx.strokeStyle='#003DA5';tx.lineWidth=4;
-  tx.beginPath();tx.arc(shownX,m.y,17,0,Math.PI*2);tx.fill();tx.stroke();
-
-  // Marker on the target.
-  tx.fillStyle='#003DA5';
-  tx.beginPath();tx.arc(m.target,m.y,7,0,Math.PI*2);tx.fill();
-
-  // Distance indicator.
-  const dist=Math.round(Math.abs(m.target-xx));
-  tx.strokeStyle='#003DA5';tx.lineWidth=2;
-  tx.setLineDash([7,5]);
-  tx.beginPath();tx.moveTo(Math.min(shownX,m.target),m.y+35);
-  tx.lineTo(Math.max(shownX,m.target),m.y+35);tx.stroke();
-  tx.setLineDash([]);
-
-  tx.fillStyle='#0f172a';
-  tx.font='bold 18px system-ui,-apple-system,sans-serif';
-  const posText=xx<m.target
-    ? 'Faltavam '+dist+' px para o alvo'
-    : xx>m.target
-      ? 'Passaste o alvo por '+dist+' px'
-      : 'No alvo';
-  tx.fillText(posText, Math.max(20, Math.min(620, (shownX+m.target)/2-95)), m.y+66);
-
-  // Labels.
-  tx.font='14px system-ui,-apple-system,sans-serif';
-  tx.fillText('posição real ao clicar', Math.max(10,shownX-65), m.y-28);
-  tx.fillText('alvo', m.target-14, 20);
+function tmButtons(kind){
+  $('#timingRespond').style.display=kind==='respond'?'inline-flex':'none';
+  $('#timingA').style.display=kind==='race'?'inline-flex':'none';$('#timingB').style.display=kind==='race'?'inline-flex':'none';
+  $('#timingRespond').disabled=true;
 }
-
-function tmRecord(err, clickNow=performance.now()){
-  tm.errors.push(err);
-  const trialScore=Math.max(0,Math.round(100-Math.min(100,Math.abs(err)/7)));
-  adUpdate('timing',trialScore);tm.running=false;$('#timingRespond').disabled=true;tmStats();
-  cancelAnimationFrame(tm.raf);
-  tmMotionFeedback(clickNow,err);
+function tmRecord(err){
+  if(!tm.running)return;
+  tm.running=false;cancelAnimationFrame(tm.raf);clearTimeout(tm.timer);tm.errors.push(err);
+  const trial=Math.max(0,Math.round(100-Math.min(100,Math.abs(err)/6)));adUpdate('timing',trial);tmStats();
+  $('#timingRespond').disabled=true;
   const a=Math.abs(err);
-  $('#timingInstruction').innerHTML='<b>'+(err>0?'Tarde':'Cedo')+' '+Math.round(a)+' ms.</b> '+
-    (tm.current?'A bola amarela mostra onde ela estava realmente quando respondeste. ':'')+
-    (a<200?'Muito bom.':a<400?'Bom.':'Repete tentando manter mentalmente a velocidade.');
-  if(tm.sessionEnd && Date.now()<tm.sessionEnd) setTimeout(tmStart,1400);
+  $('#timingInstruction').innerHTML='<b>'+(err===0?'Correto':err>0?'Tarde '+Math.round(a)+' ms':'Cedo '+Math.round(a)+' ms')+'.</b> '+(a<180?'Muito bom.':a<350?'Bom.':'Tenta conservar mentalmente a velocidade/intervalo.');
+  if(tm.sessionEnd&&Date.now()<tm.sessionEnd)setTimeout(()=>{
+    const modes=['ttc','tunnel','race','intercept','speed','rhythm','duration','occlusion'];
+    $('#timingMode').value=modes[Math.floor(Math.random()*modes.length)];tmStart()
+  },900);
 }
-function tmStart(){
-  cancelAnimationFrame(tm.raf);clearTimeout(tm.timer);tmBase();
-  tm.mode=$('#timingMode').value;tm.running=true;tm.difficulty=Math.max(tm.difficulty,1+(adLevel('timing')-1)*.65);$('#timingRespond').disabled=false;
-  const now=performance.now();
-  const mode=tm.mode;
-  tm.current=null;
-
-  if(mode==='rhythm'){
-    let k=0; const interval=650+Math.random()*500;
-    $('#timingInstruction').textContent='Observa 4 batimentos. Depois carrega RESPONDER AGORA quando deveria ocorrer o 5.º.';
-    $('#timingRespond').disabled=true;
-    function beat(){
-      tmBase();tx.beginPath();tx.arc(450,180,32,0,Math.PI*2);tx.fill();
-      setTimeout(()=>{tmBase();k++; if(k<4)setTimeout(beat,Math.max(80,interval-120)); else {tm.answerAt=performance.now()+interval;$('#timingRespond').disabled=false;}},120);
-    } beat(); return;
-  }
-
-  if(mode==='duration'){
-    const dur=700+Math.random()*1400;
-    $('#timingInstruction').textContent='Memoriza quanto tempo o círculo fica visível. Depois reproduz esse intervalo com RESPONDER AGORA.';
-    tx.beginPath();tx.arc(450,180,34,0,Math.PI*2);tx.fill();
-    $('#timingRespond').disabled=true;
-    setTimeout(()=>{tmBase();tm.answerAt=performance.now()+dur;$('#timingRespond').disabled=false;$('#timingInstruction').textContent='Agora reproduz a duração: carrega quando achares que passou o mesmo tempo.';},dur);
-    return;
-  }
-
-  if(mode==='race'){
-    $('#timingRespond').disabled=true;
-    const v1=110+Math.random()*120,v2=110+Math.random()*120,x1=100,x2=100;
-    const t1=(700-x1)/v1,t2=(700-x2)/v2;
-    $('#timingInstruction').textContent='Qual das duas bolas chegará primeiro à linha? Clica na metade superior para A ou inferior para B.';
-    let st=performance.now();
-    function f(n){
-      tmBase();tx.strokeRect(700,30,2,300);
-      let s=(n-st)/1000;
-      tx.beginPath();tx.arc(Math.min(700,x1+v1*s),115,15,0,Math.PI*2);tx.fill();
-      tx.beginPath();tx.arc(Math.min(700,x2+v2*s),245,15,0,Math.PI*2);tx.fill();
-      if(s<Math.min(t1,t2)*.55)tm.raf=requestAnimationFrame(f);
-    } tm.raf=requestAnimationFrame(f);
-    tc.onpointerdown=e=>{const r=tc.getBoundingClientRect(),y=(e.clientY-r.top)*360/r.height;const pick=y<180?1:2;tmRecord(pick===(t1<t2?1:2)?0:700);tc.onpointerdown=null};
-    return;
-  }
-
-  let x=70,y=180,v=130+Math.random()*120,hiddenStart=mode==='occlusion'?(480-Math.min(180,tm.difficulty*25)):390,target=760;
-  let accel=mode==='speed'?(Math.random()<.5?35:-25):0;
-  let start=performance.now(),hideTime=null,predicted=null;
-  tm.current={x,y,v,accel,start,hiddenStart,target};
+function tmMotionMode(mode,token){
+  const lv=adLevel('timing'),x0=70,target=760;
+  const hiddenStart=mode==='tunnel'?350:mode==='occlusion'?Math.max(240,455-lv*18):395;
+  const v0=175+Math.random()*105+lv*7,speedChange=mode==='speed'?(Math.random()<.5?.68:1.42):1,changeX=275;
+  const tChange=(changeX-x0)/v0,v2=v0*speedChange,y=180;
+  function timeToX(x){return mode==='speed'&&x>changeX?tChange+(x-changeX)/v2:(x-x0)/v0}
+  const tTarget=timeToX(target),tHide=timeToX(hiddenStart),start=performance.now();
+  tm.current={type:'motion',mode,start,tTarget,tHide,target,hiddenStart,y,v0,v2,changeX};tm.answerAt=start+tTarget*1000;
   $('#timingInstruction').textContent=
-    mode==='intercept'?'Segue a bola. Quando desaparecer, responde no instante em que calculas que cruza a linha vertical.':
-    mode==='speed'?'A velocidade muda antes da ocultação. Responde quando calculas que chega à linha.':
-    mode==='occlusion'?'A zona invisível aumenta progressivamente. Responde quando a bola chega à linha.':
-    mode==='tunnel'?'A bola entra no túnel. Responde quando calculas que sai do outro lado.':
-    'Segue a velocidade. Depois da ocultação, responde quando calculas que a bola atinge a linha.';
-
-  function frame(n){
-    const dt=(n-start)/1000;
-    let curV=v;
-    let xx=x+v*dt+(accel?0.5*accel*dt*dt:0);
-    if(accel)curV=v+accel*dt;
-    tmBase();
-    tx.fillStyle='#e5e7eb';tx.fillRect(hiddenStart,0,target-hiddenStart,360);
-    tx.strokeStyle='#111827';tx.lineWidth=3;tx.beginPath();tx.moveTo(target,25);tx.lineTo(target,335);tx.stroke();
-    if(xx<hiddenStart){tx.fillStyle='#111827';tx.beginPath();tx.arc(xx,y,14,0,Math.PI*2);tx.fill();}
-    else if(!hideTime){
-      hideTime=n;
-      // Solve remaining travel with current velocity/acceleration.
-      const rem=target-hiddenStart;
-      let sec;
-      if(Math.abs(accel)<1)sec=rem/curV;
-      else {const disc=curV*curV+2*accel*rem;sec=(-curV+Math.sqrt(Math.max(0,disc)))/accel;if(!(sec>0))sec=rem/curV;}
-      tm.answerAt=n+sec*1000;
-    }
-    if(xx<target)tm.raf=requestAnimationFrame(frame);
+    mode==='tunnel'?'A bola entra no túnel. Responde quando calculas que sai na linha.':
+    mode==='intercept'?'Responde quando calculas que a bola cruza a linha vertical.':
+    mode==='speed'?'A velocidade muda antes da ocultação. Ajusta a previsão.':
+    mode==='occlusion'?'A zona oculta é longa. Mantém mentalmente a velocidade.':
+    'Time-to-contact: responde quando calculas que a bola chega à linha.';
+  function frame(now){
+    if(token!==tm.token||!tm.running)return;
+    const t=(now-start)/1000;
+    const x=mode==='speed'&&t>tChange?changeX+v2*(t-tChange):x0+v0*t;
+    tmBase();tx.fillStyle='#e5e7eb';tx.fillRect(hiddenStart,0,target-hiddenStart,360);
+    tx.strokeStyle='#0f172a';tx.lineWidth=4;tx.beginPath();tx.moveTo(target,25);tx.lineTo(target,335);tx.stroke();
+    if(x<hiddenStart){tx.fillStyle='#111827';tx.beginPath();tx.arc(x,y,15,0,Math.PI*2);tx.fill()}
+    else $('#timingRespond').disabled=false;
+    if(t<tTarget+1.2)tm.raf=requestAnimationFrame(frame);
   }
   tm.raf=requestAnimationFrame(frame);
 }
-$('#timingStart').onclick=tmStart;
-$('#timingRespond').onclick=()=>{
-  if(!tm.running||!tm.answerAt)return;
-  const clickNow=performance.now();
-  tmRecord(clickNow-tm.answerAt,clickNow);
-  tm.difficulty=Math.min(7,tm.difficulty+(Math.abs(tm.errors.at(-1))<350?.25:-.08));
-};
-$('#timingSession').onclick=()=>{
-  tm.sessionEnd=Date.now()+10*60*1000;tm.errors=[];tmStats();tmStart();
-  $('#timingFeedback').innerHTML='<b>Sessão automática iniciada.</b> Durante 10 minutos, as tentativas avançam automaticamente.';
-};
-$('#timingSave').onclick=()=>{
-  if(!tm.errors.length)return;
-  const abs=Math.round(tm.errors.reduce((a,b)=>a+Math.abs(b),0)/tm.errors.length);
-  const score=Math.max(0,Math.round(100-Math.min(100,abs/7)));
-  addHistory('Antecipação temporal',score,tm.errors.length+' tentativas · '+abs+' ms erro absoluto médio');
-};
-
-
+function tmStart(){
+  tm.token++;const token=tm.token;cancelAnimationFrame(tm.raf);clearTimeout(tm.timer);tmBase();tm.current=null;tm.answerAt=0;tm.running=true;
+  tm.mode=$('#timingMode').value;tm.difficulty=Math.max(1,1+(adLevel('timing')-1)*.6);tmButtons(tm.mode==='race'?'race':'respond');
+  if(['ttc','tunnel','intercept','speed','occlusion'].includes(tm.mode)){tmMotionMode(tm.mode,token);return}
+  if(tm.mode==='race'){
+    const lv=adLevel('timing'),v1=155+Math.random()*125+lv*5;let v2=155+Math.random()*125+lv*5;if(Math.abs(v1-v2)<22)v2+=38;
+    const t1=(700-90)/v1,t2=(700-90)/v2,start=performance.now();tm.current={type:'race',correct:t1<t2?'A':'B'};
+    $('#timingInstruction').textContent='Qual chega primeiro à linha? Escolhe A ou B.';
+    function f(now){if(token!==tm.token||!tm.running)return;const t=(now-start)/1000;tmBase();
+      tx.strokeStyle='#111827';tx.lineWidth=3;tx.beginPath();tx.moveTo(700,25);tx.lineTo(700,335);tx.stroke();
+      tx.fillStyle='#111827';tx.beginPath();tx.arc(Math.min(700,90+v1*t),115,15,0,Math.PI*2);tx.fill();
+      tx.beginPath();tx.arc(Math.min(700,90+v2*t),245,15,0,Math.PI*2);tx.fill();
+      tx.font='700 20px system-ui';tx.fillText('A',35,122);tx.fillText('B',35,252);
+      if(t<Math.min(t1,t2)*.82)tm.raf=requestAnimationFrame(f)
+    }tm.raf=requestAnimationFrame(f);return;
+  }
+  if(tm.mode==='rhythm'){
+    const lv=adLevel('timing'),interval=Math.max(420,800-lv*22)+Math.random()*210;let beat=0;
+    tmButtons('respond');$('#timingRespond').disabled=true;$('#timingInstruction').textContent='Observa 4 batimentos e responde exatamente no 5.º.';
+    function pulse(){if(token!==tm.token||!tm.running)return;tmBase();tx.fillStyle='#111827';tx.beginPath();tx.arc(450,180,34,0,Math.PI*2);tx.fill();
+      setTimeout(()=>{if(token!==tm.token||!tm.running)return;tmBase();beat++;if(beat<4)tm.timer=setTimeout(pulse,Math.max(100,interval-120));else{tm.answerAt=performance.now()+interval;$('#timingRespond').disabled=false}},120)
+    }pulse();return;
+  }
+  if(tm.mode==='duration'){
+    const lv=adLevel('timing'),dur=Math.max(500,1200-lv*35)+Math.random()*650;
+    tmButtons('respond');$('#timingRespond').disabled=true;$('#timingInstruction').textContent='Memoriza a duração do círculo. Depois reproduz o mesmo intervalo.';
+    tx.fillStyle='#111827';tx.beginPath();tx.arc(450,180,36,0,Math.PI*2);tx.fill();
+    tm.timer=setTimeout(()=>{if(token!==tm.token||!tm.running)return;tmBase();tm.answerAt=performance.now()+dur;$('#timingRespond').disabled=false;$('#timingInstruction').textContent='Agora reproduz a duração e responde quando tiver passado o mesmo tempo.'},dur)
+  }
+}
+$('#timingStart').onclick=()=>{tm.sessionEnd=0;tmStart()};
+$('#timingRespond').onclick=()=>{if(tm.running&&tm.answerAt&&!$('#timingRespond').disabled)tmRecord(performance.now()-tm.answerAt)};
+$('#timingA').onclick=()=>{if(tm.running&&tm.current?.type==='race')tmRecord(tm.current.correct==='A'?0:800)};
+$('#timingB').onclick=()=>{if(tm.running&&tm.current?.type==='race')tmRecord(tm.current.correct==='B'?0:800)};
+$('#timingSession').onclick=()=>{tm.errors=[];tmStats();tm.sessionEnd=Date.now()+10*60*1000;tmStart();$('#timingFeedback').innerHTML='<b>Sessão automática iniciada.</b> Os modos vão alternar durante 10 minutos.'};
+$('#timingSave').onclick=()=>{if(!tm.errors.length)return alert('Faz algumas tentativas primeiro.');const abs=Math.round(tm.errors.reduce((a,b)=>a+Math.abs(b),0)/tm.errors.length);const score=Math.max(0,Math.round(100-Math.min(100,abs/6)));addHistory('Antecipação temporal',score,tm.errors.length+' tentativas · '+abs+' ms');alert('Guardado.')};
+tmButtons('respond');tmBase();
 
 // PERIPHERAL / ATENÇÃO DIVIDIDA
 let ph={
@@ -1502,7 +1224,7 @@ $('#periphSave').onclick=()=>{
   alert('Guardado.');
 };
 
-// GYROSCOPE / DRIVING DUAL-TASK V5.7
+// GYROSCOPE / DRIVING DUAL-TASK V5.8
 let gy={
   enabled:false,running:false,beta:0,gamma:0,baseBeta:0,baseGamma:0,
   duration:90000,endAt:0,startAt:0,last:0,raf:null,
@@ -1554,13 +1276,14 @@ $('#gyroCalibrate').onclick=gyCalibrate;
 
 function gyRoadCenter(y,t){
   const prog=1-y/driveCanvas.height;
-  const a=Math.sin(gy.roadPhase + prog*2.2)*gy.roadCurve;
-  const b=Math.sin(gy.roadPhase*.47 + prog*4.4)*gy.roadCurve*.34;
-  return driveCanvas.width*.5 + a+b;
+  const a=Math.sin(gy.roadPhase + prog*2.8)*gy.roadCurve;
+  const b=Math.sin(gy.roadPhase*.63 + prog*5.1)*gy.roadCurve*.42;
+  const wander=Math.sin(gy.roadPhase*.31+1.4)*72;
+  return driveCanvas.width*.5 + a+b+wander;
 }
 function gyRoadHalf(y){
-  const perspective=.44+.56*(y/driveCanvas.height);
-  return (120+110*perspective);
+  const perspective=.35+.65*(y/driveCanvas.height);
+  return 62+48*perspective;
 }
 function gyCarPX(){return gy.carX*driveCanvas.width}
 
@@ -1686,11 +1409,11 @@ function gyLoop(now){
   const lv=adLevel('gyro');
 
   // speed rises continuously; higher adaptive levels start faster and climb faster
-  gy.speed=Math.min(gy.maxSpeed,gy.baseSpeed + elapsed*(0.42+lv*.035));
+  gy.speed=Math.min(gy.maxSpeed,gy.baseSpeed + elapsed*(0.95+lv*.055));
   const speedFactor=gy.speed/70;
-  gy.roadOffset+=dt*220*speedFactor;
-  gy.roadPhase+=dt*(.23+.12*speedFactor);
-  gy.roadCurve=55 + lv*7 + Math.min(80,elapsed*.45);
+  gy.roadOffset+=dt*310*speedFactor;
+  gy.roadPhase+=dt*(.48+.20*speedFactor);
+  gy.roadCurve=105 + lv*8 + Math.min(95,elapsed*.65);
 
   // steering from iPad roll (gamma)
   const steer=(gy.gamma-gy.baseGamma);
@@ -1721,7 +1444,7 @@ function gyStartSession(ms){
   const lv=adLevel('gyro');
   gy.running=true;gy.duration=ms;gy.startAt=performance.now();gy.endAt=gy.startAt+ms;gy.last=gy.startAt;
   gy.roadSamples=0;gy.insideSamples=0;gy.outEpisodes=0;gy.wasOut=false;gy.hits=0;gy.stimErrors=0;gy.rts=[];gy.score=null;gy.stim=null;gy.carX=.5;gy.roadPhase=0;gy.roadOffset=0;
-  gy.baseSpeed=42+lv*3.5;gy.maxSpeed=135+lv*7;
+  gy.baseSpeed=68+lv*4.5;gy.maxSpeed=175+lv*8;
   $('#driveStim').style.display='none';
   $('#gyroFeedback').innerHTML='<b>Em andamento.</b> Mantém o carro na estrada e responde aos símbolos. A velocidade vai aumentar continuamente.';
   gyUpdateStats();gyScheduleStim();gy.raf=requestAnimationFrame(gyLoop);
@@ -1747,33 +1470,28 @@ $('#gyroSave').onclick=()=>{
 };
 gyUpdateStats();gyDraw(performance.now());
 
-// REACTION
-let r={running:false,n:0,acc:0,err:0,times:[],timer:null,deadline:null,go:false,target:false,last:null};
+// REACTION V5.8 — mais rápido e exigente
+let r={running:false,n:0,total:20,acc:0,err:0,times:[],timer:null,deadline:null,go:false,target:false,last:null,score:null};
 function reactionNext(){
-  if(r.n>=12){reactionFinish();return}
-  $('#reactionPad').className='';$('#reactionText').textContent='…';r.go=false;
-  clearTimeout(r.timer);clearTimeout(r.deadline);
+  if(!r.running)return;if(r.n>=r.total){reactionFinish();return}
+  $('#reactionPad').className='';$('#reactionText').textContent='·';r.go=false;clearTimeout(r.timer);clearTimeout(r.deadline);
   const lv=adLevel('reaction');
+  const pre=Math.max(180,420-lv*18)+Math.random()*Math.max(220,620-lv*28);
   r.timer=setTimeout(()=>{
-    const mode=$('#reactionMode').value;r.n++;
+    if(!r.running)return;const mode=$('#reactionMode').value;r.n++;
     let target=true,label='●',cls='go';
-    if(mode==='selective'){target=Math.random()<(0.78-lv*.025);label=target?'●':'▲';cls=target?'go':'nogo'}
-    if(mode==='nogo'){target=Math.random()<(0.82-lv*.025);label=target?'VERDE':'VERMELHO';cls=target?'go':'nogo'}
-    r.target=target;r.go=true;r.last=performance.now();
-    $('#reactionPad').classList.add(cls);$('#reactionText').textContent=label;
-    const deadline=Math.max(380,920-lv*55);
-    r.deadline=setTimeout(()=>{
-      if(!r.go)return;
-      if(target)r.err++;
-      r.go=false;reactionNext();
-    },target?deadline:Math.max(520,900-lv*30));
-  },Math.max(380,760-lv*25)+Math.random()*Math.max(500,1350-lv*60))
+    if(mode==='selective'){target=Math.random()<(0.62-lv*.018);const ds=['▲','■','◆','✚'];label=target?'●':ds[Math.floor(Math.random()*ds.length)];cls=target?'go':'nogo'}
+    else if(mode==='nogo'){target=Math.random()<(0.65-lv*.018);label=target?'VERDE':'VERMELHO';cls=target?'go':'nogo'}
+    r.target=target;r.go=true;r.last=performance.now();$('#reactionPad').classList.add(cls);$('#reactionText').textContent=label;
+    const goWindow=Math.max(250,570-lv*28),noGoWindow=Math.max(300,620-lv*25);
+    r.deadline=setTimeout(()=>{if(!r.go)return;if(target)r.err++;r.go=false;reactionNext()},target?goWindow:noGoWindow)
+  },pre)
 }
-function reactionPress(){if(!r.running)return;if(!r.go){r.err++;return}if(r.target){r.acc++;r.times.push(performance.now()-r.last)}else r.err++;r.go=false;reactionNext()}
+function reactionPress(){if(!r.running)return;if(!r.go){r.err++;return}clearTimeout(r.deadline);if(r.target){r.acc++;r.times.push(performance.now()-r.last)}else r.err++;r.go=false;reactionNext()}
 $('#reactionPad').addEventListener('pointerdown',reactionPress);
-$('#reactionStart').onclick=()=>{r={running:true,n:0,acc:0,err:0,times:[],timer:null,go:false,target:false,last:null};reactionNext()}
-function reactionFinish(){r.running=false;clearTimeout(r.timer);clearTimeout(r.deadline);const avg=r.times.length?Math.round(r.times.reduce((a,b)=>a+b,0)/r.times.length):9999,score=Math.max(0,Math.round((r.acc/12)*75+Math.max(0,1-(avg-250)/900)*25-r.err*3));$('#rAcc').textContent=r.acc+'/12';$('#rErr').textContent=r.err;$('#rTime').textContent=(avg<9000?avg+' ms':'—');$('#rScore').textContent=score+'/100';r.score=score;$('#reactionText').textContent='Fim · '+adLabel('reaction');$('#reactionPad').className='';adUpdate('reaction',score);}
-$('#reactionSave').onclick=()=>{if(r.score==null)return alert('Conclui o treino primeiro.');addHistory('Reação',r.score,r.acc+'/12 · '+Math.round((r.times.reduce((a,b)=>a+b,0)/(r.times.length||1)))+' ms');alert('Guardado.')};
+$('#reactionStart').onclick=()=>{clearTimeout(r.timer);clearTimeout(r.deadline);r={running:true,n:0,total:20,acc:0,err:0,times:[],timer:null,deadline:null,go:false,target:false,last:null,score:null};$('#rAcc').textContent='0/20';$('#rErr').textContent='0';$('#rTime').textContent=$('#rScore').textContent='—';reactionNext()};
+function reactionFinish(){r.running=false;clearTimeout(r.timer);clearTimeout(r.deadline);const avg=r.times.length?Math.round(r.times.reduce((a,b)=>a+b,0)/r.times.length):9999;const score=Math.max(0,Math.round((r.acc/r.total)*72+Math.max(0,1-(avg-210)/650)*28-r.err*2.5));r.score=score;$('#rAcc').textContent=r.acc+'/'+r.total;$('#rErr').textContent=r.err;$('#rTime').textContent=avg<9000?avg+' ms':'—';$('#rScore').textContent=score+'/100';$('#reactionText').textContent='Fim · '+adLabel('reaction');$('#reactionPad').className='';adUpdate('reaction',score)}
+$('#reactionSave').onclick=()=>{if(r.score==null)return alert('Conclui o treino primeiro.');const avg=r.times.length?Math.round(r.times.reduce((a,b)=>a+b,0)/r.times.length):0;addHistory('Reação',r.score,r.acc+'/'+r.total+' · '+avg+' ms');alert('Guardado.')};
 
 // SEARCH
 let sh={q:0,acc:0,times:[],start:0,score:null};
@@ -1830,18 +1548,6 @@ function memoryRound(){mem.seq=Array.from({length:mem.level},()=>Math.floor(Math
 function memoryPick(v){mem.input.push(v);if(mem.input.length===mem.seq.length){const ok=mem.input.every((x,i)=>x===mem.seq[i]);if(ok){mem.acc++;mem.level=Math.min(9,mem.level+1);$('#memoryMsg').textContent='Correto. A sequência aumenta.'}else{mem.err++;mem.level=Math.max(3,mem.level-1);$('#memoryMsg').textContent='Incorreto. A sequência reduz ligeiramente.'}$('#memLevel').textContent=mem.level;$('#memAcc').textContent=mem.acc;$('#memErr').textContent=mem.err;mem.score=Math.min(100,Math.round(mem.level/9*70+mem.acc/(mem.acc+mem.err||1)*30));$('#memScore').textContent=mem.score+'/100';adUpdate('memory',mem.score);setTimeout(memoryRound,Math.max(380,760-adLevel('memory')*35))}}
 $('#memoryStart').onclick=()=>{const startLevel=Math.max(3,Math.min(7,2+Math.floor(adLevel('memory')/2)));mem={level:startLevel,acc:0,err:0,seq:[],input:[],score:null};$('#memLevel').textContent=startLevel;$('#memAcc').textContent=0;$('#memErr').textContent=0;memoryRound()}
 $('#memorySave').onclick=()=>{if(mem.score==null)return alert('Faz algumas rondas primeiro.');addHistory('Memória',mem.score,'Nível '+mem.level);alert('Guardado.')};
-
-// COORD
-let co={running:false,start:0,raf:null,samples:0,sum:0,inside:0,score:null,pointer:{x:50,y:50}};
-const box=$('#trackingBox'),tt=$('#trackTarget'),td=$('#trackDot');
-function setPct(el,x,y){el.style.left=x+'%';el.style.top=y+'%'}
-setPct(tt,50,50);setPct(td,50,50);
-box.addEventListener('pointermove',e=>{if(!co.running)return;e.preventDefault();const r=box.getBoundingClientRect();co.pointer.x=Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100));co.pointer.y=Math.max(0,Math.min(100,(e.clientY-r.top)/r.height*100));setPct(td,co.pointer.x,co.pointer.y)})
-box.addEventListener('pointerdown',e=>{if(!co.running)return;e.preventDefault();box.setPointerCapture?.(e.pointerId);const r=box.getBoundingClientRect();co.pointer.x=(e.clientX-r.left)/r.width*100;co.pointer.y=(e.clientY-r.top)/r.height*100;setPct(td,co.pointer.x,co.pointer.y)})
-function coordLoop(now){if(!co.running)return;const t=(now-co.start)/1000;if(t>=20){coordFinish();return}const lv=adLevel('coord'),spd=.78+lv*.105;const tx=50+35*Math.sin(t*1.1*spd),ty=50+30*Math.sin(t*1.7*spd+.8);setPct(tt,tx,ty);const dx=co.pointer.x-tx,dy=co.pointer.y-ty,d=Math.hypot(dx,dy);co.samples++;co.sum+=d;if(d<8)co.inside++;co.raf=requestAnimationFrame(coordLoop)}
-$('#coordStart').onclick=()=>{co={running:true,start:performance.now(),raf:null,samples:0,sum:0,inside:0,score:null,pointer:{x:50,y:50}};setPct(td,50,50);co.raf=requestAnimationFrame(coordLoop)}
-function coordFinish(){co.running=false;cancelAnimationFrame(co.raf);const avg=co.sum/(co.samples||1),inside=co.inside/(co.samples||1)*100;co.score=Math.max(0,Math.round(100-avg*2+inside*.25));$('#cDist').textContent=avg.toFixed(1)+'%';$('#cInside').textContent=Math.round(inside)+'%';$('#cDur').textContent='20 s';$('#cScore').textContent=co.score+'/100';adUpdate('coord',co.score)}
-$('#coordSave').onclick=()=>{if(co.score==null)return alert('Conclui o treino primeiro.');addHistory('Coordenação',co.score,$('#cDist').textContent);alert('Guardado.')};
 
 // PERSONALITY
 const pbank=[
