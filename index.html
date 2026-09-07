@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Psicotécnicos VMER">
 
-<title>Treino Psicotécnicos VMER — V6.0</title>
+<title>Treino Psicotécnicos VMER — V6.1</title>
 <style>
 :root{
   --bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#667085;--line:#d9e0ec;
@@ -361,7 +361,7 @@ tbody tr:last-child td{border-bottom:0}
 <div class="wrap">
   <div class="hero">
     <div>
-      <h1>Treino Psicotécnicos VMER — V6.0</h1>
+      <h1>Treino Psicotécnicos VMER — V6.1</h1>
       <p>Plataforma offline de treino psicotécnico, otimizada para computador, iPad e telemóvel. Treina atenção, reação, antecipação, memória, destreza e consistência numa interface simples e organizada.</p>
     </div>
     <div class="badge">Offline · PC · Mac · iPad · iPhone · Android</div>
@@ -435,7 +435,7 @@ tbody tr:last-child td{border-bottom:0}
         <button id="motionSave" class="btn good">Guardar sessão</button>
         <button id="motionReset" class="btn">Repor</button>
       </div>
-      <div id="motionMsg" class="notice">Segue o movimento. No instante em que a bola entra na zona oculta, a resposta fica ativa e podes tocar quando quiseres.</div>
+      <div id="motionMsg" class="notice">Segue o movimento. Assim que a bola entrar na zona oculta, podes tocar quando quiseres. Depois do toque, verás a tua posição e a posição real da bola naquele instante.</div>
       <div class="stats">
         <div class="stat"><small>Tentativas</small><b id="mN">0</b></div>
         <div class="stat"><small>Média</small><b id="mScore">—</b></div>
@@ -834,7 +834,7 @@ if(tabsBar){
 }
 function updateDash(){ $('#dashSessions').textContent=history.length;$('#dashBest').textContent=history.length?Math.max(...history.map(x=>x.score))+'/100':'—';const ex=history.filter(x=>x.type==='Simulação').slice(-1)[0];$('#dashExam').textContent=ex?ex.score+'/100':'—';let rec='Começa por fazer 1 sessão de Bolas, Reação e Atenção.';if(history.length>=4){const recent=history.slice(-8);const avg=recent.reduce((a,b)=>a+b.score,0)/recent.length;rec=avg<65?'Foca-te nos módulos em que ficas abaixo de 65/100 e usa sessões curtas e frequentes.':avg<80?'Estás num nível intermédio. Alterna módulos e começa a usar a simulação aleatória.':'Bom equilíbrio recente. Mantém consistência e evita treinar só o que já dominas.'}$('#recommendation').textContent=rec;adRender()}
 
-// MOTION / ANTECIPAÇÃO V6.0 — resposta imediata + dificuldade reforçada
+// MOTION / ANTECIPAÇÃO V6.1 — resposta imediata + dificuldade reforçada
 const mc=$('#motionCanvas'),mx=mc.getContext('2d');
 let mRAF=null,mBall=null,mExit=null,mWait=false,mStat={n:0,sum:0,pos:0,time:0},mMode='linear';
 function MD(){const lv=adLevel('motion');return{w:900,h:420,l:Math.max(235,345-(lv-3)*15),r:Math.min(770,655+(lv-3)*15)}}
@@ -843,7 +843,69 @@ function mSolveTimeToX(x0,v,a,target){if(Math.abs(a)<0.0001)return(target-x0)/v;
 function mPathY(ball,t){const u=Math.max(0,Math.min(1,t/ball.tExit));if(ball.mode==='diagonal')return ball.y0+ball.dy*u;if(ball.mode==='curve')return ball.y0+ball.dy*u+ball.amp*4*u*(1-u);if(ball.mode==='sine')return ball.y0+ball.dy*u+ball.amp*Math.sin(Math.PI*2*u*ball.freq);if(ball.mode==='mixed')return ball.y0+ball.dy*u+ball.amp*Math.sin(Math.PI*2*u*ball.freq)+ball.curve*4*u*(1-u);return ball.y0}
 function motionStart(){cancelAnimationFrame(mRAF);const modes=['linear','diagonal','curve','sine','accel','mixed','time'];mMode=$('#motionMode').value==='random'?modes[Math.floor(Math.random()*modes.length)]:$('#motionMode').value;const d=MD(),lv=adLevel('motion'),x0=45;const v=(205+Math.random()*155)*(0.94+lv*.075);const accelMag=42+lv*5;const a=(mMode==='accel'||mMode==='mixed')?(Math.random()<.5?accelMag:-Math.min(accelMag*.45,v*.18)):0;const tExit=mSolveTimeToX(x0,v,a,d.r),tHide=mSolveTimeToX(x0,v,a,d.l);let y0=85+Math.random()*250,dy=(Math.random()*2-1)*(85+lv*8);let amp=(mMode==='curve'||mMode==='sine'||mMode==='mixed')?(48+lv*6)*(Math.random()<.5?-1:1):0;let curve=mMode==='mixed'?(35+lv*4)*(Math.random()<.5?-1:1):0;let freq=1+(mMode==='sine'||mMode==='mixed'?Math.random()*.55:0);const end=y0+dy;if(end<38)dy+=38-end;if(end>382)dy-=end-382;mBall={mode:mMode,x0,y0,v,a,dy,amp,curve,freq,t0:performance.now(),tExit,tHide};mExit={x:d.r,y:mPathY(mBall,tExit),t:mBall.t0+tExit*1000};mWait=false;$('#motionTimeRespond').style.display=mMode==='time'?'inline-flex':'none';$('#motionTimeRespond').disabled=true;$('#motionMsg').textContent='Variante: '+mMode+'. Observa bem velocidade, direção e aceleração.';mRAF=requestAnimationFrame(motionStep)}
 function motionStep(now){if(!mBall)return;const t=(now-mBall.t0)/1000;drawMotionBase();const x=mBall.x0+mBall.v*t+.5*mBall.a*t*t,y=mPathY(mBall,t);if(t<mBall.tHide){mx.fillStyle='#111827';mx.beginPath();mx.arc(x,y,13,0,Math.PI*2);mx.fill();mx.strokeStyle='#fff';mx.lineWidth=3;mx.stroke()}else if(!mWait){mWait=true;$('#motionTimeRespond').disabled=false;$('#motionMsg').innerHTML='<b>A bola entrou na zona oculta.</b> Podes responder <b>já</b> ou esperar pelo momento que considerares correto.'}if(t<mBall.tExit+1.6)mRAF=requestAnimationFrame(motionStep);else $('#motionMsg').innerHTML='<b>Já passou o reaparecimento real.</b> Ainda podes responder, mas contará como resposta tardia.'}
-function motionAnswer(clientX,clientY,fromButton=false){if(!mWait||!mExit||!mBall)return;const clickNow=performance.now(),r=mc.getBoundingClientRect();let x=mExit.x,y=mExit.y;if(!fromButton){x=(clientX-r.left)*900/r.width;y=(clientY-r.top)*420/r.height}const pe=mMode==='time'?0:Math.hypot(x-mExit.x,y-mExit.y),signedTe=clickNow-mExit.t,te=Math.abs(signedTe),posPenalty=Math.min(64,pe/3.6),timePenalty=Math.min(46,te/28),score=Math.max(0,Math.round(100-(mMode==='time'?Math.min(100,te/9):(posPenalty+timePenalty))));mStat.n++;mStat.sum+=score;mStat.pos+=pe;mStat.time+=te;adUpdate('motion',score);$('#mN').textContent=mStat.n;$('#mScore').textContent=Math.round(mStat.sum/mStat.n)+'/100';$('#mPos').textContent=Math.round(mStat.pos/mStat.n)+' px';$('#mTime').textContent=Math.round(mStat.time/mStat.n)+' ms';cancelAnimationFrame(mRAF);drawMotionBase();mx.fillStyle='#16a34a';mx.beginPath();mx.arc(mExit.x,mExit.y,12,0,Math.PI*2);mx.fill();if(mMode!=='time'){mx.fillStyle='#dc2626';mx.beginPath();mx.arc(x,y,11,0,Math.PI*2);mx.fill();mx.strokeStyle='#64748b';mx.setLineDash([6,5]);mx.beginPath();mx.moveTo(x,y);mx.lineTo(mExit.x,mExit.y);mx.stroke();mx.setLineDash([])}const when=Math.abs(signedTe)<35?'momento muito próximo do correto':signedTe<0?'cedo '+Math.round(-signedTe)+' ms':'tarde '+Math.round(signedTe)+' ms';$('#motionMsg').innerHTML='<b>'+score+'/100</b> · '+(mMode==='time'?'':Math.round(pe)+' px · ')+'<b>'+when+'</b>. Verde = reaparecimento real · vermelho = tua previsão.';mWait=false;mBall=null;mExit=null;$('#motionTimeRespond').disabled=true}
+function motionAnswer(clientX,clientY,fromButton=false){
+  if(!mWait||!mExit||!mBall)return;
+
+  const clickNow=performance.now(),r=mc.getBoundingClientRect();
+  let x=mExit.x,y=mExit.y;
+  if(!fromButton){
+    x=(clientX-r.left)*900/r.width;
+    y=(clientY-r.top)*420/r.height;
+  }
+
+  // posição REAL da bola no instante exato do toque
+  const tapT=(clickNow-mBall.t0)/1000;
+  const actualX=mBall.x0+mBall.v*tapT+.5*mBall.a*tapT*tapT;
+  const actualY=mPathY(mBall,tapT);
+  const instantDist=mMode==='time'?0:Math.hypot(x-actualX,y-actualY);
+
+  // mantém também a avaliação do ponto/momento de reaparecimento
+  const pe=mMode==='time'?0:Math.hypot(x-mExit.x,y-mExit.y);
+  const signedTe=clickNow-mExit.t,te=Math.abs(signedTe);
+  const posPenalty=Math.min(64,pe/3.6),timePenalty=Math.min(46,te/28);
+  const score=Math.max(0,Math.round(100-(mMode==='time'?Math.min(100,te/9):(posPenalty+timePenalty))));
+
+  mStat.n++;mStat.sum+=score;mStat.pos+=pe;mStat.time+=te;adUpdate('motion',score);
+  $('#mN').textContent=mStat.n;
+  $('#mScore').textContent=Math.round(mStat.sum/mStat.n)+'/100';
+  $('#mPos').textContent=Math.round(mStat.pos/mStat.n)+' px';
+  $('#mTime').textContent=Math.round(mStat.time/mStat.n)+' ms';
+
+  cancelAnimationFrame(mRAF);
+  drawMotionBase();
+
+  // verde = reaparecimento real
+  mx.fillStyle='#16a34a';mx.beginPath();mx.arc(mExit.x,mExit.y,12,0,Math.PI*2);mx.fill();
+
+  if(mMode!=='time'){
+    // vermelho = teu toque
+    mx.fillStyle='#dc2626';mx.beginPath();mx.arc(x,y,11,0,Math.PI*2);mx.fill();
+
+    // azul = posição real da bola quando tocaste
+    mx.fillStyle='#2563eb';mx.beginPath();mx.arc(actualX,actualY,12,0,Math.PI*2);mx.fill();
+    mx.strokeStyle='#fff';mx.lineWidth=2;mx.stroke();
+
+    // linha entre previsão e posição real instantânea
+    mx.strokeStyle='#0f172a';mx.lineWidth=2;mx.setLineDash([7,5]);
+    mx.beginPath();mx.moveTo(x,y);mx.lineTo(actualX,actualY);mx.stroke();mx.setLineDash([]);
+
+    // rótulos
+    mx.font='700 13px system-ui';mx.textAlign='left';
+    mx.fillStyle='#dc2626';mx.fillText('TEU TOQUE',Math.min(800,x+14),Math.max(18,y-10));
+    mx.fillStyle='#2563eb';mx.fillText('BOLA REAL',Math.min(805,actualX+14),Math.min(405,actualY+22));
+    mx.fillStyle='#16a34a';mx.fillText('REAPARECIMENTO',Math.max(520,mExit.x-145),Math.max(18,mExit.y-15));
+  }
+
+  const when=Math.abs(signedTe)<35?'momento muito próximo do correto':signedTe<0?'cedo '+Math.round(-signedTe)+' ms':'tarde '+Math.round(signedTe)+' ms';
+
+  $('#motionMsg').innerHTML=
+    '<b>'+score+'/100</b> · '+
+    (mMode==='time'?'':'diferença instantânea <b>'+Math.round(instantDist)+' px</b> · erro até ao reaparecimento '+Math.round(pe)+' px · ')+
+    '<b>'+when+'</b>.'+
+    (mMode==='time'?'':'<br><span style="color:#dc2626"><b>Vermelho</b> = teu toque</span> · <span style="color:#2563eb"><b>Azul</b> = posição real da bola nesse instante</span> · <span style="color:#16a34a"><b>Verde</b> = reaparecimento real</span>.');
+
+  mWait=false;mBall=null;mExit=null;$('#motionTimeRespond').disabled=true;
+}
 mc.addEventListener('pointerdown',e=>{e.preventDefault();if(mMode!=='time')motionAnswer(e.clientX,e.clientY,false)});
 $('#motionTimeRespond').onclick=()=>motionAnswer(0,0,true);
 $('#motionStart').onclick=motionStart;
@@ -851,7 +913,7 @@ $('#motionReset').onclick=()=>{cancelAnimationFrame(mRAF);mBall=null;mExit=null;
 $('#motionSave').onclick=()=>{if(!mStat.n)return alert('Faz algumas tentativas primeiro.');addHistory('Bolas',Math.round(mStat.sum/mStat.n),mStat.n+' tentativas · '+Math.round(mStat.time/mStat.n)+' ms');alert('Guardado.')};
 drawMotionBase();
 
-// TEMPORAL ANTICIPATION V6.0 — oito modos revistos
+// TEMPORAL ANTICIPATION V6.1 — oito modos revistos
 const tc=$('#timingCanvas'),tx=tc.getContext('2d');
 let tm={errors:[],running:false,answerAt:0,raf:null,timer:null,sessionEnd:0,mode:'ttc',difficulty:1,current:null,token:0};
 
@@ -1139,7 +1201,7 @@ $('#periphSave').onclick=()=>{
   alert('Guardado.');
 };
 
-// GYROSCOPE / DRIVING DUAL-TASK V6.0
+// GYROSCOPE / DRIVING DUAL-TASK V6.1
 let gy={
   enabled:false,running:false,beta:0,gamma:0,baseBeta:0,baseGamma:0,
   duration:90000,endAt:0,startAt:0,last:0,raf:null,
@@ -1385,7 +1447,7 @@ $('#gyroSave').onclick=()=>{
 };
 gyUpdateStats();gyDraw(performance.now());
 
-// REACTION V6.0 — mais rápido e exigente
+// REACTION V6.1 — mais rápido e exigente
 let r={running:false,n:0,total:20,acc:0,err:0,times:[],timer:null,deadline:null,go:false,target:false,last:null,score:null};
 function reactionNext(){
   if(!r.running)return;if(r.n>=r.total){reactionFinish();return}
